@@ -1,0 +1,6 @@
+<% if @image.present?  %>
+<script type="text/javascript" charset="utf-8">
+window.imageData = <%= @image.to_json.html_safe %>;
+</script>
+
+<% end  %>

@@ -15,18 +15,21 @@ class TagsController < ApplicationController
   end
 
   def create
-    params.permit(:x, :y, :title, :description, :price, :seller, :seller_name, :seller_url, :image_url, :image_width, :image_height, :image_width)
-     image = current_user.images.where(:image_url => params[:image_url]).first
-    if(image)
-
+    #params.permit(:x, :y, :title, :description, :price, :seller, :seller_name, :seller_url, :image_url, :image_width, :image_height, :image_width, :id, :currency, :raw_details, :page_url)
+    image = nil
+    params.permit!
+    image = current_user.images.where(:image_url => params[:image_url]).first
+    unless(image)
       image = Image.new({:image_url => params[:image_url],:page_url =>  params[:page_url]})
-      image.user = user
-      return render :json => {:message => image.errors.join(",")},:status => :unprocessable_entity  unless image
+      image.user = current_user
+      return render :json => {:message => image.errors.join(",")},:status => :unprocessable_entity  unless image.save
     end
+    params.delete :controller
+    params.delete :action
     t = Tag.new(params)
     t.image_url = image.image_url
-    t.image = image.image
-    if(t.create)
+    t.image = image
+    if(t.save)
       render :json => t
     else
       render :json => {:message => t.errors.join(",")},:status => :unprocessable_entity
@@ -57,6 +60,15 @@ class TagsController < ApplicationController
       render :json => image
     else
       render :json => {:message => "image_url not found"},:status => :not_found
+    end
+  end
+
+  def destroy
+    t = Image.find(params[:image_id]).tags.find(params[:id])
+    if(t.destroy)
+      render :json => t
+    else
+      render :json => t, :status =>  :unprocessable_entity
     end
   end
 end

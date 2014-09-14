@@ -11,7 +11,9 @@
 // about supported directives.
 //
 //= require jquery
+//= require bootstrap-sprockets
 //= require ../editor/jquery.masonry.min
+//=require ../editor/ahpi.imgload
 //= require ../editor/handlebars-v1.3.0
 //= require ../editor/typeahead.bundle.min
 //= require ../external/tagger

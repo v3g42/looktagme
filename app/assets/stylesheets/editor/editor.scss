@@ -1,9 +1,38 @@
 @import "pinterest";
+
+$col-width: 200px;
+$big-col-width: 220px;
 .colors {
+    margin-bottom: 5px;
 	.color {
-	  height: 25px;
-		width: 25px;
-		display:inline-block;
+      position: relative;
+      height: 30px;
+      width: 30px;
+      margin:0 5px;
+      display:inline-block;
+      &.selected {
+        .color-grid {
+
+          width: 30px;
+          height: 30px;
+          margin-top: 0;
+          top:0;
+          left: 0;
+          margin-left: 0;
+          opacity: 1;
+        }
+      }
+      .color-grid {
+        position: absolute;
+        height: 25px;
+        width: 25px;
+        top: 50%;
+        margin-top:-12px;
+        right: 50%;
+        margin-right: -13px;
+        opacity: 0.6;
+      }
+
   }
 }
 .searching {
@@ -11,8 +40,35 @@
 		display:block;
 	}
 	&.right_section .right_content  .details {
-		margin-top:100px;
+      margin-top: 120px;
+
+      padding-top: 20px;
+      @media (max-width: 400px){
+        margin-top: 200px;
+      }
 	}
+}
+
+.tag_editor.horizontal-image {
+  .right_section {
+    width: 50%;
+    margin-left: 47%;
+  }
+  .left_section {
+    width: 49%;
+  }
+  .search_section {
+    width: 49%;
+    left: 50%;
+    .right_content .details .listProducts, .searchProducts  {
+      @include listProducts($big-col-width);
+    }
+  }
+
+}
+.right_section {
+  width: 65%;
+  margin-left: 32%;
 }
 .search_section {
 	position:fixed;
@@ -22,12 +78,9 @@
 	z-index:1000;
 	height: 100px;
 	display:none;
-	width: 65%;
-	left: 35%;
-    input.product_search {
-//      width: 50%;
-//      max-width: 50%;
-    }
+    width: 55%;
+    left: 35%;
+
 }
 
 .close_edit {
@@ -52,7 +105,7 @@
 	position:fixed;
 	top:0;
 	height: 100%;
-    max-width: 30%;
+    width: 30%;
 	img {
 		width: 100%;
 	}
@@ -71,7 +124,7 @@
 			margin-top:0;
 			overflow-y: auto;
 			.listProducts, .searchProducts  {
-				@include listProducts;
+				@include listProducts($col-width);
 			}
 			.searchProducts  .searchProduct {
 				.minHeight {

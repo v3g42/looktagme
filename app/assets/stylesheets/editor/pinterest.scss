@@ -1,5 +1,6 @@
 @import '../external/buttons';
-@mixin listProducts {
+
+@mixin listProducts($col-width) {
  .item {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
@@ -9,7 +10,7 @@
     border-radius: 4px 4px 4px 4px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 2px 1px rgba(0, 0, 0, 0.1), 0 3px 1px rgba(0, 0, 0, 0.05);
     text-shadow: 0 1px 0 #DDDDDD;
-    width: 200px;
+    width: $col-width;
     margin: 10px;
     margin-top: 0;
     float: left;

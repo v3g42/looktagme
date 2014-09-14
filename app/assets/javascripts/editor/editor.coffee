@@ -50,9 +50,15 @@ Sidebar.prototype.initSearch = (tag)->
 	self = this
 	search_elem = self.elem.find('.product_search')
 	colorsDiv = self.elem.find('.colors')
+	colorsDiv.html('')
 	for c in colors
-		div = $('<div class="'+c.name.toLowerCase()+' color">')
-		div.css('background-color',c.color)
+		div = $('<div class="color"><div class="'+c.name.toLowerCase()+' color-grid"></div></div>')
+		div.find('.color-grid').css('background-color',c.color)
+		div.click ->
+			$('.color').removeClass('selected')
+			$(this).toggleClass('selected')
+
+
 		colorsDiv.append(div)
 	suggestionsList = ->
 		findMatches = (q, cb) ->
@@ -61,19 +67,19 @@ Sidebar.prototype.initSearch = (tag)->
 			#   matches.push {title: str + " like " + q}
 			cb(matches)
 
-	search_elem.typeahead null,
-			name: 'products',
-			displayKey: 'title',
-			source: suggestionsList()
-			#self.productsAdpt.ttAdapter()
-			# templates: {
-			# 	suggestion: self.suggestionTemplate
-			# }
-		search_elem.on 'typeahead:selected', (evt, obj, name) ->
-				evt.preventDefault();
-				search_elem.typeahead('val', '');
-				self.addFilter search_elem.typeahead('val')
-				#self.selectSuggestion(obj)
+		search_elem.typeahead null,
+				name: 'products',
+				displayKey: 'title',
+				source: suggestionsList()
+				#self.productsAdpt.ttAdapter()
+				# templates: {
+				# 	suggestion: self.suggestionTemplate
+				# }
+			search_elem.on 'typeahead:selected', (evt, obj, name) ->
+					evt.preventDefault();
+					search_elem.typeahead('val', '');
+					self.addFilter search_elem.typeahead('val')
+					#self.selectSuggestion(obj)
 
 
 Sidebar.prototype.selectTag = (tag)->
@@ -108,22 +114,33 @@ Sidebar.prototype.saveTag = (tag)->
 	data = $.extend {}, currentTag
 	data.image_url = self.img.attr('src')
 	data.page_url = page_url
-	jQuery.post('/tags', data)
-	.done (tag)->
+	delete data.id
+	delete data.raw_details
+	jQuery.ajax(
+		type: 'post'
+		url: '/tags'
+		beforeSend: (xhr) ->
+			xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+		data: data
+	).done (tag)->
 		self.alert("success", "Tags saved!")
-		data.id = id;
 		self.renderRecent()
 		self.currentTag = null
 	.fail ->
 		self.alert("danger", "Server Error!")
 
-Sidebar.prototype.deleteTag = (tag_id)->
+Sidebar.prototype.deleteTag = (tag_id, image_id)->
 	self = this
 
 	page_url = $('#page_url').val()
 	domain = $('#domain').val()
-	data = {image_url: self.img.attr('src'), id: tag_id, page_url: page_url }
-	jQuery.ajax({url: '/tags', data: data, type: 'DELETE'})
+	data = {image_url: self.img.attr('src'), id: tag_id, image_id: image_id, page_url: page_url }
+	jQuery.ajax
+		url: '/tags'
+		data: data
+		type: 'DELETE'
+		beforeSend: (xhr) ->
+			xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
 	.done((image)->
 		self.alert("success", "Tag deleted!")
 		self.renderRecent()
@@ -143,7 +160,7 @@ Sidebar.prototype.init = ()->
 	#   	limit: 10
 	#
 	# this.productsAdpt.initialize()
-	#self.renderRecent()
+	self.renderRecent()
 
 
 
@@ -158,14 +175,15 @@ Sidebar.prototype.masonry = ($container)->
 	$container.imagesLoaded ->
 		$container.masonry
 			itemSelector : '.item'
-			columnWidth : 220
+			#columnWidth : if $('.tag_editor').hasClass('horizontal-image') then 240 else 220
+			columnWidth : 240
 			isAnimated: true
 
 Sidebar.prototype.searchProducts = ()->
 	self = this
 	$('.details').html('')
 	$('.details').addClass('loading')
-	search = $('.product_search:eq(1)').val()
+	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val()
 	self.results = []
 	jQuery.get('/search?q='+search)
 	.done((results)->
@@ -198,13 +216,13 @@ Sidebar.prototype.renderRecent = ()->
 	jQuery.get('/tags/recent?image_url='+image_url)
 	.done((image)->
 		console.log(image)
-		$('.details').html(self.productsTemplate({results:image.tags}))
+		$('.details').html(self.productsTemplate({results:image.tags, image_id:image._id.$oid}))
 		$('.details').removeClass('loading')
 		search_elem = self.elem.find('.product_search')
 		search_elem.typeahead('val', '')
 		jQuery('.deleteProduct').click (event, el)->
 			id = $(event.currentTarget).data('tag-id')
-			self.deleteTag(id)
+			self.deleteTag(id, image._id.$oid)
 
 	).fail(()->
 		self.alert("danger", "Server Error!")
@@ -217,6 +235,7 @@ jQuery ()->
 		req = $.ajax(
 			url: "/tags?app_id=" + encodeURIComponent(app_id) + "&image_url=" + encodeURIComponent(img.src)
 			dataType: "json"
+
 			success: (data) ->
 
 			sidebar.init()
@@ -225,7 +244,9 @@ jQuery ()->
 		)
 	imgEl = jQuery('.left_section img')
 
-	init = ()->
+	window.init = init = ()->
+		imgEl = jQuery('.left_section img')
+		console.log imgEl[0].width
 		if window.imageData
 			editor = new window.$TAGGER.Editor(imgEl, window.imageData.tags)
 		else
@@ -251,7 +272,7 @@ jQuery ()->
 		editor.on 'selected', (e, item)->
 			sidebar.selectTag(item);
 
-	if imgEl[0].width
+	imgEl.one 'load', ->
 		init()
-	else
-		imgEl.on 'load', init
+	.each ->
+		$(this).load() if(this.complete)

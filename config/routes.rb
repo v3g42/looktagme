@@ -4,6 +4,7 @@ TagConda::Application.routes.draw do
   get '/tags' => 'tags#index'
 
   post '/tags' => 'tags#create'
+  delete '/tags' => 'tags#destroy'
 
   get '/tags/edit' => 'tags#edit'
 

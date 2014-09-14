@@ -1,16 +1,23 @@
-= link_to t("navigation.title"), root_path, :class => 'brand'
-ul.nav
+nav.navbar.navbar-default role="navigation"
+  .container-fluid
+    .navbar-header
+      button.navbar-toggle.collapsed data-target="#collapser" data-toggle="collapse" type="button"
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      = link_to t("navigation.title"), root_path, :class => 'navbar-brand'
 
-  - if user_signed_in?
-    li= link_to t('navigation.logout'), destroy_user_session_path, :method=>'delete'
-  - else
-    li= link_to 'Login', new_user_session_path
-    li= link_to "Sign in with Facebook", user_omniauth_authorize_path(:facebook)
-  - if user_signed_in?
-    li= link_to 'Edit account', edit_user_registration_path
-
-
-    - if current_user.has_role? :admin
-      li= link_to 'Admin', users_path
-  - else
-    li= link_to 'Sign up', new_user_registration_path
+    #collapser.collapse.navbar-collapse
+      ul.nav.navbar-nav.navbar-right
+        - if user_signed_in?
+          li= link_to t('navigation.logout'), destroy_user_session_path, :method=>'delete'
+        - else
+          li= link_to 'Login', new_user_session_path
+          li= link_to "Sign in with Facebook", user_omniauth_authorize_path(:facebook)
+        - if user_signed_in?
+          li= link_to 'Edit account', edit_user_registration_path
+          - if current_user.has_role? :admin
+            li= link_to 'Admin', users_path
+        - else
+          li= link_to 'Sign up', new_user_registration_path

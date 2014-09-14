@@ -1,20 +1,16 @@
-require 'httparty'
+require 'rubygems'
+require 'semantics3'
+
 class Search::Semantics
-  include HTTParty
-  base_uri "https://api.semantics3.com"
+  API_KEY = 'SEM3A1931CD48EE0C6A1DB4FA64D9D70DA7C'
+  API_SECRET = 'MzMzZGQyYzliZmJiZjM2MzdkNzJjMDNhOGJkYTQ5MGU'
 
   def initialize
-    @headers = {
-        "api_key" => "SEM3A1931CD48EE0C6A1DB4FA64D9D70DA7C",
-        "api_secret" => "MzMzZGQyYzliZmJiZjM2MzdkNzJjMDNhOGJkYTQ5MGU"
-    }
+    @sem3 = Semantics3::Products.new(API_KEY, API_SECRET)
   end
 
-  def search(query, options={})
-    search = {:search => query}
-    options.merge!({:headers => @headers, :query => {:q => search.to_json}})
-    response = self.class.get('/test/v1/products', options)
-    filter(response)
+  def search(query)
+    filter(@sem3.run_query("products", {:search => query}))
   end
 
   private
@@ -36,5 +32,4 @@ class Search::Semantics
       end
     end
   end
-
 end
