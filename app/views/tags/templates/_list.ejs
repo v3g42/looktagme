@@ -1,0 +1,23 @@
+<div class="searchProducts">
+{{#each results}}
+	<div class="item searchProduct">
+		<div class="picture">
+			<a href="#" class="image">
+				<img src="{{image_url}}" alt=""> <br>
+			</a>
+			<div class="item-content">
+				
+				<p>{{title}}</p>
+				<div class="row minHeight">
+					<div class="col-xs-7 price">
+						{{price}} {{currency}}
+					</div>
+					<div class="col-xs-2 actions">
+					<button type="button" class="btn btn-success btn-sm saveProduct" data-product-id="{{@index}}">Tag it!</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{{/each}}
+</div>

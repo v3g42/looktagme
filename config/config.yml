@@ -4,12 +4,15 @@ defaults: &defaults
     - moderator
     - user
   default_role: user
+  base_url: 'http://localhost:3000'
 
 development:
   <<: *defaults
+
 
 test:
   <<: *defaults
 
 production:
   <<: *defaults
+

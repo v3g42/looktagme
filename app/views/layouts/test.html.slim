@@ -1,0 +1,42 @@
+doctype html
+html lang="en"
+  = render partial: 'layouts/application/head'
+
+  body.no-skin
+    = render partial: 'layouts/application/navbar'
+
+    #main-container.main-container
+      javascript:
+        try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+      = render partial: 'layouts/application/sidebar'
+
+      .main-content
+        = render partial: 'layouts/application/breadcrumbs'
+
+        .page-content
+          = render partial: 'layouts/application/companies_select_box'
+
+          .page-content-area
+            .row
+              .col-xs-12
+                /! PAGE CONTENT BEGINS
+                - if content_for?(:page_header)
+                  = yield(:page_header)
+                - else
+                  = render 'layouts/application/page_header'
+
+                = bootstrap_flash
+
+                = yield
+                /! PAGE CONTENT ENDS
+              /! /.col
+            /! /.row
+          /! /.page-content-area
+        /! /.page-content
+      /! /.main-content
+      / = render partial: 'layouts/application/footer'
+
+      a#btn-scroll-up.btn-scroll-up.btn.btn-sm.btn-inverse href="#"
+        i.ace-icon.fa.fa-angle-double-up.icon-only.bigger-110
+
+    = render partial: 'layouts/application/foot'

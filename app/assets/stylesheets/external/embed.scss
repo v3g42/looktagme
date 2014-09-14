@@ -1,0 +1,200 @@
+@import 'buttons';
+
+.tagger-editor-container {
+	position: fixed;
+	background: white;
+	top: 5%;
+	left: 5%;
+	right: 5%;
+	bottom: 5%;
+	z-index: 100002;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	border: 1px solid rgb(218, 217, 217);
+}
+
+
+.tagger-editor-container iframe {
+	width: 100%;
+	height: 100%;
+	border: none;
+}
+
+.tagger-editor-container .close {
+	position: absolute;
+	background-image: image_url("close.png");
+	width: 20px;
+	height: 20px;
+	top: 5px;
+	right: 5px;
+	opacity: 0.3;
+}
+
+.tagger-wrap {
+	position: absolute;
+	border: 0px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.tagger-wrap .glass {
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	border: 0px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.tagger-popup {
+	position: absolute;
+	background: white;
+	width: 220px;
+	height: 100px;
+	z-index: 100000;
+	border-radius: 5px;
+	border: 0px;
+	box-shadow: 3px 3px 3px rgba(0,0,0,.3);
+	opacity: .9;
+	margin-left: 23px;
+}
+
+.tagger-popup .callout {
+	position: absolute;
+	width: 25px;
+	height: 100px;
+	left: -22px;
+	top: 0px;
+	background: image_url("callout.png") center center no-repeat;
+	opacity: .5;
+}
+
+.tagger-popup .container {
+	position: relative;
+	border: 0px;
+}
+
+.tagger-popup .container .pic {
+	background-image: image_url("ajax-loader.gif");
+	background-repeat: no-repeat;
+	background-position: center;
+	position: absolute;
+	left: 5px;
+	top: 5px;
+	width: 90px;
+	height: 90px;
+}
+
+.tagger-popup .container {
+	@include buttons;
+	.price {
+		position: absolute;
+		left: 100px;
+		right: 5px;
+		top: 10px;
+	}
+	.shopname {
+		position: absolute;
+		left: 100px;
+		right: 5px;
+		top: 27px;
+	}
+	.buy {
+		position: absolute;
+		cursor: pointer;
+		left: 100px;
+		top: 57px;
+	}
+}
+.tagger-wrap .menu {
+	position: absolute;
+	width: 50px;
+	right: 10px;
+	top: 10px;
+	bottom: 0px;
+	border: 0px;
+}
+
+.tagger-wrap .ptrcontainer {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	background: black;
+	border-radius: 5px;
+}
+
+.tagger-wrap .ptrcontainer .ptrbutton {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	background: black;
+	border-radius: 5px;
+	opacity: .6;
+}
+
+.tagger-wrap .ptrcontainer .ptr {
+	background: image_url("ptr.png") center center no-repeat;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+}
+
+.tagger-wrap .ptr.selected {
+	background-image: image_url("ptr_sel.png");
+	position: absolute;
+	width: 19px;
+	height: 21px;
+}
+
+.tagger-wrap .menu .buttonwrapper {
+	width: 50px;
+	height: 50px;
+	border-radius: 5px;
+	cursor: pointer;
+	margin-bottom: 5px;
+	overflow: hidden;
+	position: relative;
+}
+
+.tagger-wrap .menu .buttonwrapper .button {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+	cursor: pointer;
+	background: black;
+	opacity: 0;
+}
+
+.tagger-wrap .menu .buttonwrapper .button.bg {
+	opacity: .3;
+}
+
+.tagger-wrap .menu .buttonwrapper .button.active {
+	opacity: .5;
+}
+
+.tagger-wrap .menu .buttonwrapper .t {
+	background: image_url("tag.png") center center no-repeat;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	right: 0px;
+	cursor: pointer;
+
+}
+
+.tagger-wrap .menu .trash {
+	background-image: image_url("trash.png");
+	width: 32px;
+	height: 32px;
+	opacity: .8;
+	border-radius: 5px;
+}

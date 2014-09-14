@@ -2,6 +2,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_filter :check_registration
   before_filter :configure_permitted_parameters, if: :devise_controller?
+  before_filter :set_access_control_headers
+
+  def set_access_control_headers
+    headers['Access-Control-Allow-Origin'] = '*'
+    headers['Access-Control-Request-Method'] = 'GET, OPTIONS, HEAD'
+    headers['Access-Control-Allow-Headers'] = 'x-requested-with,Content-Type, Authorization'
+  end
 
   rescue_from CanCan::AccessDenied do |exception|
     redirect_to root_path, :alert => exception.message

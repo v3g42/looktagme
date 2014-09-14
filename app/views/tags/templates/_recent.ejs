@@ -1,0 +1,26 @@
+<div class="listProducts">
+{{#each results}}
+  <div class="item product">
+    <a href="#" data-tag-id="{{id}}" class="close">X</button>
+    <div class="picture">
+      <a href="#" class="image">
+        <img src="{{image_url}}" alt=""> <br>
+      </a>
+      <div class="item-content">
+        <div class="price">{{currency}} {{price}}</div>
+        <div class="shopname">{{seller_name}}</div>
+        <div class="buy_cont">
+          <a class="buy" href="#">Buy Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/each}}
+
+ <div class="item product add_button">
+   <div class="plus">+</div>
+   <p>
+     Add a new Tag
+   </p>
+ </div>
+</div>

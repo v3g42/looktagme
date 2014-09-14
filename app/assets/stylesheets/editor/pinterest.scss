@@ -1,0 +1,110 @@
+@import '../external/buttons';
+@mixin listProducts {
+ .item {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: linear-gradient(to bottom, #F6F6F6 0%, #EAEAEA 100%) repeat scroll 0 0 transparent;
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 2px 1px rgba(0, 0, 0, 0.1), 0 3px 1px rgba(0, 0, 0, 0.05);
+    text-shadow: 0 1px 0 #DDDDDD;
+    width: 200px;
+    margin: 10px;
+    margin-top: 0;
+    float: left;
+    @include buttons;
+    .buy_cont {
+      text-align: center;
+      .buy {
+        height: 20px;
+        line-height: 20px;
+        font-size: 12px;
+      }
+    }
+    .price {
+      font-size: 15px;
+    }
+    .shopname {
+      font-size: 12px;
+      padding: 2px 0;
+    }
+}
+.item {
+  position: relative;
+  &:hover .close {
+    display:block;
+  }
+  .close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 200;
+    display:none;
+  }
+  .actions {
+    display:none;
+    text-align:right;
+  }
+  &:hover {
+    .actions {
+      display:block;
+    }
+  }
+}
+.item .item-content {
+  padding: 5px;
+}
+
+ .item .picture .description {
+    margin-top: 10px;
+}
+
+ .item .meta span {
+    font-size: 12px !important;
+    line-height: 16px !important;
+    margin-right: 5px;
+}
+
+ .item .picture {
+    display: block;
+    position: relative;
+    z-index: 5;
+    border: 1px solid #EFEFEF;
+    border-radius: 10px;
+}
+
+ .item .picture a.image {
+    display: block;
+    height: auto;
+    width: 100%;
+}
+
+ .item .picture img {
+    border-radius: 2px 2px 0px 0px;
+    height: auto;
+    position: relative;
+    width: 100%;
+    z-index: -1;
+}
+
+.picture img {
+    height: auto;
+    width: 100%;
+}
+.add_button {
+  cursor: pointer;
+  text-align: center;
+  height: 250px;
+  .plus {
+    text-shadow:none;
+    padding-top: 20px;
+    font-size: 100px;
+    margin-right: 10px;
+  }
+  &:hover {
+    border: 1px solid #D4D4D4;
+  }
+}
+
+}

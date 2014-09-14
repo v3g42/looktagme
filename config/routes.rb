@@ -1,6 +1,14 @@
 TagConda::Application.routes.draw do
-  
-  
+
+  get 'search' => 'search#search'
+  get '/tags' => 'tags#index'
+
+  post '/tags' => 'tags#create'
+
+  get '/tags/edit' => 'tags#edit'
+
+  get '/tags/recent' => 'tags#recent'
+
   authenticated :user do
     root to: 'home#index', as: :authenticated_root
   end
@@ -17,6 +25,8 @@ TagConda::Application.routes.draw do
 
   resources :users
   get 'home/index'
+
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    meta content="width=device-width, initial-scale=1.0" name="viewport"
+      title= content_for?(:title) ? yield(:title) : t('meta.title')
+      meta content=(content_for?(:description) ? yield(:description) : t('meta.description')) name="description"
+        = stylesheet_link_tag    "includes/editor", media: "all"
+        = csrf_meta_tags
+      = yield(:head)
+  body class=("#{controller_name} #{action_name}")
+    = yield
+    = javascript_include_tag "includes/editor"

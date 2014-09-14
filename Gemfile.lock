@@ -55,10 +55,16 @@ GEM
     bcrypt (3.1.7)
     bcrypt-ruby (3.1.5)
       bcrypt (>= 3.1.3)
-    bootstrap-sass (2.3.2.2)
+    better_errors (0.9.0)
+      coderay (>= 1.0.0)
+      erubis (>= 2.6.6)
+    binding_of_caller (0.7.2)
+      debug_inspector (>= 0.0.1)
+    bootstrap-sass (3.2.0.2)
       sass (~> 3.2)
     bson (2.3.0)
     builder (3.2.2)
+    callsite (0.0.11)
     cancan (1.6.10)
     celluloid (0.16.0)
       timers (~> 4.0.0)
@@ -73,6 +79,7 @@ GEM
     connection_pool (2.0.0)
     daemons (1.1.9)
     database_cleaner (1.3.0)
+    debug_inspector (0.0.2)
     devise (3.0.4)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
@@ -108,6 +115,9 @@ GEM
     hashie (3.3.1)
     hike (1.2.3)
     hitimes (1.2.2)
+    httparty (0.11.0)
+      multi_json (~> 1.0)
+      multi_xml (>= 0.5.2)
     i18n (0.6.11)
     jbuilder (1.5.3)
       activesupport (>= 3.0.0)
@@ -126,6 +136,10 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    meta_request (0.2.7)
+      callsite
+      rack-contrib
+      railties
     method_source (0.8.2)
     mime-types (1.25.1)
     minitest (5.4.1)
@@ -171,9 +185,13 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-rails (0.3.2)
+      pry (>= 0.9.10)
     quiet_assets (1.0.3)
       railties (>= 3.1, < 5.0)
     rack (1.5.2)
+    rack-contrib (1.1.0)
+      rack (>= 0.9.1)
     rack-test (0.6.2)
       rack (>= 1.0)
     rails (4.1.1)
@@ -227,6 +245,14 @@ GEM
       multi_json
       simplecov-html (~> 0.8.0)
     simplecov-html (0.8.0)
+    slim (2.0.3)
+      temple (~> 0.6.6)
+      tilt (>= 1.3.3, < 2.1)
+    slim-rails (2.1.5)
+      actionpack (>= 3.0, < 4.2)
+      activesupport (>= 3.0, < 4.2)
+      railties (>= 3.0, < 4.2)
+      slim (~> 2.0)
     slop (3.6.0)
     sprockets (2.11.0)
       hike (~> 1.2)
@@ -237,6 +263,7 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
+    temple (0.6.8)
     therubyracer (0.12.1)
       libv8 (~> 3.16.14.0)
       ref
@@ -268,7 +295,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bootstrap-sass (~> 2.3.2.1)
+  better_errors
+  binding_of_caller
+  bootstrap-sass (~> 3.2.0)
   cancan
   coffee-rails (~> 4.0.1)
   database_cleaner
@@ -278,14 +307,17 @@ DEPENDENCIES
   font-awesome-sass-rails
   guard-rspec
   hashugar!
+  httparty
   jbuilder (~> 1.2)
   jquery-rails
+  meta_request
   mongoid!
   mongoid-rspec
   omniauth
   omniauth-facebook
   omniauth-twitter
   pry
+  pry-rails
   quiet_assets
   rails (= 4.1.1)
   rb-inotify (~> 0.9)
@@ -293,6 +325,7 @@ DEPENDENCIES
   sass-rails (~> 4.0.3)
   simple_form!
   simplecov
+  slim-rails (~> 2.1.5)
   therubyracer
   thin
   turbolinks

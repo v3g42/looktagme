@@ -1,0 +1,69 @@
+@mixin buttons {
+
+
+ .price {
+
+  font-family: Arial;
+  font-size: 16px;
+  color: black;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+ .shopname {
+
+  font-family: Arial;
+  font-size: 12px;
+  color: #808080;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #4682B4;
+  cursor: pointer;
+   &:hover {
+    text-decoration: underline;
+   }
+  }
+
+ .buy {
+  -moz-box-shadow:inset 0px 1px 0px 0px #f9eca0;
+  -webkit-box-shadow:inset 0px 1px 0px 0px #f9eca0;
+  box-shadow:inset 0px 1px 0px 0px #f9eca0;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ffd147), color-stop(1, #f2ab1e) );
+  background:-moz-linear-gradient( center top, #ffd147 5%, #f2ab1e 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffd147', endColorstr='#f2ab1e');
+  background-color:#ffd147;
+  -webkit-border-top-left-radius:3px;
+  -moz-border-radius-topleft:3px;
+  border-top-left-radius:3px;
+  -webkit-border-top-right-radius:3px;
+  -moz-border-radius-topright:3px;
+  border-top-right-radius:3px;
+  -webkit-border-bottom-right-radius:3px;
+  -moz-border-radius-bottomright:3px;
+  border-bottom-right-radius:3px;
+  -webkit-border-bottom-left-radius:3px;
+  -moz-border-radius-bottomleft:3px;
+  border-bottom-left-radius:3px;
+  text-indent:0;
+  border:1px solid #bd8d2c;
+  display:inline-block;
+  color:#6b460c;
+  font-family:Arial;
+  font-size:15px;
+  font-weight:normal;
+  font-style:normal;
+  height:28px;
+  line-height:28px;
+  width:85px;
+  text-decoration:none;
+  text-align:center;
+  &:hover {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #f2ab1e), color-stop(1, #ffd147) );
+    background:-moz-linear-gradient( center top, #f2ab1e 5%, #ffd147 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2ab1e', endColorstr='#ffd147');
+    background-color:#f2ab1e;
+  }
+}
+}

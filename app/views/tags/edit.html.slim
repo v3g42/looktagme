@@ -1,0 +1,10 @@
+= content_for :head
+  script id="editor-alert" type="text/x-handlebars-template"
+    = render 'tags/templates/alert.ejs'
+  script id="editor-list" type="text/x-handlebars-template"
+    = render 'tags/templates/list.ejs'
+  script id="editor-recent" type="text/x-handlebars-template"
+    = render 'tags/templates/recent.ejs'
+
+
+= render partial: 'editor'
