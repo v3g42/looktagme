@@ -6,19 +6,21 @@ declareProps = (model, fields)->
 	model
 
 colors = [
+	{name:'Black', color: 'rgb(0,0,0)'},
+	{name:'Gray', color: 'rgb(127,127,127)'},
+	{name:'Black', color: 'rgb(255,255,255)'},
 	{name:'Red', color: 'rgb(255,0,0)'},
 	{name:'Rose', color: 'rgb(255,0,127)'},
-	# {name:'Aquamarine', color: 'rgb(O, 255, 127)'},
-	# {name:'Azure', color: 'rgb(O, 127, 255)'},
-	{name:'Orange', color: 'rgb(255,127,0)'},
-	{name:'Yellow', color: 'rgb(255,255, 0)'},
-	{name:'Magenta',color: 'rgb(255, 0, 255)'},
+	{name:'Magenta', color: 'rgb(255,0,255)'},
 	{name:'Violet', color: 'rgb(127, 0, 255)'},
-	{name:'Chartreuse', color: 'rgb(127, 255, 0)'},
 	{name:'Blue', color: 'rgb(0, 0, 255)'},
+	{name:'Azure', color: 'rgb(0, 127, 255)'},
+	{name:'Cyan', color: 'rgb(0, 255, 255)'},
+	{name:'Aquamarine', color: 'rgb(0, 255, 127)'},
 	{name:'Green', color: 'rgb(0, 255, 0)'},
-
-	{name:'Cyan', color: 'rgb(0, 255, 255)'}
+	{name:'Chartreuse', color: 'rgb(127, 255, 0)'},
+	{name:'Yellow', color: 'rgb(255,255, 0)'},		
+	{name:'Orange', color: 'rgb(255,127,0)'}
 	]
 
 Sidebar = (options)->
@@ -54,8 +56,11 @@ Sidebar.prototype.initSearch = (tag)->
 	for c in colors
 		div = $('<div class="color"><div class="'+c.name.toLowerCase()+' color-grid"></div></div>')
 		div.find('.color-grid').css('background-color',c.color)
+		div.find('.color-grid').css('border-style','solid')
+		div.find('.color-grid').css('border-width','1px')
+		div.find('.color-grid').css('border-color','rgb(200,200,200)')
 		div.click ->
-			$('.color').removeClass('selected')
+			# $('.color').removeClass('selected')
 			$(this).toggleClass('selected')
 
 
