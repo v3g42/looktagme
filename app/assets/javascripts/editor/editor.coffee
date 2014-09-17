@@ -20,7 +20,8 @@ colors = [
 	{name:'Green', color: 'rgb(0, 255, 0)'},
 	{name:'Chartreuse', color: 'rgb(127, 255, 0)'},
 	{name:'Yellow', color: 'rgb(255,255, 0)'},		
-	{name:'Orange', color: 'rgb(255,127,0)'}
+	{name:'Orange', color: 'rgb(255,127,0)'},
+	{name:'Brown', color: 'rgb(139,69,19)'}
 	]
 
 Sidebar = (options)->
