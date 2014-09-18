@@ -90,7 +90,7 @@ Sidebar.prototype.initSearch = (tag)->
 
 Sidebar.prototype.selectTag = (tag)->
 	self = this
-
+	$('.details').html('')
 	window.currentTag = this.currentTag = declareProps(tag, this.props)
 
 	self.render = ()->
@@ -197,15 +197,13 @@ Sidebar.prototype.searchProducts = ()->
 		self.results = results
 		$('.details').html(self.listTemplate({results:results}))
 		$('.details').removeClass('loading')
-		$container = $('.searchProducts')
-		self.masonry $container
-		jQuery('.searchProduct').click (event, el)->
-			$('.searchProduct.selected').removeClass('selected')
-			$(event.currentTarget).addClass('selected')
 		jQuery('.saveProduct').click (event, el)->
 			id = $(event.currentTarget).data('product-id')
 			console.log self.results[id]
 			self.saveTag(self.results[id])
+
+		$container = $('.searchProducts')
+		self.masonry $container
 
 	).fail(()->
 		self.alert("danger", "Server Error!")

@@ -12,7 +12,8 @@
 	var postListener = function(e){
 		if ( e.origin == window.$TAGGER.base_url){
 			var obj = JSON.parse(e.data);
-			var tagger = $('#' + obj.id).data('tagger');
+			var tagger = $('#' + obj.dom_id).data('tagger');
+            console.log("I am here  -> " + '#' + JSON.stringify(obj));
 			tagger.clearTags();
 			tagger.tags = obj.tags;
 			tagger.showTags();
@@ -46,7 +47,7 @@
 					+ 'image_url=' + encodeURIComponent(img.src)
 					+ '&page_url='+encodeURIComponent(window.location.href)
 					+ '&domain='+encodeURIComponent(window.location.protocol+"//"+window.location.host)
-					+ '&id='+ encodeURIComponent(t.id)
+					+ '&dom_id='+ encodeURIComponent(t.id)
 			);
 
 			$(window).on('scroll touchmove mousewheel', editScrollListener);

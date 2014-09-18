@@ -127,9 +127,7 @@ $big-col-width: 220px;
 				@include listProducts($col-width);
 			}
 			.searchProducts  .searchProduct {
-				.minHeight {
-					min-height: 40px;
-				}
+
 				.price {
 				}
 				&.selected {
