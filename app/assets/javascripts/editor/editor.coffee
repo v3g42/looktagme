@@ -57,6 +57,7 @@ Sidebar.prototype.initSearch = (tag)->
 	for c in colors
 		div = $('<div class="color"><div class="'+c.name.toLowerCase()+' color-grid"></div></div>')
 		div.find('.color-grid').css('background-color',c.color)
+		div.data('color', c.name.toLowerCase())
 		div.find('.color-grid').css('border-style','solid')
 		div.find('.color-grid').css('border-width','1px')
 		div.find('.color-grid').css('border-color','rgb(200,200,200)')
@@ -185,13 +186,34 @@ Sidebar.prototype.masonry = ($container)->
 			columnWidth : 240
 			isAnimated: true
 
+Sidebar.prototype.getSearchFilters = ()->
+	filters = {}
+
+	# Color Filter
+	if $('.color.selected').length>0
+		colors = []
+		$('.color.selected').each ->
+			colors.push $(this).data('color')
+		filters["color"] = colors
+
+	# Price Filter
+	price_range = $('.price-slider').val().split(',')
+	if(price_range[0]>0 || price_range[1]<1000)
+		filters["price"] = {}
+		filters["price"]["gt"] = price_range[0] if price_range[0]>0
+		filters["price"]["lt"] = price_range[1] if price_range[1]<1000
+	filters
 Sidebar.prototype.searchProducts = ()->
 	self = this
+
+
+
+
 	$('.details').html('')
 	$('.details').addClass('loading')
 	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val()
 	self.results = []
-	jQuery.get('/search?q='+search)
+	jQuery.get('/search?q='+search,self.getSearchFilters())
 	.done((results)->
 		console.log(results)
 		self.results = results
@@ -262,6 +284,14 @@ jQuery ()->
 			editor: editor
 
 		sidebar.init()
+
+		$('.price-slider').slider()
+		$('.price-slider').on "slide", (slideEvt) ->
+			 val = slideEvt.value[0] + "-" + slideEvt.value[1] + "$"
+			 if(slideEvt.value[1]<1000)
+					$('.price-range').html(val)
+			 else
+				 $('.price-range').html("Over "+slideEvt.value[0] + " $")
 		jQuery('.close_edit').click ->
 			try
 				page_url = $('#page_url').val()
@@ -276,7 +306,5 @@ jQuery ()->
 		editor.on 'selected', (e, item)->
 			sidebar.selectTag(item);
 
-	imgEl.one 'load', ->
+	imgEl.imagesLoaded ->
 		init()
-	.each ->
-		$(this).load() if(this.complete)

@@ -13,8 +13,8 @@
 //= require jquery
 //= require bootstrap-sprockets
 //= require ../editor/jquery.masonry.min
-//=require ../editor/ahpi.imgload
 //= require ../editor/handlebars-v1.3.0
 //= require ../editor/typeahead.bundle.min
+//= require ../editor/bootstrap-slider.min
 //= require ../external/tagger
 //= require ../editor/editor

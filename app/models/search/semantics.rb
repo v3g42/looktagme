@@ -9,27 +9,29 @@ class Search::Semantics
     @sem3 = Semantics3::Products.new(API_KEY, API_SECRET)
   end
 
-  def search(query)
-    filter(@sem3.run_query("products", {:search => query}))
+  def search(query, options={})
+    hash = {:search => query}
+    hash.merge!(options)
+    filter(@sem3.run_query("products", hash))
   end
 
   private
   def filter(response)
     results = response["results"]
+    puts results
     results.map do |product|
-      if product["sitedetails"].present?
-        seller = product["sitedetails"][0]
+
+        seller = product["sitedetails"][0] if product["sitedetails"].present?
         {
             :title => product["name"],
             :description => product["description"],
-            :price => seller["latestoffers"][0]["price"],
-            :currency => seller["latestoffers"][0]["currency"],
-            :seller_name => seller["name"],
-            :seller_url => seller["url"],
+            :price => seller ? seller["latestoffers"][0]["price"]: product["price"],
+            :currency => seller ? seller["latestoffers"][0]["currency"] : product["price_currency"],
+            :seller_name => seller ? seller["name"] : "",
+            :seller_url => seller ? seller["url"] : "",
             :image_url => product["images"][0],
-            :raw_details => product["sitedetails"][0]
+            :raw_details => seller ? product["sitedetails"][0] : ""
         }
-      end
     end
   end
 end

@@ -40,7 +40,7 @@ $big-col-width: 220px;
 		display:block;
 	}
 	&.right_section .right_content  .details {
-      margin-top: 120px;
+      margin-top: 160px;
 
       padding-top: 20px;
       @media (max-width: 400px){
@@ -76,10 +76,16 @@ $big-col-width: 220px;
 	background:white;
 	padding-top:15px;
 	z-index:1000;
-	height: 100px;
 	display:none;
     width: 55%;
-    left: 35%;
+    left: 33%;
+
+  .price-limit {
+    margin: 0 10px;
+  }
+  .price-range {
+    padding-top:20px;
+  }
 
 }
 

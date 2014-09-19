@@ -3,6 +3,9 @@ class SearchController < ApplicationController
   respond_to :json
   def search
     search = Search::Semantics.new
-    render :json => search.search(params[:q])
+    filters = {}
+    filters[:price] = params[:price] if params[:price]
+    filters[:color] = params[:color] if params[:color]
+    render :json => search.search(params[:q], filters)
   end
 end
