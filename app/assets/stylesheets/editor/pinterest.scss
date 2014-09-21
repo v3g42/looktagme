@@ -96,13 +96,23 @@
 .add_button {
   cursor: pointer;
   text-align: center;
-  height: 250px;
+  height: 200px;
+  background: brown;
+  border-radius: 70px;
   .plus {
     text-shadow:none;
-    padding-top: 20px;
+    padding-top: 0px;
     font-size: 100px;
     margin-right: 10px;
+    color: white;
   }
+  .AddTag {
+    text-shadow:none;
+    font-size: 17px;
+    color: white;
+  }
+
+
   &:hover {
     border: 1px solid #D4D4D4;
   }
