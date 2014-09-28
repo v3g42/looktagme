@@ -29,7 +29,6 @@ group :development, :test do
   gem "zeus"
   gem "rspec-rails"
   gem "factory_girl_rails"
-  gem "bower-rails", "~> 0.8.3"
 end
 
 group :test do
@@ -57,3 +56,4 @@ gem "hashugar", github: "alex-klepa/hashugar"
 # Search Providers
 gem 'semantics3'
 gem "shopsense-ruby", :git => "git://github.com/PopSugar/ruby-popsugar-shopping-api.git", :branch => "pk/api-v2"
+gem "bower-rails", "~> 0.8.3"
