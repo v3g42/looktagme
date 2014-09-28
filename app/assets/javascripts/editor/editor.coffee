@@ -5,25 +5,6 @@ declareProps = (model, fields)->
 	(model[field]= model[field] || null) for field in fields
 	model
 
-colors = [
-	{name:'Black', color: 'rgb(0,0,0)'},
-	{name:'Gray', color: 'rgb(127,127,127)'},
-	{name:'Black', color: 'rgb(255,255,255)'},
-	{name:'Red', color: 'rgb(255,0,0)'},
-	{name:'Rose', color: 'rgb(255,0,127)'},
-	{name:'Magenta', color: 'rgb(255,0,255)'},
-	{name:'Violet', color: 'rgb(127, 0, 255)'},
-	{name:'Blue', color: 'rgb(0, 0, 255)'},
-	{name:'Azure', color: 'rgb(0, 127, 255)'},
-	{name:'Cyan', color: 'rgb(0, 255, 255)'},
-	{name:'Aquamarine', color: 'rgb(0, 255, 127)'},
-	{name:'Green', color: 'rgb(0, 255, 0)'},
-	{name:'Chartreuse', color: 'rgb(127, 255, 0)'},
-	{name:'Yellow', color: 'rgb(255,255, 0)'},		
-	{name:'Orange', color: 'rgb(255,127,0)'},
-	{name:'Brown', color: 'rgb(139,69,19)'}
-	]
-
 Sidebar = (options)->
 	this.elem = elem = options.sidebarEl
 	this.img = options.img
@@ -54,16 +35,17 @@ Sidebar.prototype.initSearch = (tag)->
 	search_elem = self.elem.find('.product_search')
 	colorsDiv = self.elem.find('.colors')
 	colorsDiv.html('')
-	for c in colors
+	for c in window.colors
 		div = $('<div class="color"><div class="'+c.name.toLowerCase()+' color-grid"></div></div>')
 		div.find('.color-grid').css('background-color',c.color)
-		div.data('color', c.name.toLowerCase())
+		div.data('color', c.id)
 		div.find('.color-grid').css('border-style','solid')
 		div.find('.color-grid').css('border-width','1px')
 		div.find('.color-grid').css('border-color','rgb(200,200,200)')
 		div.click ->
 			# $('.color').removeClass('selected')
 			$(this).toggleClass('selected')
+			self.searchProducts() if(self.searched)
 
 
 		colorsDiv.append(div)
@@ -118,9 +100,12 @@ Sidebar.prototype.saveTag = (tag)->
 	self.editor.update(currentTag)
 	page_url = $('#page_url').val()
 	domain = $('#domain').val()
-	data = $.extend {}, currentTag
+	tag_data = $.extend {}, currentTag
+	data = {}
+	image_data = {}
 	data.image_url = self.img.attr('src')
 	data.page_url = page_url
+	data.tag = tag_data
 	delete data.id
 	delete data.raw_details
 	jQuery.ajax(
@@ -194,14 +179,13 @@ Sidebar.prototype.getSearchFilters = ()->
 		colors = []
 		$('.color.selected').each ->
 			colors.push $(this).data('color')
-		filters["color"] = colors
+		filters["color"] = colors.join("_")
 
 	# Price Filter
 	price_range = $('.price-slider').val().split(',')
-	if(price_range[0]>0 || price_range[1]<1000)
-		filters["price"] = {}
-		filters["price"]["gt"] = price_range[0] if price_range[0]>0
-		filters["price"]["lt"] = price_range[1] if price_range[1]<1000
+	gt = window.prices[price_range[0]]["id"]
+	lt = window.prices[price_range[1]]["id"]
+	filters["price"] = "p"+gt+"_"+lt
 	filters
 Sidebar.prototype.searchProducts = ()->
 	self = this
@@ -211,18 +195,19 @@ Sidebar.prototype.searchProducts = ()->
 
 	$('.details').html('')
 	$('.details').addClass('loading')
-	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val()
+	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val() || ""
 	self.results = []
 	jQuery.get('/search?q='+search,self.getSearchFilters())
 	.done((results)->
+		self.searched = true
 		console.log(results)
 		self.results = results
-		$('.details').html(self.listTemplate({results:results}))
+		$('.details').html(self.listTemplate({results:results.results}))
 		$('.details').removeClass('loading')
 		jQuery('.saveProduct').click (event, el)->
 			id = $(event.currentTarget).data('product-id')
-			console.log self.results[id]
-			self.saveTag(self.results[id])
+			console.log self.results.results[id]
+			self.saveTag(self.results.results[id])
 
 		$container = $('.searchProducts')
 		self.masonry $container
@@ -251,7 +236,7 @@ Sidebar.prototype.renderRecent = ()->
 			self.deleteTag(id, image._id.$oid)
 
 	).fail(()->
-		self.alert("danger", "Server Error!")
+		#self.alert("danger", "Server Error!")
 		$('.details').removeClass('loading')
 	)
 
@@ -286,12 +271,17 @@ jQuery ()->
 		sidebar.init()
 
 		$('.price-slider').slider()
+		$('.price-slider').on "slideStop", (slideEvt) ->
+			sidebar.searchProducts() if sidebar.searched
+
 		$('.price-slider').on "slide", (slideEvt) ->
-			 val = slideEvt.value[0] + "-" + slideEvt.value[1] + "$"
-			 if(slideEvt.value[1]<1000)
-					$('.price-range').html(val)
-			 else
-				 $('.price-range').html("Over "+slideEvt.value[0] + " $")
+			lt = window.prices[slideEvt.value[0]]["range"][0]
+			gt = window.prices[slideEvt.value[1]]["range"][1]
+			if gt
+				val = lt + "-" + gt + "$"
+			else
+			  val = "Over " + lt + "$"
+			$('.price-range').html(val)
 		jQuery('.close_edit').click ->
 			try
 				page_url = $('#page_url').val()

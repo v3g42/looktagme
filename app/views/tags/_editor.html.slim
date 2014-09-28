@@ -20,7 +20,7 @@
           .form-group
             .row
               .col-xs-8
-                input.form-control.price-slider data-slider-max="1000" data-slider-min="0" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-step="1" data-slider-value="[0,1000]" type="text" value="" style="width:100%"/
+                input.form-control.price-slider data-slider-tooltip="hide" data-slider-max="#{@prices.count-1}" data-slider-min="0" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-step="1" data-slider-value="[0,1000]" type="text" value="" style="width:100%"/
               .col-xs-4
                 span Price:
                 = "&nbsp;".html_safe
@@ -30,5 +30,8 @@
           hr
       .details
   = render "tags/image_data"
+javascript:
+  prices = #{@prices.to_json.html_safe}
+  colors = #{@colors.to_json.html_safe}
 
 

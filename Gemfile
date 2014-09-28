@@ -30,7 +30,6 @@ group :development, :test do
   gem "zeus"
   gem "rspec-rails"
   gem "factory_girl_rails"
-
 end
 
 group :test do
@@ -44,7 +43,7 @@ end
 gem 'bootstrap-sass', '~> 3.2.0'
 gem 'autoprefixer-rails'
 
-gem 'semantics3'
+
 
 gem "font-awesome-sass-rails"
 gem "simple_form", github: "plataformatec/simple_form"
@@ -54,3 +53,8 @@ gem "omniauth"
 gem "omniauth-facebook"
 gem "omniauth-twitter"
 gem "hashugar", github: "alex-klepa/hashugar"
+
+# Search Providers
+gem 'semantics3'
+gem "shopsense-ruby", :git => "git://github.com/PopSugar/ruby-popsugar-shopping-api.git", :branch => "pk/api-v2"
+gem "bower-rails", "~> 0.8.3"
