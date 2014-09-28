@@ -21,17 +21,14 @@ class TagsController < ApplicationController
   def create
     #params.permit(:x, :y, :title, :description, :price, :seller, :seller_name, :seller_url, :image_url, :image_width, :image_height, :image_width, :id, :currency, :raw_details, :page_url)
     image = nil
-    params.permit!
+    params.require(:tag).permit!
     image = current_user.images.where(:image_url => params[:image_url]).first
     unless(image)
       image = Image.new({:image_url => params[:image_url],:page_url =>  params[:page_url]})
       image.user = current_user
       return render :json => {:message => image.errors.join(",")},:status => :unprocessable_entity  unless image.save
     end
-    params.delete :controller
-    params.delete :action
-    t = Tag.new(params)
-    t.image_url = image.image_url
+    t = Tag.new(params[:tag])
     t.image = image
     if(t.save)
       render :json => t

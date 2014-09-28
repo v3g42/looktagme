@@ -100,9 +100,12 @@ Sidebar.prototype.saveTag = (tag)->
 	self.editor.update(currentTag)
 	page_url = $('#page_url').val()
 	domain = $('#domain').val()
-	data = $.extend {}, currentTag
+	tag_data = $.extend {}, currentTag
+	data = {}
+	image_data = {}
 	data.image_url = self.img.attr('src')
 	data.page_url = page_url
+	data.tag = tag_data
 	delete data.id
 	delete data.raw_details
 	jQuery.ajax(
@@ -203,8 +206,8 @@ Sidebar.prototype.searchProducts = ()->
 		$('.details').removeClass('loading')
 		jQuery('.saveProduct').click (event, el)->
 			id = $(event.currentTarget).data('product-id')
-			console.log self.results[id]
-			self.saveTag(self.results[id])
+			console.log self.results.results[id]
+			self.saveTag(self.results.results[id])
 
 		$container = $('.searchProducts')
 		self.masonry $container
