@@ -12,6 +12,10 @@ class TagsController < ApplicationController
 
     @image = Image.where(:image_url => params[:image_url]).first
 
+    @prices = Search::ShopSense.prices
+
+    @colors = Search::ShopSense::COLORS
+
   end
 
   def create

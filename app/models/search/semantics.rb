@@ -32,6 +32,10 @@ class Search::Semantics
             :image_url => product["images"][0],
             :raw_details => seller ? product["sitedetails"][0] : ""
         }
+      {
+          :metadata => nil,
+          :results => results
+      }
     end
   end
 end
