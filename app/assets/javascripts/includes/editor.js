@@ -18,5 +18,6 @@
 //= require ../editor/typeahead.bundle
 //= require ../editor/bootstrap-slider.min
 //= require ../editor/bootstrap-infiniteScroll
+//= require ../external/common
 //= require ../external/tagger
 //= require ../editor/editor

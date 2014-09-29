@@ -10,6 +10,7 @@ gem "jquery-rails"
 gem "turbolinks"
 gem "jbuilder", "~> 1.2"
 gem 'slim-rails', '~> 2.1.5'
+gem 'rack-cors', :require => 'rack/cors'
 
 gem 'httparty'
 

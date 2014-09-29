@@ -22,14 +22,13 @@ class LookTagMePage
 
 	createViewer: (img, tags) =>
 		t = new @viewer(img, tags)
-		t.on 'edit', (evt, img) =>
-
+		t.onEdit (id, img_url) =>
 			target_url = 
 				@base_url + "/tags/edit?" + 
-				'image_url=' + encodeURIComponent(img.src) + 
+				'image_url=' + encodeURIComponent(img_url) + 
 				'&page_url='+encodeURIComponent(window.location.href) + 
 				'&domain='+encodeURIComponent(window.location.protocol+"//"+window.location.host) + 
-				'&dom_id='+ encodeURIComponent(t.id)
+				'&dom_id='+ encodeURIComponent(id)
 
 			$('.tagger-editor-container').data('editing',true)
 			$('.tagger-editor-container').show()
@@ -60,7 +59,7 @@ class LookTagMePage
 
 
 	new LookTagMePage(
-		window.$TAGGER.Viewer
+		LookTagMe.Viewer
 		window.$TAGGER.base_url
 		window.$TAGGER.app_id
 		100, 100
