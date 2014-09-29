@@ -31,18 +31,23 @@ class Container
 
 	constructor: (elem, tags, dyn) ->
 		@logger = new LookTagMe.Logger("LookTagMeContainer")
-		@tags = [{x:100,y:100,id:"abcde", currency: "SGD", price: "1000", seller_url: "www.amazon.com", seller_name: "Amazon", image_url: "http://www.spottedfashion.com/wp-content/uploads/2013/07/Givenchy-Pearl-Grey-with-Metal-Hardware-Antigona-Medium-Bag.jpg"}]
+		@tags = [{x:200,y:200,id:"abcdef", currency: "SGD", price: "1000", seller_url: "www.amazon.com", seller_name: "Amazon", image_url: "http://www.spottedfashion.com/wp-content/uploads/2013/07/Givenchy-Pearl-Grey-with-Metal-Hardware-Antigona-Medium-Bag.jpg"}, {x:100,y:100,id:"abcde", currency: "SGD", price: "1000", seller_url: "www.amazon.com", seller_name: "Amazon", image_url: "http://www.spottedfashion.com/wp-content/uploads/2013/07/Givenchy-Pearl-Grey-with-Metal-Hardware-Antigona-Medium-Bag.jpg"}]
+		@tagmap = {}
 		@elem = Content.create(elem)
 		@id = @uuid()
 		@popup_hider = undefined
 		@createContainer()
 		@popup = @createPopup()
-		@showTags(dyn)
+
+	onTagClick: (tag, ptr) =>
 
 	createPopup: () =>
 		p = $('<div class="tagger-popup"><div class="callout"/><div class="container"><div class="pic"><img class="prodimg"/></div><div class="price"/><div class="shopname"/><div class="buy">Buy Now</div></div></div>')
 		p.hide()
 		@container.append(p);
+		@container.mouseleave () => 
+			@clearPopupTimeout()
+			@popup.hide()
 		p.mouseleave () => @startPopupTimeout()
 		p.mouseenter () => @clearPopupTimeout()
 		return p
@@ -68,8 +73,8 @@ class Container
 				left: @elem.left() + 'px',
 				width: '1px', height: '1px'
 			@elem.original () =>
-				@container.find('.ptr') each (idx, item) =>
-					tag = $(item) data('tag')
+				@container.find('.ptr').each (idx, item) =>
+					tag = $(item).data('tag')
 					$(item).css 
 						top: tag.y*@elem.height()/sz.height - 10
 						left: tag.x*@elem.width()/sz.width - 10
@@ -83,7 +88,7 @@ class Container
 		clearTimeout(@popup_hider)
 		@popup_hider = setTimeout(
 			() => @popup.hide()
-			700
+			1000
 		)
 
 	clearPopupTimeout: =>
@@ -115,6 +120,8 @@ class Container
 
 	onTagOver: (tag, ptr) =>
 
+		if $(ptr).hasClass('disabled') then return
+
 		@popup.hide()
 		@popup.css
 			top: ptr.position().top + ptr.height() / 2 - @popup.height() / 2,
@@ -132,28 +139,47 @@ class Container
 			@popup.find('.prodimg').fadeIn();
 		
 			
-	showTags: (dyn) =>
-	
+	renderTags: (show_popup, show_always) =>
 		for tag in @tags
-			@logger.debug('Creating tag ' + JSON.stringify(tag))
-			@elem.original (sz) =>
-				ptr = $('<div class="ptrcontainer"><div class="ptrbutton"/><div class="ptr"/></div>')
-				ptr.attr('id', tag.id)
-				ptr.data('tag',tag)
-				newtop = Math.floor(tag.y*@elem.height()/sz.height) - 10;
-				newleft = Math.floor(tag.x*@elem.width()/sz.width) - 10;
-				ptr.css({top: newtop, left: newleft})
-				if dyn then ptr.hide()
-				@container.append(ptr)
-				if dyn
-					ptr.on 'mouseover', () => 
-						@clearPopupTimeout()
-						ptr.show()
-					@container.on 'mouseenter', () => ptr.show()
-					@container.on 'mouseleave', () => ptr.hide()
-				ptr.on 'mouseenter', () => @onTagOver(tag, ptr)
-				ptr.on 'mouseleave', () => @startPopupTimeout()
+			@renderTag(tag, show_popup, show_always)
 
+	renderTag: (tag, show_popup, show_always) =>
+		@logger.debug('Creating tag ' + JSON.stringify(tag))
+		@elem.original (sz) =>
+			ptr = $('<div class="ptrcontainer"><div class="ptrbutton"/><div class="ptr"/></div>')
+			@tagmap[tag.id] = ptr
+			ptr.attr('id', tag.id)
+			ptr.data('tag',tag)
+			newtop = Math.floor(tag.y*@elem.height()/sz.height) - 10;
+			newleft = Math.floor(tag.x*@elem.width()/sz.width) - 10;
+			ptr.css({top: newtop, left: newleft})
+			ptr.click () => @onTagClick(tag, ptr)
+			@container.append(ptr)
+
+			if not show_popup
+				ptr.addClass('disabled')
+
+			if not show_always
+				ptr.hide()
+				@container.on 'mouseenter', () => ptr.show()
+				@container.on 'mouseleave', () => ptr.hide()
+
+			ptr.on 'mouseover', () => 
+				@clearPopupTimeout()
+				ptr.show()
+			ptr.on 'mouseenter', () => @onTagOver(tag, ptr)
+			ptr.on 'mouseleave', () => @startPopupTimeout()
+
+
+	disableTags: (ls) =>
+		for id in ls
+			ptr = @tagmap[id]
+			$(ptr).addClass('disabled')
+
+	enableTags: (ls) =>
+		for id in ls
+			ptr = @tagmap[id]
+			$(ptr).removeClass('disabled')
 
 	uuid: () ->
   		'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) ->
@@ -165,7 +191,8 @@ class Container
 class Viewer extends Container
 
 	constructor: (elem, tags) ->
-		super(elem, tags, true)
+		super(elem, tags, true, false)
+		@renderTags(true, false)
 		@createMenu()
 		@addMenuButton 't', () => @edit(@id, @elem.url())
 
@@ -175,7 +202,32 @@ class Viewer extends Container
 class Editor extends Container
 
 	constructor: (elem, tags) ->
-		super(elem, tags, false)
+		super(elem, tags, false, false)
+		@renderTags(false, true)
+		editing = undefined
+
+	onTagClick: (tag, ptr) =>
+		@startEditing(tag.id)
+
+	onEdit: (cb) =>
+		@edit_cb = cb
+
+	startEditing: (id) =>
+		if @editing != undefined then return
+		for i in @tags
+			if i.id != id then $(@tagmap[i.id]).children('.ptrbutton').addClass('notediting')
+			else @editing = i
+		$(@tagmap[id]).children('.ptrbutton').addClass('editing')
+		@edit_cb(@editing)
+
+	endEditing: () =>
+		@editing = undefined
+		for i in @tags
+			$(@tagmap[i.id]).children('.ptrbutton').removeClass('notediting')
+			$(@tagmap[i.id]).children('.ptrbutton').removeClass('editing')
+		
+
+
 
 window.LookTagMe.Viewer = Viewer
 window.LookTagMe.Editor = Editor

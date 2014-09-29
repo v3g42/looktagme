@@ -16,5 +16,6 @@
 //= require ../editor/handlebars-v1.3.0
 //= require ../editor/typeahead.bundle.min
 //= require ../editor/bootstrap-slider.min
+//= require ../external/common
 //= require ../external/tagger
 //= require ../editor/editor

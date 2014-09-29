@@ -120,7 +120,6 @@
 	position: absolute;
 	width: 20px;
 	height: 20px;
-	background: black;
 	border-radius: 5px;
 }
 
@@ -130,7 +129,14 @@
 	height: 20px;
 	background: black;
 	border-radius: 5px;
-	opacity: .6;
+}
+
+.tagger-wrap .ptrcontainer .ptrbutton.editing {
+	background: red;
+}
+
+.tagger-wrap .ptrcontainer .ptrbutton.notediting {
+	opacity: .3
 }
 
 .tagger-wrap .ptrcontainer .ptr {
@@ -141,6 +147,7 @@
 	bottom: 0px;
 	right: 0px;
 }
+
 
 .tagger-wrap .ptr.selected {
 	background-image: image_url("ptr_sel.png");

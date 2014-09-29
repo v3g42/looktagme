@@ -259,9 +259,9 @@ jQuery ()->
 		imgEl = jQuery('.left_section img')
 		console.log imgEl[0].width
 		if window.imageData
-			editor = new window.$TAGGER.Editor(imgEl, window.imageData.tags)
+			editor = new LookTagMe.Editor(imgEl, window.imageData.tags)
 		else
-			editor = new window.$TAGGER.Editor(imgEl, [])
+			editor = new LookTagMe.Editor(imgEl, [])
 
 		sidebar = new Sidebar
 			sidebarEl: jQuery('.right_section')
@@ -293,7 +293,7 @@ jQuery ()->
 				console.log e
 			#editor.hide();
 
-		editor.on 'selected', (e, item)->
+		editor.onEdit (item)->
 			sidebar.selectTag(item);
 
 	imgEl.imagesLoaded ->
