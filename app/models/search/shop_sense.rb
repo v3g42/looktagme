@@ -46,7 +46,7 @@ class Search::ShopSense
       filters << options[:price].gsub("_",",")
     end
     if options[:brands].present?
-      filters << options[:brands].split("_")
+      filters = filters.concat(options[:brands].split("_"))
     end
 
     fts = filters.map do |filter|

@@ -126,9 +126,11 @@ Sidebar.prototype.saveTag = (tag)->
 		self.currentTag[prop] = tag[prop]
 
 	self.editor.update(currentTag)
+	self.editor.endEditing()
 	page_url = $('#page_url').val()
 	domain = $('#domain').val()
 	tag_data = $.extend {}, currentTag
+	delete tag_data.id
 	data = {}
 	image_data = {}
 	data.image_url = self.img.attr('src')
