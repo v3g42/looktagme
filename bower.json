@@ -9,8 +9,8 @@
   "vendor": {
     "name": "bower-rails generated vendor assets",
     "dependencies": {
-      // "three.js"    : "https://raw.github.com/mrdoob/three.js/master/build/three.js"
-        "bootswatch-scss" : "https://github.com/log0ymxm/bootswatch-scss.git"
+        "bootswatch-scss" : "https://github.com/log0ymxm/bootswatch-scss.git",
+        "jquery-infinite-scroll" : "https://github.com/paulirish/infinite-scroll.git"
     }
   }
 }

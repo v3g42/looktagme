@@ -18,17 +18,46 @@ Sidebar = (options)->
 	this.listTemplate = Handlebars.compile $('#editor-list').html()
 	this.productsTemplate = Handlebars.compile $('#editor-recent').html()
 	this.render = null
+	this.filters = []
 
 	this
-Sidebar.prototype.adjustHeights = ->
-	height = $('.left_section img').height()
-	wHeight = $(window).height()
-	fHeight = $('.right_section form').height()
-	pt = (wHeight-height-30)/2
-	$('.left_section').css('padding-top', pt) if(pt > 0)
-	#$('.details').css('max-height', height-fHeight)
-	console.log(height-fHeight)
-Sidebar.prototype.addFilter = (filter)->
+Sidebar.prototype.toggleFilters = ()->
+	containers = [$('.brands'),$('.retailers')]
+	containers.map (container)->
+		if(container.find('.searchFilter').length>0)
+			container.show()
+		else
+			container.hide()
+Sidebar.prototype.addFilter = (filter, name)->
+	self = this
+	console.log(filter + " : " + name)
+	container = $('.'+name)
+	return if container.find('.searchFilter.'+filter["id"]).length>0
+	filterDiv = $(self.alertTemplate({class: "info", message: filter["name"],css:"searchFilter " + filter["id"] }))
+	filterDiv.data('filter', name[0]+filter["id"])
+	filterDiv.find('.close').click ->
+		filterDiv.remove()
+		self.toggleFilters()
+	container.find('.filters').append(filterDiv)
+	self.toggleFilters()
+	self.searchProducts() if self.searched
+
+
+Sidebar.prototype.initScroll = (cbk)->
+	self = this
+	img = $('.details').data('loader')
+	$('.details').infiniteScroll
+		url: '/search'
+		,calculateBottom: ->
+			($('.details').position().top + $('.details').height()) - $(window).height() + 50
+		,getData: ->
+			data = self.getSearchFilters()
+			data.offset = $('.next-page:last').data('next-page')
+			data
+		,processResults: cbk
+
+
+
 
 Sidebar.prototype.initSearch = (tag)->
 	self = this
@@ -43,32 +72,32 @@ Sidebar.prototype.initSearch = (tag)->
 		div.find('.color-grid').css('border-width','1px')
 		div.find('.color-grid').css('border-color','rgb(200,200,200)')
 		div.click ->
-			# $('.color').removeClass('selected')
 			$(this).toggleClass('selected')
 			self.searchProducts() if(self.searched)
-
-
 		colorsDiv.append(div)
-	suggestionsList = ->
-		findMatches = (q, cb) ->
-			matches = []
-			# $.each ['categories', 'brands'], (i, str)->
-			#   matches.push {title: str + " like " + q}
-			cb(matches)
 
-		search_elem.typeahead null,
-				name: 'products',
-				displayKey: 'title',
-				source: suggestionsList()
-				#self.productsAdpt.ttAdapter()
-				# templates: {
-				# 	suggestion: self.suggestionTemplate
-				# }
-			search_elem.on 'typeahead:selected', (evt, obj, name) ->
-					evt.preventDefault();
-					search_elem.typeahead('val', '');
-					self.addFilter search_elem.typeahead('val')
-					#self.selectSuggestion(obj)
+
+	search_elem.typeahead
+			highlight: true
+			minLength: 2
+			hint: true
+		,
+			name: 'brands',
+			displayKey: 'name',
+			source: self.brandsAdapt.ttAdapter()
+			templates:
+				header: '<h3 class="typeahead-header">Brands</h3>'
+		,
+			name: 'retailers',
+			displayKey: 'name',
+			source: self.retailersAdapt.ttAdapter()
+			templates:
+				header: '<h3 class="typeahead-header">Retailers</h3>'
+
+	search_elem.on 'typeahead:selected', (evt, obj, name) ->
+			evt.preventDefault();
+			search_elem.typeahead('val', '');
+			self.addFilter obj, name
 
 
 Sidebar.prototype.selectTag = (tag)->
@@ -81,7 +110,6 @@ Sidebar.prototype.selectTag = (tag)->
 		$('.searchForm').submit (event)->
 			event.preventDefault()
 			self.searchProducts()
-		#self.adjustHeights()
 
 
 	self.render()
@@ -143,37 +171,49 @@ Sidebar.prototype.deleteTag = (tag_id, image_id)->
 
 Sidebar.prototype.init = ()->
 	self = this
+	this.brandsAdapt = new Bloodhound
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name')
+		queryTokenizer: Bloodhound.tokenizers.whitespace
+		limit: 5
+		prefetch:
+			url: $('.search_section').data('brands-url')
+			filter: (json)->
+				json.brandHistogram
 
-
-	#self.adjustHeights()
-	# this.productsAdpt = new Bloodhound
-	#   	datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title')
-	#   	queryTokenizer: Bloodhound.tokenizers.whitespace
-	#   	limit: 10
-	#
-	# this.productsAdpt.initialize()
+	this.retailersAdapt = new Bloodhound
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name')
+		queryTokenizer: Bloodhound.tokenizers.whitespace
+		limit: 5
+		prefetch:
+			url: $('.search_section').data('retailers-url')
+			filter: (json)->
+					json.retailers
+	this.retailersAdapt.initialize()
+	this.brandsAdapt.initialize()
 	self.renderRecent()
 
 
 
-Sidebar.prototype.alert = (type, msg)->
+Sidebar.prototype.alert = (type, msg, cssClass)->
 	self = this
 	details = self.elem.find('.details')
 	details.find('.alert').remove()
-	details.prepend(self.alertTemplate({class: type, message: msg}))
+	details.prepend(self.alertTemplate({class: type, message: msg,css:cssClass }))
 
 
 Sidebar.prototype.masonry = ($container)->
 	$container.imagesLoaded ->
+		console.log("LOADED")
 		$container.masonry
 			itemSelector : '.item'
 			#columnWidth : if $('.tag_editor').hasClass('horizontal-image') then 240 else 220
 			columnWidth : 240
-			isAnimated: true
+			isAnimated: false
 
 Sidebar.prototype.getSearchFilters = ()->
+	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val() || ""
 	filters = {}
-
+	filters["q"] = search
 	# Color Filter
 	if $('.color.selected').length>0
 		colors = []
@@ -186,24 +226,25 @@ Sidebar.prototype.getSearchFilters = ()->
 	gt = window.prices[price_range[0]]["id"]
 	lt = window.prices[price_range[1]]["id"]
 	filters["price"] = "p"+gt+"_"+lt
+	filters["brands"] = $('.searchFilter').map((a,i)-> $(i).data('filter')).get().join("_")
 	filters
 Sidebar.prototype.searchProducts = ()->
 	self = this
-
-
-
-
 	$('.details').html('')
 	$('.details').addClass('loading')
-	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val() || ""
-	self.results = []
-	jQuery.get('/search?q='+search,self.getSearchFilters())
-	.done((results)->
+	self.results = {}
+	jQuery.get('/search',self.getSearchFilters())
+	.done((json)->
 		self.searched = true
-		console.log(results)
-		self.results = results
-		$('.details').html(self.listTemplate({results:results.results}))
+		console.log(json)
+		self.results = json
+		$('.details').html(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
 		$('.details').removeClass('loading')
+		self.initScroll (json,opts)->
+			self.results.results = self.results.results.concat(json.results)
+			$('.details').append(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+			$container = $('.searchProducts:last')
+			self.masonry $container
 		jQuery('.saveProduct').click (event, el)->
 			id = $(event.currentTarget).data('product-id')
 			console.log self.results.results[id]
@@ -282,6 +323,8 @@ jQuery ()->
 			else
 			  val = "Over " + lt + "$"
 			$('.price-range').html(val)
+
+
 		jQuery('.close_edit').click ->
 			try
 				page_url = $('#page_url').val()

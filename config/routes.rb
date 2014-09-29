@@ -1,6 +1,8 @@
 TagConda::Application.routes.draw do
 
   get 'search' => 'search#search'
+  get '/search/brands' => 'search#brands'
+  get '/search/retailers' => 'search#retailers'
   get '/tags' => 'tags#index'
 
   post '/tags' => 'tags#create'

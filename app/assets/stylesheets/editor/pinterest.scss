@@ -14,6 +14,7 @@
     margin: 10px;
     margin-top: 0;
     float: left;
+    min-height: 200px;
     @include buttons;
     .buy_cont {
       text-align: center;
