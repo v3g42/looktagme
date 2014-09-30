@@ -9,9 +9,8 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require ./application
+ *= require_tree ../default
  *= require ./external
- *= require ../editor/pinterest
  *= require ../editor/bootstrap-slider.min
  *= require ../editor/editor
 */

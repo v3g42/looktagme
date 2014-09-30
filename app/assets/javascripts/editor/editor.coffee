@@ -206,6 +206,7 @@ Sidebar.prototype.alert = (type, msg, cssClass)->
 Sidebar.prototype.masonry = ($container)->
 	$container.imagesLoaded ->
 		console.log("LOADED")
+		$('.details').addClass('loaded')
 		$container.masonry
 			itemSelector : '.item'
 			#columnWidth : if $('.tag_editor').hasClass('horizontal-image') then 240 else 220
