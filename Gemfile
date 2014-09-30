@@ -12,6 +12,9 @@ gem "jbuilder", "~> 1.2"
 gem 'slim-rails', '~> 2.1.5'
 gem 'rack-cors', :require => 'rack/cors'
 
+gem 'kaminari'                            , '~> 0.16.1'
+gem 'kaminari-bootstrap'                  , '~> 3.0.1'
+
 gem 'httparty'
 
 group :development do

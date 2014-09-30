@@ -12,12 +12,9 @@
 //
 //= require jquery
 //= require bootstrap-sprockets
-//= require ../editor/jquery.masonry.min
-//= require ../editor/handlebars-v1.3.0
-//= require ../editor/handlebars_helpers
+//= require_tree ../default
 //= require ../editor/typeahead.bundle
 //= require ../editor/bootstrap-slider.min
-//= require ../editor/bootstrap-infiniteScroll
 //= require ../external/common
 //= require ../external/tagger
 //= require ../editor/editor

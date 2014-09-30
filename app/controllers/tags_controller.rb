@@ -1,5 +1,5 @@
 class TagsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, :except => :index
   respond_to  :json,:html
   layout "editor"
   def edit

@@ -7,6 +7,6 @@ html
         = stylesheet_link_tag    "includes/editor", media: "all"
         = csrf_meta_tags
       = yield(:head)
-  body class=("#{controller_name} #{action_name}")
+  body class=("editor #{controller_name} #{action_name}")
     = yield
     = javascript_include_tag "includes/editor"

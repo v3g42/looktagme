@@ -1,5 +1,8 @@
-@import '../external/buttons';
+@import 'external/buttons';
 
+.loaded .item {
+  min-height: inherit !important;
+}
 @mixin listProducts($col-width) {
  .item {
     -moz-border-bottom-colors: none;
