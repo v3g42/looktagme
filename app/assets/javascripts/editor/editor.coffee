@@ -125,8 +125,7 @@ Sidebar.prototype.saveTag = (tag)->
 	for prop in self.props
 		self.currentTag[prop] = tag[prop]
 
-	self.editor.update(currentTag)
-	self.editor.endEditing()
+	self.editor.endEditing(currentTag)
 	page_url = $('#page_url').val()
 	domain = $('#domain').val()
 	tag_data = $.extend {}, currentTag

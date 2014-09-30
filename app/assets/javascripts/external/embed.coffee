@@ -21,6 +21,7 @@ class LookTagMePage
 			crossDomain: true
 
 	createViewer: (img, tags) =>
+		console.log(tags)
 		t = new @viewer(img, tags)
 		t.onEdit (id, img_url) =>
 			target_url = 

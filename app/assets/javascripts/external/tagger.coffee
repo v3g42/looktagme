@@ -37,13 +37,15 @@ class Container
 
 	constructor: (elem, tags, dyn) ->
 		@logger = new LookTagMe.Logger("LookTagMeContainer")
-		@tags = [{x:200,y:200,id:"abcdef", currency: "SGD", price: "1000", seller_url: "www.amazon.com", seller_name: "Amazon", image_url: "http://www.spottedfashion.com/wp-content/uploads/2013/07/Givenchy-Pearl-Grey-with-Metal-Hardware-Antigona-Medium-Bag.jpg"}, {x:100,y:100,id:"abcde", currency: "SGD", price: "1000", seller_url: "www.amazon.com", seller_name: "Amazon", image_url: "http://www.spottedfashion.com/wp-content/uploads/2013/07/Givenchy-Pearl-Grey-with-Metal-Hardware-Antigona-Medium-Bag.jpg"}]
+#		@tags = [{x:200,y:200,id:"abcdef", currency: "SGD", price: "1000", seller_url: "www.amazon.com", seller_name: "Amazon", image_url: "http://www.spottedfashion.com/wp-content/uploads/2013/07/Givenchy-Pearl-Grey-with-Metal-Hardware-Antigona-Medium-Bag.jpg"}, {x:100,y:100,id:"abcde", currency: "SGD", price: "1000", seller_url: "www.amazon.com", seller_name: "Amazon", image_url: "http://www.spottedfashion.com/wp-content/uploads/2013/07/Givenchy-Pearl-Grey-with-Metal-Hardware-Antigona-Medium-Bag.jpg"}]
+		@tags = tags
 		@tagmap = {}
 		@id = @uuid()
 		@popup_hider = undefined
 		@elem = Content.create(elem, @ready)
 
 	ready: () =>
+		@enableAutoCreate()
 		@createContainer()
 		@popup = @createPopup()
 
@@ -90,7 +92,9 @@ class Container
 		
 	enableAutoCreate: () =>
 		$(window).scroll (evt) =>
-			@container.css(@elem.bbox())
+			@container.css
+				top: @elem.top() + 'px'
+				left: @elem.left() + 'px'
 
 	startPopupTimeout: =>
 		@logger.debug('Start popup timeout')
@@ -237,7 +241,8 @@ class Editor extends Container
 		@renderTags(false, true)
 		editing = undefined
 		@enablePopup()
-#		@initNewTag()
+		if @tags.length == 0
+			@initNewTag()
 		@elem.on 'click', (e) => 
    		parentOffset = @container.offset()
    		relX = e.pageX - parentOffset.left
@@ -259,13 +264,14 @@ class Editor extends Container
 		$(@tagmap[id]).children('.ptrbutton').addClass('editing')
 		@edit_cb(@editing)
 
-	update: (tag)->
-		for t in @tags
-			if t is tag.id
-				for p of tag
-					t[ctr][p] = tag[p]
+	copyTag: (src, dst) ->
+		reserved = ['x','y','id']
+		for i in src
+			if (reserved.indexOf(i) < 0) 
+				dst[i] = src[i]
 
-	endEditing: () =>
+	endEditing: (data) =>
+		@copyTag(data, @editing)
 		@editing = undefined
 		@enablePopup()
 		for i in @tags
