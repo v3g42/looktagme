@@ -147,6 +147,13 @@ class Container
 			@popup.find('.prodimg')[0].src = tag.image_url;
 			@popup.find('.prodimg').fadeIn();
 		
+	newTag: (x, y, show_popup, show_always) =>
+		data = {id: @uuid(), y: @elem.original_top(y), x: @elem.original_left(x)}
+		console.log(data)
+		@tags.push(data)
+		@renderTag(data, show_popup, show_always)
+		return data
+
 	moveTag: (tag, x,y) =>
 		tag.x = @elem.original_left(x)
 		tag.y = @elem.original_top(y)
@@ -183,14 +190,14 @@ class Container
 		ptr.on 'mouseleave', () => @startPopupTimeout()
 
 
-	disableTags: (ls) =>
-		for id in ls
-			ptr = @tagmap[id]
+	disablePopup: () =>
+		for t in @tags
+			ptr = @tagmap[t.id]
 			$(ptr).addClass('disabled')
 
-	enableTags: (ls) =>
-		for id in ls
-			ptr = @tagmap[id]
+	enablePopup: () =>
+		for t in @tags
+			ptr = @tagmap[t.id]
 			$(ptr).removeClass('disabled')
 
 	uuid: () ->
@@ -219,10 +226,18 @@ class Editor extends Container
 	constructor: (elem, tags) ->
 		super(elem, tags, false)
 
+	initNewTag: () =>
+   		x = Math.floor(@elem.width() / 2) - 10
+   		y = Math.floor(@elem.height() / 2) - 10
+   		tag = @newTag(x, y, false, true)
+   		@startEditing(tag.id)
+
 	ready: () =>
 		super()
 		@renderTags(false, true)
 		editing = undefined
+		@enablePopup()
+#		@initNewTag()
 		@elem.on 'click', (e) => 
    		parentOffset = @container.offset()
    		relX = e.pageX - parentOffset.left
@@ -237,6 +252,7 @@ class Editor extends Container
 
 	startEditing: (id) =>
 		if @editing != undefined then return
+		@disablePopup()
 		for i in @tags
 			if i.id != id then $(@tagmap[i.id]).children('.ptrbutton').addClass('notediting')
 			else @editing = i
@@ -251,6 +267,7 @@ class Editor extends Container
 
 	endEditing: () =>
 		@editing = undefined
+		@enablePopup()
 		for i in @tags
 			$(@tagmap[i.id]).children('.ptrbutton').removeClass('notediting')
 			$(@tagmap[i.id]).children('.ptrbutton').removeClass('editing')
