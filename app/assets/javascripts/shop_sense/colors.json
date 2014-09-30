@@ -1,0 +1,15 @@
+[{"name":"Black", "color": "rgb(0,0,0)", "id":16},
+    {"name":"Gray", "color": "rgb(127,127,127)", "id":14},
+    {"name":"Silver", "color": "rgb(192,192,192)", "id":19},
+    {"name":"White", "color": "rgb(255,255,255)", "id":15},
+    {"name":"Red", "color": "rgb(255,0,0)", "id":7},
+    {"name":"Pink", "color": "rgb(255,20,147)", "id":17},
+    {"name":"Purple", "color": "rgb(128,0,128)", "id":8},
+    {"name":"Blue", "color": "rgb(0,0,255)", "id":10},
+    {"name":"Green", "color": "rgb(0,255,0)", "id":13},
+    {"name":"Yellow", "color": "rgb(255,255,0)", "id":4},
+    {"name":"Gold", "color": "rgb(255,215,0)", "id":18},
+    {"name":"Orange", "color": "rgb(255,127,0)", "id":3},
+    {"name":"Brown", "color": "rgb(139,69,19)", "id":1},
+    {"name":"Beige", "color": "rgb(245,245,220)", "id":20}
+]

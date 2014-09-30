@@ -243,6 +243,12 @@ class Editor extends Container
 		$(@tagmap[id]).children('.ptrbutton').addClass('editing')
 		@edit_cb(@editing)
 
+	update: (tag)->
+		for t in @tags
+			if t is tag.id
+				for p of tag
+					t[ctr][p] = tag[p]
+
 	endEditing: () =>
 		@editing = undefined
 		for i in @tags

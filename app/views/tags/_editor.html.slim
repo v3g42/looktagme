@@ -7,27 +7,31 @@
   input#dom_id type="hidden" value=@dom_id
   .right_section
     .right_content
-      .search_section
+      .search_section data-brands-url="#{asset_path("shop_sense/brands.json")}"  data-retailers-url="#{asset_path("shop_sense/retailers.json")}"
         form.searchForm novalidate="" role="form" class="form-horizontal"
           .form-group
-            input.product_search.form-control data-key="title" placeholder=("Type keyword for product or paste url") type="text"
+            input.product_search.form-control data-key="title" placeholder=("#{t('editor.search_placeholder')}") type="text"
+          .form-group.brands
+            label.pull-left Brands
+            .pull-left.filters
+          .form-group.retailers
+            label.pull-left Retailers
+            .pull-left.filters
           .form-group
             .row
               .col-sm-9
                 .colors
               .col-sm-3
-                button.btn.btn-md.btn-info.btnSearch type="submit"  Search
-          .form-group
+                button.btn.btn-md.btn-info.btnSearch type="submit"=  t('editor.search')
+          .form-group.price_slider
             .row
               .col-xs-8
                 input.form-control.price-slider data-slider-tooltip="hide" data-slider-max="#{@prices.count-1}" data-slider-min="0" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-step="1" data-slider-value="[0,1000]" type="text" value="" style="width:100%"/
               .col-xs-4
-                span Price:
+                span= t('editor.price_header')
                 = "&nbsp;".html_safe
-                span.price-range  Over 0$
+                span.price-range=  t('editor.initial_price_range')
 
-
-          hr
       .details
   = render "tags/image_data"
 javascript:

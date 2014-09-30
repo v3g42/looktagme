@@ -40,7 +40,7 @@ $big-col-width: 220px;
 		display:block;
 	}
 	&.right_section .right_content  .details {
-      margin-top: 160px;
+      margin-top: 180px;
 
       padding-top: 20px;
       @media (max-width: 400px){
@@ -79,14 +79,32 @@ $big-col-width: 220px;
 	display:none;
     width: 55%;
     left: 33%;
-
+  .price_slider {
+    padding-left: 20px;
+  }
   .price-limit {
     margin: 0 10px;
   }
   .price-range {
     padding-top:20px;
   }
-
+  .brands, .retailers {
+    display: none;
+    label {
+      margin-right: 10px;
+    }
+  }
+  .searchFilter {
+    font-size: 12px;
+    margin-bottom: 5px;
+    float: left;
+    margin-right: 5px;
+    padding: 5px 10px 0;
+    .close {
+      right: -7px;
+      top: -3px;
+    }
+  }
 }
 
 .close_edit {
@@ -151,17 +169,26 @@ $big-col-width: 220px;
 				height: 400px;
 				width: 100%;
 			}
+
+            .spinner {
+              background: image_url('ajax-loader.gif') center center no-repeat;
+              height: 100px;
+              width: 100%;
+
+            }
 		}
 	}
 	.tt-dropdown-menu {
-		width: 100%;
+		width: 60%;
+      background: #FFFFFF;
 	}
 
 	.twitter-typeahead {
 		width: 100%;
+      background: #FFFFFF;
 	}
 	.tt-suggestions {
-			width: 100%;
+			width: 60%;
 			display: block;
 			background: #FFFFFF;
 		}
