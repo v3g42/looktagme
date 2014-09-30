@@ -3,10 +3,8 @@
     = render 'home/index.ejs'
 
 - if @current_user
-  #downloads
-    p
-      | Drag this to Bookmarks Bar →
-      a.btn href="javascript:(function(){window.$TAGGER={base_url: '#{absolute_link}'), app_id: '#{@current_user.app_id}'};s=document.createElement('script');s.type='text/javascript';s.src='#{absolute_link(asset_path('external/inject.js'))}?v='+parseInt(Math.random()*99999999);document.body.appendChild(s);})();"  LookTagMe
+  = render "home/bookmarklet"
+
 
 
 div#home_container.container.items
