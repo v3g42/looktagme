@@ -243,11 +243,18 @@ class Editor extends Container
 		@enablePopup()
 		if @tags.length == 0
 			@initNewTag()
-		@elem.on 'click', (e) => 
-   		parentOffset = @container.offset()
-   		relX = e.pageX - parentOffset.left
-   		relY = e.pageY - parentOffset.top
-   		@moveTag(@editing, relX, relY)
+		@elem.on('click', (e) => @onContainerClick(e)) 
+			
+
+	onContainerClick: (e) =>
+		parentOffset = @container.offset()
+		relX = e.pageX - parentOffset.left
+		relY = e.pageY - parentOffset.top
+		if @editing != undefined
+			@moveTag(@editing, relX, relY)
+		else
+			tag = @newTag(relX, relY, false, true)
+			@startEditing(tag.id)
 
 	onTagClick: (tag, ptr) =>
 		@startEditing(tag.id)
