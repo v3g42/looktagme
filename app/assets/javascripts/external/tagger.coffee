@@ -1,31 +1,37 @@
 
 
 class Content	
-	constructor: (elem) ->
+	constructor: (elem, cb) ->
 		@elem = $(elem)
+		@get_original_size(@url(), cb)
 	url: ->
 	width: () => @elem.width()
 	height: () => @elem.height()
 	top: () => @elem.offset().top + parseInt(@elem.css('padding-top').replace('px',''))
 	left: () => @elem.offset().left + parseInt(@elem.css('padding-left').replace('px',''))
 	bbox: () => {top: @top(), left: @left(), width: @width(), height: @height()}
+	original_width: () => @original_w
+	original_height: () => @original_h
+	scale_top: (y) => Math.floor(y*@height()/@original_height())
+	scale_left: (x) => Math.floor(x*@width()/@original_width()) 
+	original_top: (y) => Math.floor(y*@original_height()/@height())
+	original_left: (x) => Math.floor(x*@original_width()/@width()) 
 	on: (evt, handler) => 
 		@elem.on(evt, handler)
 	trigger: (evt) => 
 		@elem.trigger(evt)
-	original_size: (url, cbk) => 
+	get_original_size: (url, cb) => 
 	    t = new Image()
 	    t.src = url
 	    t.onload = () =>
-	    	return cbk({ width: t.width, height: t.height })	
-	@create: (elem) ->
-		new ImgContent(elem) 
+	    	@original_w = t.width
+	    	@original_h = t.height
+	    	return cb()	
+	@create: (elem, ready) ->
+		new ImgContent(elem, ready) 
 
 class ImgContent extends Content
 	url: => $(@elem).attr('src')
-	original: (cbk) =>
-		@original_size(@url(), cbk) 
-
 
 class Container
 
@@ -33,9 +39,11 @@ class Container
 		@logger = new LookTagMe.Logger("LookTagMeContainer")
 		@tags = [{x:200,y:200,id:"abcdef", currency: "SGD", price: "1000", seller_url: "www.amazon.com", seller_name: "Amazon", image_url: "http://www.spottedfashion.com/wp-content/uploads/2013/07/Givenchy-Pearl-Grey-with-Metal-Hardware-Antigona-Medium-Bag.jpg"}, {x:100,y:100,id:"abcde", currency: "SGD", price: "1000", seller_url: "www.amazon.com", seller_name: "Amazon", image_url: "http://www.spottedfashion.com/wp-content/uploads/2013/07/Givenchy-Pearl-Grey-with-Metal-Hardware-Antigona-Medium-Bag.jpg"}]
 		@tagmap = {}
-		@elem = Content.create(elem)
 		@id = @uuid()
 		@popup_hider = undefined
+		@elem = Content.create(elem, @ready)
+
+	ready: () =>
 		@createContainer()
 		@popup = @createPopup()
 
@@ -66,18 +74,19 @@ class Container
 		body.append(@container)
 		@elem.on 'mouseenter', () => @container.trigger('mouseenter')
 		@elem.on 'mouseleave', () => @container.trigger('mouseleave')
+		@elem.on 'click', () => @container.trigger('click')
 
 		$(window).resize () =>
 			@container.css
 				top: @elem.top() + 'px', 
 				left: @elem.left() + 'px',
 				width: '1px', height: '1px'
-			@elem.original () =>
-				@container.find('.ptr').each (idx, item) =>
-					tag = $(item).data('tag')
-					$(item).css 
-						top: tag.y*@elem.height()/sz.height - 10
-						left: tag.x*@elem.width()/sz.width - 10
+			# @elem.original () =>
+			# 	@container.find('.ptr').each (idx, item) =>
+			# 		tag = $(item).data('tag')
+			# 		$(item).css 
+			# 			top: tag.y*@elem.height()/sz.height - 10
+			# 			left: tag.x*@elem.width()/sz.width - 10
 		
 	enableAutoCreate: () =>
 		$(window).scroll (evt) =>
@@ -138,6 +147,18 @@ class Container
 			@popup.find('.prodimg')[0].src = tag.image_url;
 			@popup.find('.prodimg').fadeIn();
 		
+	newTag: (x, y, show_popup, show_always) =>
+		data = {id: @uuid(), y: @elem.original_top(y), x: @elem.original_left(x)}
+		console.log(data)
+		@tags.push(data)
+		@renderTag(data, show_popup, show_always)
+		return data
+
+	moveTag: (tag, x,y) =>
+		tag.x = @elem.original_left(x)
+		tag.y = @elem.original_top(y)
+		ptr = @tagmap[tag.id]
+		ptr.css({top: y - 10, left: x - 10})
 			
 	renderTags: (show_popup, show_always) =>
 		for tag in @tags
@@ -145,40 +166,38 @@ class Container
 
 	renderTag: (tag, show_popup, show_always) =>
 		@logger.debug('Creating tag ' + JSON.stringify(tag))
-		@elem.original (sz) =>
-			ptr = $('<div class="ptrcontainer"><div class="ptrbutton"/><div class="ptr"/></div>')
-			@tagmap[tag.id] = ptr
-			ptr.attr('id', tag.id)
-			ptr.data('tag',tag)
-			newtop = Math.floor(tag.y*@elem.height()/sz.height) - 10;
-			newleft = Math.floor(tag.x*@elem.width()/sz.width) - 10;
-			ptr.css({top: newtop, left: newleft})
-			ptr.click () => @onTagClick(tag, ptr)
-			@container.append(ptr)
 
-			if not show_popup
-				ptr.addClass('disabled')
+		ptr = $('<div class="ptrcontainer"><div class="ptrbutton"/><div class="ptr"/></div>')
+		@tagmap[tag.id] = ptr
+		ptr.attr('id', tag.id)
+		ptr.data('tag',tag)
+		ptr.css({top: @elem.scale_top(tag.y) - 10, left: @elem.scale_left(tag.x) - 10})
+		ptr.click () => @onTagClick(tag, ptr)
+		@container.append(ptr)
 
-			if not show_always
-				ptr.hide()
-				@container.on 'mouseenter', () => ptr.show()
-				@container.on 'mouseleave', () => ptr.hide()
+		if not show_popup
+			ptr.addClass('disabled')
 
-			ptr.on 'mouseover', () => 
-				@clearPopupTimeout()
-				ptr.show()
-			ptr.on 'mouseenter', () => @onTagOver(tag, ptr)
-			ptr.on 'mouseleave', () => @startPopupTimeout()
+		if not show_always
+			ptr.hide()
+			@container.on 'mouseenter', () => ptr.show()
+			@container.on 'mouseleave', () => ptr.hide()
+
+		ptr.on 'mouseover', () => 
+			@clearPopupTimeout()
+			ptr.show()
+		ptr.on 'mouseenter', () => @onTagOver(tag, ptr)
+		ptr.on 'mouseleave', () => @startPopupTimeout()
 
 
-	disableTags: (ls) =>
-		for id in ls
-			ptr = @tagmap[id]
+	disablePopup: () =>
+		for t in @tags
+			ptr = @tagmap[t.id]
 			$(ptr).addClass('disabled')
 
-	enableTags: (ls) =>
-		for id in ls
-			ptr = @tagmap[id]
+	enablePopup: () =>
+		for t in @tags
+			ptr = @tagmap[t.id]
 			$(ptr).removeClass('disabled')
 
 	uuid: () ->
@@ -191,7 +210,10 @@ class Container
 class Viewer extends Container
 
 	constructor: (elem, tags) ->
-		super(elem, tags, true, false)
+		super(elem, tags, true)
+
+	ready: () =>
+		super()
 		@renderTags(true, false)
 		@createMenu()
 		@addMenuButton 't', () => @edit(@id, @elem.url())
@@ -202,9 +224,25 @@ class Viewer extends Container
 class Editor extends Container
 
 	constructor: (elem, tags) ->
-		super(elem, tags, false, false)
+		super(elem, tags, false)
+
+	initNewTag: () =>
+   		x = Math.floor(@elem.width() / 2) - 10
+   		y = Math.floor(@elem.height() / 2) - 10
+   		tag = @newTag(x, y, false, true)
+   		@startEditing(tag.id)
+
+	ready: () =>
+		super()
 		@renderTags(false, true)
 		editing = undefined
+		@enablePopup()
+#		@initNewTag()
+		@elem.on 'click', (e) => 
+   		parentOffset = @container.offset()
+   		relX = e.pageX - parentOffset.left
+   		relY = e.pageY - parentOffset.top
+   		@moveTag(@editing, relX, relY)
 
 	onTagClick: (tag, ptr) =>
 		@startEditing(tag.id)
@@ -214,6 +252,7 @@ class Editor extends Container
 
 	startEditing: (id) =>
 		if @editing != undefined then return
+		@disablePopup()
 		for i in @tags
 			if i.id != id then $(@tagmap[i.id]).children('.ptrbutton').addClass('notediting')
 			else @editing = i
@@ -228,6 +267,7 @@ class Editor extends Container
 
 	endEditing: () =>
 		@editing = undefined
+		@enablePopup()
 		for i in @tags
 			$(@tagmap[i.id]).children('.ptrbutton').removeClass('notediting')
 			$(@tagmap[i.id]).children('.ptrbutton').removeClass('editing')
