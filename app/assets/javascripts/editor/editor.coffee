@@ -302,9 +302,9 @@ jQuery ()->
 		imgEl = jQuery('.left_section img')
 		console.log imgEl[0].width
 		if window.imageData
-			editor = new LookTagMe.Editor(imgEl, window.imageData.tags)
+			editor = new LookTagMe.Editor({}, imgEl, window.imageData.tags)
 		else
-			editor = new LookTagMe.Editor(imgEl, [])
+			editor = new LookTagMe.Editor({}, imgEl, [])
 
 		sidebar = new Sidebar
 			sidebarEl: jQuery('.right_section')

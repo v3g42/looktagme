@@ -2,6 +2,7 @@
 
 class Content	
 	constructor: (elem, cb) ->
+		@logger = new LookTagMe.Logger("Content")
 		@elem = $(elem)
 		@get_original_size(@url(), cb)
 	url: ->
@@ -22,8 +23,10 @@ class Content
 		@elem.trigger(evt)
 	get_original_size: (url, cb) => 
 	    t = new Image()
+	    @logger.debug('Loading image ' + url)
 	    t.src = url
 	    t.onload = () =>
+	    	@logger.debug('image loaded')
 	    	@original_w = t.width
 	    	@original_h = t.height
 	    	return cb()	
@@ -35,7 +38,8 @@ class ImgContent extends Content
 
 class Container
 
-	constructor: (elem, tags, dyn) ->
+	constructor: (page, elem, tags, dyn) ->
+		@page = page
 		@logger = new LookTagMe.Logger("LookTagMeContainer")
 #		@tags = [{x:200,y:200,id:"abcdef", currency: "SGD", price: "1000", seller_url: "www.amazon.com", seller_name: "Amazon", image_url: "http://www.spottedfashion.com/wp-content/uploads/2013/07/Givenchy-Pearl-Grey-with-Metal-Hardware-Antigona-Medium-Bag.jpg"}, {x:100,y:100,id:"abcde", currency: "SGD", price: "1000", seller_url: "www.amazon.com", seller_name: "Amazon", image_url: "http://www.spottedfashion.com/wp-content/uploads/2013/07/Givenchy-Pearl-Grey-with-Metal-Hardware-Antigona-Medium-Bag.jpg"}]
 		@tags = tags
@@ -43,11 +47,15 @@ class Container
 		@id = @uuid()
 		@popup_hider = undefined
 		@elem = Content.create(elem, @ready)
+		@logger.debug('Container constructor completed')
 
 	ready: () =>
 		@enableAutoCreate()
 		@createContainer()
 		@popup = @createPopup()
+
+	getId: () => @id
+	getUrl: () => @elem.url()
 
 	onTagClick: (tag, ptr) =>
 
@@ -83,12 +91,11 @@ class Container
 				top: @elem.top() + 'px', 
 				left: @elem.left() + 'px',
 				width: '1px', height: '1px'
-			# @elem.original () =>
-			# 	@container.find('.ptr').each (idx, item) =>
-			# 		tag = $(item).data('tag')
-			# 		$(item).css 
-			# 			top: tag.y*@elem.height()/sz.height - 10
-			# 			left: tag.x*@elem.width()/sz.width - 10
+
+			for tag in @tags
+				$(@tagmap[tag.id]).css
+					top: @elem.scale_top(tag.y)
+					left: @elem.scale_left(tag.x)
 		
 	enableAutoCreate: () =>
 		$(window).scroll (evt) =>
@@ -213,22 +220,21 @@ class Container
 
 class Viewer extends Container
 
-	constructor: (elem, tags) ->
-		super(elem, tags, true)
+	constructor: (page, elem, tags) ->
+		super(page, elem, tags, true)
 
 	ready: () =>
 		super()
 		@renderTags(true, false)
 		@createMenu()
-		@addMenuButton 't', () => @edit(@id, @elem.url())
-
-	onEdit: (cb) => @edit = cb 
+		@addMenuButton 't', () => @page.onEdit(@)
 
 
 class Editor extends Container
 
-	constructor: (elem, tags) ->
-		super(elem, tags, false)
+	constructor: (page, elem, tags) ->
+		super(page, elem, tags, false)
+		@logger.debug('Initialising editor')
 
 	initNewTag: () =>
    		x = Math.floor(@elem.width() / 2) - 10
@@ -237,6 +243,7 @@ class Editor extends Container
    		@startEditing(tag.id)
 
 	ready: () =>
+		@logger.debug('Editor almost ready')
 		super()
 		@renderTags(false, true)
 		editing = undefined
@@ -244,6 +251,7 @@ class Editor extends Container
 		if @tags.length == 0
 			@initNewTag()
 		@elem.on('click', (e) => @onContainerClick(e)) 
+		@logger.debug('Editor ready')
 			
 
 	onContainerClick: (e) =>
