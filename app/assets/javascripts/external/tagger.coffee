@@ -122,14 +122,16 @@ class Container
 		tag.click(action)
 		@menu.append(tag)
 
+	updateMenu: () =>
+		if @tags.length == 0 then @menu.hide() else @menu.show()
+
 	createMenu: () =>
 		@menu = $('<div class="menu"/>');
 		@menu.css
 			left: (@elem.width() - 60) + 'px'
 			height: (@elem.height() - 10) + 'px'	
-		if @tags.length == 0 then @menu.hide();
-		@container.append(@menu);
 
+		@container.append(@menu);
 		@container.mouseover () =>
 			if @tags.length == 0
 				@menu.show();
@@ -139,6 +141,8 @@ class Container
 			if @tags.length == 0
 				@menu.hide()
 			@menu.find('.button').removeClass('bg')
+
+		@updateMenu()
 
 	onTagOver: (tag, ptr) =>
 
@@ -235,6 +239,7 @@ class Viewer extends Container
 		@clearTags()
 		@tags = tags
 		@renderTags(true, false)
+		@updateMenu()
 
 	ready: () =>
 		super()

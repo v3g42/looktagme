@@ -20,6 +20,7 @@ class LookTagMePage
 	onEditorClose: () =>
 		@glass.hide()
 		@editor.hide()
+		@fetchTags(@editing)
 		@editing = undefined
 
 	onEdit: (v) =>
@@ -37,17 +38,17 @@ class LookTagMePage
 		@editor.show()
 		@editor.find('iframe').attr('src', target_url)
 
-	fetchTags: (img) =>
+	fetchTags: (viewer) =>
 		req = $.ajax
-			url: @base_url + "/tags?app_id=" + @app_id + "&image_url=" + encodeURIComponent(img.src)
+			url: @base_url + "/tags?app_id=" + @app_id + "&image_url=" + encodeURIComponent(viewer.getUrl())
 			dataType: 'json'
-			success: (data) => @createViewer(img, data.tags)
-			error: (xhr) => @createViewer(img, [])
+			success: (data) => viewer.updateTags(data.tags)
+			error: (xhr) => 
 			contentType: 'application/json'
 			crossDomain: true
 
-	createViewer: (img, tags) =>
-		viewer = new @viewer(@, img, tags)
+	createViewer: (img) =>
+		viewer = new @viewer(@, img, [])
 
 	postListener: (e) =>
 		if e.origin == @base_url
@@ -68,7 +69,8 @@ class LookTagMePage
 	apply: =>
 		$('img').each (i, img) =>
 			if $(img).width() >= @min_width and $(img).height() >= @min_height
-				@fetchTags(img)
+				viewer = @createViewer(img)
+				@fetchTags(viewer)
 
 
 	LookTagMe.page = new LookTagMePage(
