@@ -127,12 +127,14 @@ class Container
 		@menu.css
 			left: (@elem.width() - 60) + 'px'
 			height: (@elem.height() - 10) + 'px'	
-	#	@menu.hide();
+		if @tags.length == 0 then @menu.hide();
 		@container.append(@menu);
+
 		@container.mouseover () =>
 			if @tags.length == 0
 				@menu.show();
 			@menu.find('.button').addClass('bg')	
+
 		@container.mouseleave () =>
 			if @tags.length == 0
 				@menu.hide()
@@ -170,7 +172,13 @@ class Container
 		tag.y = @elem.original_top(y)
 		ptr = @tagmap[tag.id]
 		ptr.css({top: y - 10, left: x - 10})
-			
+
+	clearTags: () =>
+		for t in @tags
+			@tagmap[t.id].remove()
+		@tagmap = {}
+		@tags = []
+
 	renderTags: (show_popup, show_always) =>
 		for tag in @tags
 			@renderTag(tag, show_popup, show_always)
@@ -222,6 +230,11 @@ class Viewer extends Container
 
 	constructor: (page, elem, tags) ->
 		super(page, elem, tags, true)
+
+	updateTags: (tags) =>
+		@clearTags()
+		@tags = tags
+		@renderTags(true, false)
 
 	ready: () =>
 		super()
