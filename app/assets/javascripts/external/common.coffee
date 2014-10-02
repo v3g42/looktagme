@@ -1,6 +1,13 @@
 
 window.LookTagMe = {}
 
+class MouseTracker 
+	constructor: () ->
+	start: () =>
+		$(window).on 'mousemove', (e) => 
+			@x = e.pageX
+			@y = e.pageY
+
 class Logger
 	constructor: (@source) ->
 		@level = 4
@@ -27,4 +34,7 @@ class ImageUtils
 
 window.LookTagMe.Logger = Logger
 window.LookTagMe.ImageUtils = ImageUtils
+
+window.LookTagMe.cursor = new MouseTracker()
+window.LookTagMe.cursor.start()
 

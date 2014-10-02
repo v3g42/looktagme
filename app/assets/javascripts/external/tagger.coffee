@@ -1,5 +1,6 @@
 
 
+
 class Content	
 	constructor: (elem, cb) ->
 		@logger = new LookTagMe.Logger("Content")
@@ -144,14 +145,39 @@ class Container
 
 		@updateMenu()
 
+	adjustPopupPosition: (ptr) =>
+
+		rspace = $(window).width() - LookTagMe.cursor.x
+		lspace = $(window).width() - rspace 
+		console.debug('rspace: ' + rspace + ' - lspace: ' + lspace )
+
+		@logger.debug('Adjusting popup position')
+		top = ptr.position().top + ptr.height() / 2 - @popup.height() / 2
+
+		callout = @popup.children('.callout')
+		callout.removeClass('right')
+		callout.removeClass('left')
+
+		if lspace < rspace
+			@logger.debug('Displaying popup on left')
+			callout.addClass('left')
+			@popup.css
+				top: top,
+				left: ptr.position().left + ptr.width()
+		else
+			@logger.debug('Displaying popup on right')
+			callout.addClass('right')
+			@popup.css
+				top: top,
+				left: ptr.position().left - 243 - 25
+
+
 	onTagOver: (tag, ptr) =>
 
 		if $(ptr).hasClass('disabled') then return
 
 		@popup.hide()
-		@popup.css
-			top: ptr.position().top + ptr.height() / 2 - @popup.height() / 2,
-			left: ptr.position().left + ptr.width()
+		@adjustPopupPosition(ptr)
 		@popup.unbind('click')
 		@popup.bind 'click', () -> window.open(tag.seller_url)
 		@popup.find('.price').text(tag.currency + ' ' + tag.price)
@@ -176,6 +202,13 @@ class Container
 		tag.y = @elem.original_top(y)
 		ptr = @tagmap[tag.id]
 		ptr.css({top: y - 10, left: x - 10})
+
+	removeTag: (id) =>
+		for t in [0..@tags.length]
+			console.log(@tags[t])
+			if @tags[t].id == id
+				@tagmap[id].remove()
+				@tags.splice(t,1)
 
 	clearTags: () =>
 		for t in @tags

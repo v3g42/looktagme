@@ -7,19 +7,19 @@ class LookTagMePage
 		$(window).on('scroll touchmove mousewheel', @editScrollListener)
 		@glass = $('<div class="tagger-editor-glass"/>')
 		@glass.hide()
-		@editor = $('<div class="tagger-editor-container"><div class="close"/><iframe/></div>')
+		@editor = $('<div class="tagger-editor-container"><div class="close"/></div>')
 		$(@editor).children('.close').on 'click', () => @onEditorClose()
 		@editor.hide()
 		$('body').append(@editor)
 		$('body').append(@glass)
 		$(window).resize () =>
-			@editor.find('iframe')[0].contentWindow.postMessage('resize', @base_url)
-		if window.addEventListener then addEventListener("message", @postListener, false)
-		else attachEvent("onmessage", @postListener)
+			@editor.find('iframe').each (idx, itm) => itm.contentWindow.postMessage('resize', @base_url)
+
 
 	onEditorClose: () =>
 		@glass.hide()
 		@editor.hide()
+		@editor.children('iframe').remove()
 		@fetchTags(@editing)
 		@editing = undefined
 
@@ -33,10 +33,11 @@ class LookTagMePage
 
 		console.log(target_url)
 		@editing = v	
-		@editor.find('iframe').attr('src', '')
 		@glass.show()
 		@editor.show()
-		@editor.find('iframe').attr('src', target_url)
+		iframe = $('<iframe/>')
+		@editor.append(iframe)
+		iframe.attr('src', target_url)
 
 	fetchTags: (viewer) =>
 		req = $.ajax
