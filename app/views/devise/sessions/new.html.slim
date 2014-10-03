@@ -1,0 +1,29 @@
+.container
+  .row.header
+    .col-md-12
+      h3.logo
+        = link_to t("looktagme"), root_path
+      h4= t("devise.sessions.sign_in_label")
+  .row
+    .col-md-12
+      .wrapper.clearfix
+        .formy
+          .row
+            .col-md-12
+              = simple_form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => {:class => 'form-vertical' }) do |f|
+                = f.input :email, :autofocus => true
+                = f.input :password
+                - if devise_mapping.rememberable?
+                  div.checkbox
+                    label
+                      = f.input_field :remember_me, :as => :boolean
+                      | Remember me
+                div.submit
+                  .col-sm-4
+                    = button_tag(type: "submit",class: "button-clear") do
+                      span= t("devise.sessions.sign_in_btn")
+                  .col-sm-8
+                  = button_tag(type: "submit",class: "button-clear facebook") do
+                    span= t("devise.sessions.sign_in_facebook")
+
+      = render "devise/shared/links"

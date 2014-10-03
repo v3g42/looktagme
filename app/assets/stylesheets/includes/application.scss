@@ -9,7 +9,22 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require react
  *= require_tree ../default
  *= require_tree ../application
 */
 
+.signup {
+  .button-clear {
+    span{
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+    &.facebook {
+      span {
+        background: #3B5998;
+        color: white;
+      }
+    }
+  }
+}

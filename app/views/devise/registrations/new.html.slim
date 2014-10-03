@@ -1,0 +1,27 @@
+.container
+  .row.header
+    .col-md-12
+      h3.logo
+        = link_to t("looktagme"), root_path
+      h4= t("devise.registrations.sign_up_label")
+  .row
+    .col-md-12
+      .wrapper.clearfix
+        .formy
+          .row
+            .col-md-12
+              = simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => {:class => 'form-vertical' }) do |f|
+                = f.input :first_name, :autofocus => true
+                = f.input :last_name, :autofocus => true
+                = f.input :email
+                = f.input :password
+                = f.input :password_confirmation
+                div.submit
+                  .col-sm-4
+                    = button_tag(type: "submit",class: "button-clear") do
+                      span= t("devise.registrations.sign_up_btn")
+                  .col-sm-8
+                  = button_tag(type: "submit",class: "button-clear facebook") do
+                    span= t("devise.registrations.sign_up_facebook")
+
+      = render "devise/shared/links"

@@ -1,5 +1,7 @@
 TagConda::Application.routes.draw do
 
+  get 'how-it-works' => 'home#howitworks', :as => :how_it_works
+  get 'about' => 'home#about', :as => :about
   get 'search' => 'search#search'
   get '/search/brands' => 'search#brands'
   get '/search/retailers' => 'search#retailers'

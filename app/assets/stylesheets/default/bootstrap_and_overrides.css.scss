@@ -1,12 +1,4 @@
 
-//@import "bootstrap-sass-official/assets/stylesheets/bootstrap/variables";
-//@import "bootstrap-sass-official/assets/stylesheets/bootstrap/bootstrap";
-
-@import "bootswatch-scss/journal/variables";
-@import "bootstrap-sprockets";
-@import "bootstrap";
-@import "bootswatch-scss/journal/bootswatch";
-
 .spinner {
   background: image_url('ajax-loader.gif') center center no-repeat;
   height: 100px;

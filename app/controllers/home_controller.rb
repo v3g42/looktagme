@@ -6,4 +6,11 @@ class HomeController < ApplicationController
     @total  = Image.count
     @images = Image.page(@page).per(@limit).desc(:_id)
   end
+
+  def about
+     render layout: 'company'
+  end
+  def howitworks
+    render layout: 'company'
+  end
 end

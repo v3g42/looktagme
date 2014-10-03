@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
   before_filter :configure_permitted_parameters, if: :devise_controller?
   before_filter :set_access_control_headers
 
+  layout :layout_by_resource
+
   def set_access_control_headers
     headers['Access-Control-Allow-Origin'] = '*'
     headers['Access-Control-Request-Method'] = 'GET, OPTIONS, HEAD'
@@ -26,6 +28,14 @@ class ApplicationController < ActionController::Base
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:username, :email, :first_name, :last_name, :roles => []) }
+  end
+
+  def layout_by_resource
+    if devise_controller? && resource_name == :user
+      'signup'
+    else
+      'application'
+    end
   end
 
 end

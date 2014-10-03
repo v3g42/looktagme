@@ -16,3 +16,4 @@
 //= require bootstrap-sprockets
 //= require_tree ../default
 //= require ../application/home
+//= require js/theme
