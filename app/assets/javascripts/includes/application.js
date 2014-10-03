@@ -15,5 +15,7 @@
 //= require turbolinks
 //= require bootstrap-sprockets
 //= require_tree ../default
+//= require ../external/common
+//= require ../external/tagger
 //= require ../application/home
 //= require js/theme

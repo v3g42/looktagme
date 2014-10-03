@@ -271,13 +271,13 @@ Sidebar.prototype.renderRecent = ()->
 	jQuery.get('/tags/recent?image_url='+image_url)
 	.done((image)->
 		console.log(image)
-		$('.details').html(self.productsTemplate({results:image.tags, image_id:image._id.$oid}))
+		$('.details').html(self.productsTemplate({results:image.tags, image_id:image._id}))
 		$('.details').removeClass('loading')
 		search_elem = self.elem.find('.product_search')
 		search_elem.typeahead('val', '')
 		jQuery('.deleteProduct').click (event, el)->
 			id = $(event.currentTarget).data('tag-id')
-			self.deleteTag(id, image._id.$oid)
+			self.deleteTag(id, image._id)
 
 	).fail(()->
 		#self.alert("danger", "Server Error!")

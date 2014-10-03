@@ -11,5 +11,6 @@
 // about supported directives.
 //
 //= require jquery
+//= require ../external/common
 //= require ../external/tagger
 //= require ../external/embed
