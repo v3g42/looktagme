@@ -15,7 +15,7 @@ header.navbar.navbar-inverse class="#{nav_class(controller_name, action_name)}" 
         - if user_signed_in?
           li.dropdown
             a.dropdown-toggle data-toggle="dropdown" href="#"
-              | Vivek
+              = current_user.full_name
               b.caret
             ul.dropdown-menu
               li
