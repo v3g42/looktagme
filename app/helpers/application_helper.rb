@@ -5,7 +5,8 @@ module ApplicationHelper
   end
 
   def body_class(controller, action)
-    "signup" if ["sessions", "registrations"].include? controller
+    return "signup" if ["sessions", "registrations"].include? controller
+    return "home" if ["home#index"].include?("#{controller}##{action}")
   end
 
   def nav_class(controller, action)
