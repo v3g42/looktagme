@@ -3,37 +3,53 @@
 class LookTagMePage
 
 	constructor: (@viewer, @base_url, @app_id, @min_width, @min_height) ->
-		@editor = $('<div class="tagger-editor-container"><iframe/></div>')
-		@editor.hide();
+		@editing = undefined
+		$(window).on('scroll touchmove mousewheel', @editScrollListener)
+		@glass = $('<div class="tagger-editor-glass"/>')
+		@glass.hide()
+		@editor = $('<div class="tagger-editor-container"><div class="close"/></div>')
+		$(@editor).children('.close').on 'click', () => @onEditorClose()
+		@editor.hide()
 		$('body').append(@editor)
+		$('body').append(@glass)
 		$(window).resize () =>
-			@editor.find('iframe')[0].contentWindow.postMessage('resize', @base_url)
-		if window.addEventListener then addEventListener("message", @postListener, false)
-		else attachEvent("onmessage", @postListener)
+			@editor.find('iframe').each (idx, itm) => itm.contentWindow.postMessage('resize', @base_url)
 
-	fetchTags: (img) =>
+
+	onEditorClose: () =>
+		@glass.hide()
+		@editor.hide()
+		@editor.children('iframe').remove()
+		@fetchTags(@editing)
+		@editing = undefined
+
+	onEdit: (v) =>
+		target_url = 
+			@base_url + "/tags/edit?" + 
+			'image_url=' + encodeURIComponent(v.getUrl()) + 
+			'&page_url='+encodeURIComponent(window.location.href) + 
+			'&domain='+encodeURIComponent(window.location.protocol+"//"+window.location.host) + 
+			'&dom_id='+ encodeURIComponent(v.getId())
+
+		console.log(target_url)
+		@editing = v	
+		@glass.show()
+		@editor.show()
+		iframe = $('<iframe/>')
+		@editor.append(iframe)
+		iframe.attr('src', target_url)
+
+	fetchTags: (viewer) =>
 		req = $.ajax
-			url: @base_url + "/tags?app_id=" + @app_id + "&image_url=" + encodeURIComponent(img.src)
+			url: @base_url + "/tags?app_id=" + @app_id + "&image_url=" + encodeURIComponent(viewer.getUrl())
 			dataType: 'json'
-			success: (data) => @createViewer(img, data.tags)
-			error: (xhr) => @createViewer(img, [])
+			success: (data) => viewer.updateTags(data.tags)
+			error: (xhr) => 
 			contentType: 'application/json'
 			crossDomain: true
 
-	createViewer: (img, tags) =>
-		t = new @viewer(img, tags)
-		t.onEdit (id, img_url) =>
-			target_url = 
-				@base_url + "/tags/edit?" + 
-				'image_url=' + encodeURIComponent(img_url) + 
-				'&page_url='+encodeURIComponent(window.location.href) + 
-				'&domain='+encodeURIComponent(window.location.protocol+"//"+window.location.host) + 
-				'&dom_id='+ encodeURIComponent(id)
-
-			$('.tagger-editor-container').data('editing',true)
-			$('.tagger-editor-container').show()
-			$('.tagger-editor-container').find('iframe').attr('src', target_url)
-			$(window).on('scroll touchmove mousewheel', @editScrollListener)
+	createViewer: (img) =>
+		viewer = new @viewer(@, img, [])
 
 	postListener: (e) =>
 		if e.origin == @base_url
@@ -43,11 +59,10 @@ class LookTagMePage
 			tagger.tags = obj.tags
 			tagger.showTags()
 			@editor.hide()
-			@editor.data('editing',false)
 			$(window).off('scroll touchmove mousewheel', @editScrollListener)
 		
 	editScrollListener: (e) =>
-		if $('.tagger-editor-container').data('editing')
+		if @editing != undefined
 			e.stopPropagation()
 			e.preventDefault()
 			return false
@@ -55,10 +70,11 @@ class LookTagMePage
 	apply: =>
 		$('img').each (i, img) =>
 			if $(img).width() >= @min_width and $(img).height() >= @min_height
-				@fetchTags(img)
+				viewer = @createViewer(img)
+				@fetchTags(viewer)
 
 
-	new LookTagMePage(
+	LookTagMe.page = new LookTagMePage(
 		LookTagMe.Viewer
 		window.$TAGGER.base_url
 		window.$TAGGER.app_id

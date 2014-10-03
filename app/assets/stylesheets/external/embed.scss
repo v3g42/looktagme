@@ -1,17 +1,32 @@
 @import 'buttons';
 
+.tagger-editor-glass {
+	position: fixed;
+	background: black;
+	opacity: .5;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	z-index: 100001;
+}
+
 .tagger-editor-container {
 	position: fixed;
 	background: white;
-	top: 35px;
-	left: 35px;
-	right: 35px;
-	bottom: 35px;
+	top: 45px;
+	left: 45px;
+	right: 45px;
+	bottom: 45px;
 	z-index: 100002;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
 	border: 1px solid rgb(218, 217, 217);
+	padding-top: 20px;
+	padding-bottom: 20px;
+	padding-left: 20px;
+	padding-right: 20px;
 }
 
 
@@ -26,9 +41,10 @@
 	background-image: image_url("close.png");
 	width: 20px;
 	height: 20px;
-	top: 5px;
-	right: 5px;
+	top: 8px;
+	right: 8px;
 	opacity: 0.3;
+	cursor: pointer;
 }
 
 .tagger-wrap {
@@ -60,16 +76,25 @@
 	box-shadow: 3px 3px 3px rgba(0,0,0,.3);
 	opacity: .9;
 	margin-left: 23px;
+	margin-right: 23px;
 }
 
 .tagger-popup .callout {
 	position: absolute;
 	width: 25px;
 	height: 100px;
-	left: -22px;
 	top: 0px;
-	background: image_url("callout.png") center center no-repeat;
 	opacity: .5;
+}
+
+.tagger-popup .callout.left {
+	left: -22px;
+	background: image_url("callout.png") center center no-repeat;
+}
+
+.tagger-popup .callout.right {
+	right: -22px;
+	background: image_url("callout.png") center center no-repeat;
 }
 
 .tagger-popup .container {
