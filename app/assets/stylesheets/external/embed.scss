@@ -104,14 +104,32 @@
 }
 
 .tagger-popup .container .pic {
-	background-image: image_url("ajax-loader.gif");
-	background-repeat: no-repeat;
-	background-position: center;
+	background: white;
 	position: absolute;
 	left: 5px;
 	top: 5px;
 	width: 90px;
 	height: 90px;
+	text-align: center;
+}
+
+.tagger-popup .container .pic:before {
+	content: ' ';
+    display: inline-block;
+    vertical-align: middle;  
+    height: 100%;
+}
+
+.tagger-popup .container .pic .prodimg{
+	display: inline-block;
+    vertical-align: middle;  
+    font: 16px/1 Arial sans-serif; 
+}
+
+.tagger-popup .container .pic.loading { 
+	background-image: image_url("ajax-loader.gif");
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .tagger-popup .container {

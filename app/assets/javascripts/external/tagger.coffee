@@ -86,6 +86,9 @@ class Container
 		@elem.on 'mouseenter', () => @container.trigger('mouseenter')
 		@elem.on 'mouseleave', () => @container.trigger('mouseleave')
 		@elem.on 'click', () => @container.trigger('click')
+		@elem.on 'mousemove', (e) => @container.trigger('mousemove', e)
+		@elem.on 'mouseup', (e) => @container.trigger('mouseup', e)
+		@elem.on 'mousedown', (e) => @container.trigger('mousedown', e)
 
 		$(window).resize () =>
 			@container.css
@@ -181,10 +184,12 @@ class Container
 		@popup.unbind('click')
 		@popup.bind 'click', () -> window.open(tag.seller_url)
 		@popup.find('.price').text(tag.currency + ' ' + tag.price)
-		@popup.find('.shopname').text(tag.seller_name)
+		@popup.find('.shopname').text(tag.seller_name.toLowerCase())
 		@popup.find('.prodimg').hide()
+		@popup.find('.pic').addClass('loading')
 		@popup.fadeIn()
-		LookTagMe.ImageUtils.imageFit tag.image_url, 90, 90, (res, w, h) =>
+		LookTagMe.ImageUtils.imageFit tag.image_url, 80, 80, (res, w, h) =>
+			@popup.find('.pic').removeClass('loading')
 			if not res then return 
 			@popup.find('.prodimg').css({width: w + 'px', height: h + 'px'})
 			@popup.find('.prodimg')[0].src = tag.image_url;
@@ -286,6 +291,7 @@ class Editor extends Container
 	constructor: (page, elem, tags) ->
 		super(page, elem, tags, false)
 		@logger.debug('Initialising editor')
+		@dragging = false
 
 	initNewTag: () =>
    		x = Math.floor(@elem.width() / 2) - 10
@@ -327,7 +333,31 @@ class Editor extends Container
 		for i in @tags
 			if i.id != id then $(@tagmap[i.id]).children('.ptrbutton').addClass('notediting')
 			else @editing = i
-		$(@tagmap[id]).children('.ptrbutton').addClass('editing')
+		ptr = $(@tagmap[id])
+		ptr.children('.ptrbutton').addClass('editing')
+		ptr.css 'cursor', 'move'
+		
+		offset_x = 0
+		offset_y = 0
+		ptr.on('mousedown', (e) => 
+			@logger.debug('dragging started')
+			@dragging = true
+			offset_x = LookTagMe.cursor.x - ptr.offset().left
+			offset_y = LookTagMe.cursor.y - ptr.offset().top
+			e.preventDefault()
+		)
+		@container.on('mouseup', (e) => 
+			@logger.debug('dragging stopped')
+			@dragging = false
+		)
+		@container.on('mousemove', (e) => 
+			if @dragging
+				ptr.css
+					left: LookTagMe.cursor.x - @container.offset().left - offset_x 
+					top: LookTagMe.cursor.y - @container.offset().top - offset_y
+				e.preventDefault()
+
+		)
 		@edit_cb(@editing)
 
 	copyTag: (src, dst) ->
@@ -337,6 +367,10 @@ class Editor extends Container
 				dst[i] = src[i]
 
 	endEditing: (data) =>
+		ptr = $(@tagmap[@editing.id])
+		ptr.css 'cursor', 'default'
+		ptr.off 'mousedown'
+		ptr.off 'mousedown'
 		@copyTag(data, @editing)
 		@editing = undefined
 		@enablePopup()
