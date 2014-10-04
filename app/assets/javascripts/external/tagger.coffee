@@ -88,7 +88,9 @@ class Container
 		@elem.on 'click', () => @container.trigger('click')
 		@elem.on 'mousemove', (e) => @container.trigger('mousemove', e)
 		@elem.on 'mouseup', (e) => @container.trigger('mouseup', e)
-		@elem.on 'mousedown', (e) => @container.trigger('mousedown', e)
+		@elem.on 'mousedown', (e) => 
+			@container.trigger('mousedown', e) 
+			e.preventDefault()
 
 		$(window).resize () =>
 			@container.css
