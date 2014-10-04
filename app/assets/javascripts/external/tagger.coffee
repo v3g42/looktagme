@@ -350,6 +350,8 @@ class Editor extends Container
 		)
 		@container.on('mouseup', (e) => 
 			@logger.debug('dragging stopped')
+			@editing.x = @elem.original_left(LookTagMe.cursor.x - @container.offset().left - offset_x)
+			@editing.y = @elem.original_top(LookTagMe.cursor.y - @container.offset().top - offset_y)
 			@dragging = false
 		)
 		@container.on('mousemove', (e) => 
@@ -372,7 +374,8 @@ class Editor extends Container
 		ptr = $(@tagmap[@editing.id])
 		ptr.css 'cursor', 'default'
 		ptr.off 'mousedown'
-		ptr.off 'mousedown'
+		@container.off 'mousemove'
+		@container.off 'mouseup'
 		@copyTag(data, @editing)
 		@editing = undefined
 		@enablePopup()
