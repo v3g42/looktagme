@@ -75,6 +75,9 @@ body.editor {
     margin-left: 32%;
   }
   .search_section {
+    .searchFilter.brands {
+      background: white;
+    }
     position:fixed;
     top:0;
     background:white;
@@ -92,12 +95,6 @@ body.editor {
     }
     .price-range {
       padding-top:20px;
-    }
-    .brands, .retailers {
-      display: none;
-      label {
-        margin-right: 10px;
-      }
     }
     .searchFilter {
       font-size: 12px;

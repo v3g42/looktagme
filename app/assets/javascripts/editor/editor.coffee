@@ -22,7 +22,7 @@ Sidebar = (options)->
 
 	this
 Sidebar.prototype.toggleFilters = ()->
-	containers = [$('.brands'),$('.retailers')]
+	containers = [$('.right_section .filters')]
 	containers.map (container)->
 		if(container.find('.searchFilter').length>0)
 			container.show()
@@ -31,14 +31,14 @@ Sidebar.prototype.toggleFilters = ()->
 Sidebar.prototype.addFilter = (filter, name)->
 	self = this
 	console.log(filter + " : " + name)
-	container = $('.'+name)
+	container = $('.right_section .filters')
 	return if container.find('.searchFilter.'+filter["id"]).length>0
-	filterDiv = $(self.alertTemplate({class: "info", message: filter["name"],css:"searchFilter " + filter["id"] }))
+	filterDiv = $(self.alertTemplate({class: "info " + name, message: filter["name"],css:"searchFilter " + filter["id"] }))
 	filterDiv.data('filter', name[0]+filter["id"])
 	filterDiv.find('.close').click ->
 		filterDiv.remove()
 		self.toggleFilters()
-	container.find('.filters').append(filterDiv)
+	container.append(filterDiv)
 	self.toggleFilters()
 	self.searchProducts() if self.searched
 
