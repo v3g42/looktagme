@@ -260,6 +260,15 @@ Sidebar.prototype.searchProducts = ()->
 		self.alert("danger", "Server Error!")
 		$('.details').removeClass('loading')
 	)
+Sidebar.prototype.updatePriceRange = ()->
+	val = $('.price-slider').val().split(',')
+	lt = window.prices[val[0]]["range"][0]
+	gt = window.prices[val[1]]["range"][1]
+	if gt
+		val = lt + "-" + gt + "$"
+	else
+		val = "Over " + lt + "$"
+	$('.price-range').html(val)
 
 Sidebar.prototype.renderRecent = ()->
 	self = this
@@ -317,15 +326,10 @@ jQuery ()->
 		$('.price-slider').slider()
 		$('.price-slider').on "slideStop", (slideEvt) ->
 			sidebar.searchProducts() if sidebar.searched
+			sidebar.updatePriceRange()
 
 		$('.price-slider').on "slide", (slideEvt) ->
-			lt = window.prices[slideEvt.value[0]]["range"][0]
-			gt = window.prices[slideEvt.value[1]]["range"][1]
-			if gt
-				val = lt + "-" + gt + "$"
-			else
-			  val = "Over " + lt + "$"
-			$('.price-range').html(val)
+			sidebar.updatePriceRange()
 
 
 		jQuery('.close_edit').click ->
