@@ -61,3 +61,6 @@ gem "hashugar", github: "alex-klepa/hashugar"
 gem 'semantics3'
 gem "shopsense-ruby", :git => "git://github.com/PopSugar/ruby-popsugar-shopping-api.git", :branch => "pk/api-v2"
 gem "bower-rails", "~> 0.8.3"
+
+
+gem 'newrelic_rpm'

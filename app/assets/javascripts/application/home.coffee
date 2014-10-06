@@ -23,12 +23,12 @@ class HomeListView
 	createViewers: (json)->
 		self = @
 		json.results.map (image)->
-			imgCont = $('.item.product[data-image-id=' + image._id + ']')
-			self.viewers[image._id] = new LookTagMe.Viewer(self,imgCont.find('img'),image.tags) unless self.viewers[image._id]
+			imgCont = $('.item.product[data-image-id=' + image.id + ']')
+			self.viewers[image.id] = new LookTagMe.Viewer(self,imgCont.find('img'),image.tags) unless self.viewers[image.id]
 			imgCont.find('a').click (e)->
 				e.stopPropagation()
 				e.preventDefault()
-				self.onEdit self.viewers[image._id]
+				self.onEdit self.viewers[image.id]
 
 
 	masonry: ->

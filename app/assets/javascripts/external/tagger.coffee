@@ -22,7 +22,7 @@ class Content
 		@elem.on(evt, handler)
 	trigger: (evt) => 
 		@elem.trigger(evt)
-	get_original_size: (url, cb) => 
+	get_original_size: (url, cb) =>
 	    t = new Image()
 	    @logger.debug('Loading image ' + url)
 	    t.src = url
@@ -216,6 +216,7 @@ class Container
 			if @tags[t].id == id
 				@tagmap[id].remove()
 				@tags.splice(t,1)
+				return
 
 	clearTags: () =>
 		for t in @tags

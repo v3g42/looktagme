@@ -22,7 +22,7 @@ class TagsController < ApplicationController
     #params.permit(:x, :y, :title, :description, :price, :seller, :seller_name, :seller_url, :image_url, :image_width, :image_height, :image_width, :id, :currency, :raw_details, :page_url)
     image = nil
     params.require(:tag).permit!
-    image = current_user.images.where(:image_url => params[:image_url]).first
+    image = Image.where(:image_url => params[:image_url]).first
     unless(image)
       image = Image.new({:image_url => params[:image_url],:page_url =>  params[:page_url]})
       image.user = current_user
