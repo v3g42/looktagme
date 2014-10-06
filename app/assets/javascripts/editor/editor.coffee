@@ -33,7 +33,8 @@ Sidebar.prototype.addFilter = (filter, name)->
 	console.log(filter + " : " + name)
 	container = $('.right_section .filters')
 	return if container.find('.searchFilter.'+filter["id"]).length>0
-	filterDiv = $(self.alertTemplate({class: "info " + name, message: filter["name"],css:"searchFilter " + filter["id"] }))
+	type = if name == "brands" then "info" else if name == "categories" then "warning" else "danger"
+	filterDiv = $(self.alertTemplate({class: type, message: filter["name"],css:"searchFilter " + filter["id"] }))
 	filterDiv.data('filter', name[0]+filter["id"])
 	filterDiv.find('.close').click ->
 		filterDiv.remove()
@@ -82,6 +83,12 @@ Sidebar.prototype.initSearch = (tag)->
 			minLength: 2
 			hint: true
 		,
+			name: 'categories',
+			displayKey: 'name',
+			source: self.categoriesAdapt.ttAdapter()
+			templates:
+				header: '<p class="typeahead-header">Categories</p>'
+		,
 			name: 'brands',
 			displayKey: 'name',
 			source: self.brandsAdapt.ttAdapter()
@@ -93,6 +100,7 @@ Sidebar.prototype.initSearch = (tag)->
 			source: self.retailersAdapt.ttAdapter()
 			templates:
 				header: '<p class="typeahead-header">Retailers</p>'
+
 
 	search_elem.on 'typeahead:selected', (evt, obj, name) ->
 			evt.preventDefault();
@@ -181,6 +189,19 @@ Sidebar.prototype.init = ()->
 			url: $('.search_section').data('brands-url')
 			filter: (json)->
 				json.brandHistogram
+	this.categoriesAdapt = new Bloodhound
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name')
+		queryTokenizer: Bloodhound.tokenizers.whitespace
+		limit: 5
+		prefetch:
+			url: $('.search_section').data('categories-url')
+			filter: (json)->
+				human = (str) ->
+					str = str.charAt(0).toUpperCase() + str.slice(1);
+					str.replace("-"," ")
+				json.categories.map (cat)->
+					cat.name = human(cat.localizedId)
+					cat
 
 	this.retailersAdapt = new Bloodhound
 		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name')
@@ -190,6 +211,7 @@ Sidebar.prototype.init = ()->
 			url: $('.search_section').data('retailers-url')
 			filter: (json)->
 					json.retailers
+	this.categoriesAdapt.initialize()
 	this.retailersAdapt.initialize()
 	this.brandsAdapt.initialize()
 	self.renderRecent()
