@@ -36,6 +36,7 @@ class Search::ShopSense
 
 
     filters = []
+    categories = []
     query = "fts=#{query}"
     if options[:color].present?
       options[:color].split("_").map do |color|
@@ -48,13 +49,18 @@ class Search::ShopSense
     if options[:brands].present?
       filters = filters.concat(options[:brands].split("_"))
     end
-
+    if options[:categories].present?
+      categories = categories.concat(options[:categories].split("_"))
+    end
     fts = filters.map do |filter|
       "fl=#{filter}"
     end.join('&')
+    cat = categories.map do |filter|
+      "cat=#{filter}"
+    end.join('&')
     offset = "offset=#{offset}"
     limit = "limit=#{limit}"
-    args = [query,fts, offset, limit].join( '&')
+    args = [query,fts, offset, limit, cat].join( '&')
     filter(JSON.parse(call_api( __method__, args)))
   end
 

@@ -8,6 +8,7 @@ class SearchController < ApplicationController
     filters[:price] = params[:price] if params[:price]
     filters[:color] = params[:color] if params[:color]
     filters[:brands] = params[:brands] if params[:brands]
+    filters[:categories] = params[:categories] if params[:categories]
     offset = params[:offset] || 0
     limit = params[:limit] || 10
     render :json => search.search(params[:q], filters,offset, limit)

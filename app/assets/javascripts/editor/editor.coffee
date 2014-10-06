@@ -34,8 +34,12 @@ Sidebar.prototype.addFilter = (filter, name)->
 	container = $('.right_section .filters')
 	return if container.find('.searchFilter.'+filter["id"]).length>0
 	type = if name == "brands" then "info" else if name == "categories" then "warning" else "danger"
-	filterDiv = $(self.alertTemplate({class: type, message: filter["name"],css:"searchFilter " + filter["id"] }))
-	filterDiv.data('filter', name[0]+filter["id"])
+	filterDiv = $(self.alertTemplate({class: type+" "+name, message: filter["name"],css:"searchFilter " + filter["id"] }))
+	if name =="categories"
+		filterDiv.data('category', filter["id"])
+	else
+		filterDiv.data('filter', name[0]+filter["id"])
+
 	filterDiv.find('.close').click ->
 		filterDiv.remove()
 		self.toggleFilters()
@@ -268,7 +272,8 @@ Sidebar.prototype.getSearchFilters = ()->
 	gt = window.prices[price_range[0]]["id"]
 	lt = window.prices[price_range[1]]["id"]
 	filters["price"] = "p"+gt+"_"+lt
-	filters["brands"] = $('.searchFilter').map((a,i)-> $(i).data('filter')).get().join("_")
+	filters["brands"] = $('.searchFilter.brands, .searchFilter.retailers').map((a,i)-> $(i).data('filter')).get().join("_")
+	filters["categories"] = $('.searchFilter.categories').map((a,i)-> $(i).data('category')).get().join("_")
 	filters
 Sidebar.prototype.searchProducts = (tag, editMode)->
 	self = this
