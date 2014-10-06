@@ -61,6 +61,8 @@ Sidebar.prototype.initScroll = (cbk)->
 
 
 Sidebar.prototype.initSearch = (tag)->
+
+
 	self = this
 	search_elem = self.elem.find('.product_search')
 	colorsDiv = self.elem.find('.colors')
@@ -77,7 +79,7 @@ Sidebar.prototype.initSearch = (tag)->
 			self.searchProducts() if(self.searched)
 		colorsDiv.append(div)
 
-
+	search_elem.typeahead('destroy')
 	search_elem.typeahead
 			highlight: true
 			minLength: 2
