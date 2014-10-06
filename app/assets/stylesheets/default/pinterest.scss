@@ -38,6 +38,7 @@
 }
 .item {
   position: relative;
+
   &:hover .close {
     display:block;
   }
@@ -76,8 +77,6 @@
     display: block;
     position: relative;
     z-index: 5;
-    border: 1px solid #EFEFEF;
-    border-radius: 10px;
 }
 
  .item .picture a.image {

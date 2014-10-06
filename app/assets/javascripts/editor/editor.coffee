@@ -110,19 +110,27 @@ Sidebar.prototype.initSearch = (tag)->
 			self.addFilter obj, name
 
 
-Sidebar.prototype.selectTag = (tag)->
+Sidebar.prototype.selectTag = (tag, editMode)->
 	self = this
 	$('.details').html('')
 	window.currentTag = this.currentTag = declareProps(tag, this.props)
 
 	self.render = ()->
 		$('.right_section').addClass('searching')
+
+		if editMode
+			tag.editMode = true
+			$('.details').append(self.listTemplate({results:[tag], next_page: 1,total: 1}))
+			jQuery('.saveProduct').click (event, el)->
+				id = $(event.currentTarget).data('product-id')
+				self.saveTag(tag)
 		$('.searchForm').submit (event)->
 			event.preventDefault()
-			self.searchProducts()
+			self.searchProducts(tag)
 
 
 	self.render()
+
 
 	self.initSearch()
 
@@ -255,7 +263,7 @@ Sidebar.prototype.getSearchFilters = ()->
 	filters["price"] = "p"+gt+"_"+lt
 	filters["brands"] = $('.searchFilter').map((a,i)-> $(i).data('filter')).get().join("_")
 	filters
-Sidebar.prototype.searchProducts = ()->
+Sidebar.prototype.searchProducts = (tag=null)->
 	self = this
 	$('.details').html('')
 	$('.details').addClass('loading')
@@ -265,7 +273,11 @@ Sidebar.prototype.searchProducts = ()->
 		self.searched = true
 		console.log(json)
 		self.results = json
-		$('.details').html(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+		results = []
+		if(tag)
+			results.push(tag)
+			results = results.concat(json.results)
+		$('.details').html(self.listTemplate({results: results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
 		$('.details').removeClass('loading')
 		self.initScroll (json,opts)->
 			if self.results.results
@@ -376,8 +388,8 @@ jQuery ()->
 				console.log e
 			#editor.hide();
 
-		editor.onEdit (item)->
-			sidebar.selectTag(item);
+		editor.onEdit (item, editMode)->
+			sidebar.selectTag(item, editMode);
 
 	imgEl.imagesLoaded ->
 		init()

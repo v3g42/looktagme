@@ -325,12 +325,12 @@ class Editor extends Container
 			@startEditing(tag.id)
 
 	onTagClick: (tag, ptr) =>
-		@startEditing(tag.id)
+		@startEditing(tag.id, true)
 
 	onEdit: (cb) =>
 		@edit_cb = cb
 
-	startEditing: (id) =>
+	startEditing: (id, editMode = false) =>
 		if @editing != undefined then return
 		@disablePopup()
 		for i in @tags
@@ -363,7 +363,7 @@ class Editor extends Container
 				e.preventDefault()
 
 		)
-		@edit_cb(@editing)
+		@edit_cb(@editing, editMode)
 
 	copyTag: (src, dst) ->
 		reserved = ['x','y','id']
