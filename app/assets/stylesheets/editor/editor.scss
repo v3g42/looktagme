@@ -47,6 +47,9 @@ body.editor {
       @media (max-width: 400px){
         margin-top: 200px;
       }
+      .add_button {
+        display: none;
+      }
     }
   }
 
@@ -136,6 +139,17 @@ body.editor {
     }
   }
   .right_section {
+    .input-group-addon {
+      background: transparent;
+      padding: 0px;
+      button {
+        border: none;
+        padding: 6px 12px;
+        background: transparent;
+      }
+    }
+
+
     .clear {
       clear: both;
     }
@@ -172,50 +186,7 @@ body.editor {
         }
       }
     }
-    .tt-dropdown-menu {
-      width: 60%;
-      background: #FFFFFF;
-    }
 
-    .twitter-typeahead {
-      width: 100%;
-      background: #FFFFFF;
-    }
-    .tt-suggestions {
-      width: 60%;
-      display: block;
-      background: #FFFFFF;
-    }
-    .tt-suggestion {
-      padding: 2px 0;
-      width: 100%;
-      border-bottom: 1px solid #DDDDDD;
-      .image {
-
-        float:left;
-        padding-left: 2px;
-        img {
-          width: 100px;
-          height: 78px;
-        }
-      }
-      .text {
-        float:right;
-        padding-right: 2px;
-        width: 70%;
-        height: 78px;
-
-        line-height: 78px;
-        text-align: center;
-      }
-      clear:both;
-      &:hover,&:focus,&.tt-cursor {
-        color: #ffffff;
-        text-decoration: none;
-        outline: 0;
-        background-color: #428bca;
-      }
-    }
     p {
       width: 100%;
       word-break: break-all;

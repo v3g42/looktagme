@@ -86,13 +86,13 @@ Sidebar.prototype.initSearch = (tag)->
 			displayKey: 'name',
 			source: self.brandsAdapt.ttAdapter()
 			templates:
-				header: '<h3 class="typeahead-header">Brands</h3>'
+				header: '<p class="typeahead-header">Brands</p>'
 		,
 			name: 'retailers',
 			displayKey: 'name',
 			source: self.retailersAdapt.ttAdapter()
 			templates:
-				header: '<h3 class="typeahead-header">Retailers</h3>'
+				header: '<p class="typeahead-header">Retailers</p>'
 
 	search_elem.on 'typeahead:selected', (evt, obj, name) ->
 			evt.preventDefault();
@@ -244,7 +244,10 @@ Sidebar.prototype.searchProducts = ()->
 		$('.details').html(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
 		$('.details').removeClass('loading')
 		self.initScroll (json,opts)->
-			self.results.results = self.results.results.concat(json.results)
+			if self.results.results
+				self.results.results = self.results.results.concat(json.results)
+			else
+				self.results = json
 			$('.details').append(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
 			$container = $('.searchProducts:last')
 			self.masonry $container
@@ -272,7 +275,7 @@ Sidebar.prototype.updatePriceRange = ()->
 
 Sidebar.prototype.renderRecent = ()->
 	self = this
-	self.results = []
+	self.results = {}
 	$('.details').html('')
 	$('.details').addClass('loading')
 	$('.right_section').removeClass('searching')
@@ -287,6 +290,12 @@ Sidebar.prototype.renderRecent = ()->
 		jQuery('.deleteProduct').click (event, el)->
 			id = $(event.currentTarget).data('tag-id')
 			self.deleteTag(id, image.id)
+
+		$('.add_button').click ->
+			self.editor.initNewTag()
+
+		$container = $('.listProducts')
+		self.masonry $container
 
 	).fail(()->
 		#self.alert("danger", "Server Error!")

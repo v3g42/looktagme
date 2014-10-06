@@ -9,7 +9,13 @@
       .search_section data-brands-url="#{asset_path("shop_sense/brands.json")}"  data-retailers-url="#{asset_path("shop_sense/retailers.json")}"
         form.searchForm novalidate="" role="form" class="form-horizontal"
           .form-group
-            input.product_search.form-control data-key="title" placeholder=("#{t('editor.search_placeholder')}") type="text"
+            .input-group
+              input.product_search.form-control data-key="title" placeholder=("#{t('editor.search_placeholder')}") type="text"
+              span.input-group-addon
+                button type="submit" class="btn btn-search"
+                  i.glyphicon.glyphicon-search
+
+
           .form-group.brands
             label.pull-left Brands
             .pull-left.filters
@@ -17,11 +23,7 @@
             label.pull-left Retailers
             .pull-left.filters
           .form-group
-            .row
-              .col-sm-9
-                .colors
-              .col-sm-3
-                button.btn.btn-md.btn-info.btnSearch type="submit"=  t('editor.search')
+            .colors
           .form-group.price_slider
             .row
               .col-xs-8
