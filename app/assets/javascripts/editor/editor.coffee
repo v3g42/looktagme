@@ -86,7 +86,7 @@ Sidebar.prototype.initSearch = (tag)->
 	search_elem.typeahead
 			highlight: true
 			minLength: 2
-			hint: true
+			hint: false
 		,
 			name: 'categories',
 			displayKey: 'name',
