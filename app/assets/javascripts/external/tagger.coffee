@@ -377,7 +377,7 @@ class Editor extends Container
 		ptr.off 'mousedown'
 		@container.off 'mousemove'
 		@container.off 'mouseup'
-		@copyTag(data, @editing)
+		@copyTag(data, @editing) if data
 		@editing = undefined
 		@enablePopup()
 		for i in @tags

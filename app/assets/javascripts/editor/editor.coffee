@@ -124,6 +124,11 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 			jQuery('.saveProduct').click (event, el)->
 				id = $(event.currentTarget).data('product-id')
 				self.saveTag(tag)
+		$('.searchForm .btnCancel').click (event)->
+			event.preventDefault()
+			event.stopPropagation()
+			self.renderRecent()
+			self.editor.endEditing()
 		$('.searchForm').submit (event)->
 			event.preventDefault()
 			self.searchProducts(tag)
