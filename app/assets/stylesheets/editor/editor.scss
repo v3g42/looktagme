@@ -62,7 +62,7 @@ body.editor {
       width: 49%;
     }
     .search_section {
-      width: 49%;
+      width: 50%;
       left: 50%;
       .right_content .details .listProducts, .searchProducts  {
         @include listProducts($big-col-width);
@@ -81,8 +81,9 @@ body.editor {
     padding-top:15px;
     z-index:1000;
     display:none;
-    width: 55%;
-    left: 33%;
+    width: 65%;
+    left: 32%;
+    padding-left: 2%;
     .price_slider {
       padding-left: 20px;
     }
