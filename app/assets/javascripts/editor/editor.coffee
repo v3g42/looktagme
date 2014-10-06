@@ -43,9 +43,10 @@ Sidebar.prototype.addFilter = (filter, name)->
 	filterDiv.find('.close').click ->
 		filterDiv.remove()
 		self.toggleFilters()
+		self.searchProducts()
 	container.append(filterDiv)
 	self.toggleFilters()
-	self.searchProducts() if self.searched
+	self.searchProducts() #if self.searched
 
 
 Sidebar.prototype.initScroll = (cbk)->
