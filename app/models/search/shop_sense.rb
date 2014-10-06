@@ -37,14 +37,14 @@ class Search::ShopSense
 
     filters = []
     categories = []
-    query = "fts=#{query}"
+    query = "fts=#{URI.encode(query)}"
     if options[:color].present?
       options[:color].split("_").map do |color|
         filters << "c#{color}"
         end
     end
     if options[:price].present?
-      filters << options[:price].gsub("_",",")
+      filters = filters.concat(options[:price].split("_"))
     end
     if options[:brands].present?
       filters = filters.concat(options[:brands].split("_"))

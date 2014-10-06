@@ -66,7 +66,6 @@ Sidebar.prototype.initScroll = (cbk)->
 
 Sidebar.prototype.initSearch = (tag)->
 
-
 	self = this
 	search_elem = self.elem.find('.product_search')
 	colorsDiv = self.elem.find('.colors')
@@ -271,13 +270,14 @@ Sidebar.prototype.getSearchFilters = ()->
 	price_range = $('.price-slider').val().split(',')
 	gt = window.prices[price_range[0]]["id"]
 	lt = window.prices[price_range[1]]["id"]
-	filters["price"] = "p"+gt+"_"+lt
+	filters["price"] = "p"+gt+"_p"+lt
 	filters["brands"] = $('.searchFilter.brands, .searchFilter.retailers').map((a,i)-> $(i).data('filter')).get().join("_")
 	filters["categories"] = $('.searchFilter.categories').map((a,i)-> $(i).data('category')).get().join("_")
 	filters
 Sidebar.prototype.searchProducts = (tag, editMode)->
 	self = this
 	$('.details').html('')
+	$('.details').infiniteScroll('destroy') if $('.details').data('infinite-search')
 	$('.details').addClass('loading')
 	self.results = {}
 	jQuery.get('/search',self.getSearchFilters())
@@ -326,6 +326,7 @@ Sidebar.prototype.renderRecent = ()->
 	self = this
 	self.results = {}
 	$('.details').html('')
+	$('.details').infiniteScroll('destroy') if $('.details').data('infinite-search')
 	$('.details').addClass('loading')
 	$('.right_section').removeClass('searching')
 	image_url = self.img.attr('src')

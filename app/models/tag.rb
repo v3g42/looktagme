@@ -7,7 +7,7 @@ class Tag
   field :y, type: Float
   field :title, type: String
   field :description, type: String
-  field :price, type: Float
+  field :price, type: String
   field :seller_url, type: String
   field :seller_name, type: String
   field :image_url, type: String

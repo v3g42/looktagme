@@ -14,17 +14,23 @@
         this.currentPage = 1;
 
         var that = this;
-
-        $(window).scroll(function () {
+        that.scrollListener =  function () {
             if ($(window).scrollTop() >= that.$options.calculateBottom()) {
                 that.loadMore();
             }
-        });
+        };
+        $(window).on('scroll',that.scrollListener);
     };
 
     InfiniteScroll.prototype = {
         constructor: InfiniteScroll,
-
+        destroy: function(){
+            var $this = this;
+            $(window).off('scroll',$this.scrollListener);
+            $this.endOfResults = false;
+            $this.executing = false;
+            console.log("Infinite scroll destroyed")
+        },
         loadMore: function () {
             var $this = this;
             if ($this.executing || $this.endOfResults) return;
@@ -56,12 +62,19 @@
     };
 
     $.fn.infiniteScroll = function (option) {
+
+
         return this.each(function () {
             var $this = $(this),
-                data = $this.data('infinite-search'),
-                options = $.extend({}, $.fn.infiniteScroll.defaults, typeof option == 'object' && option);
-            if (!data) $this.data('infinite-search', (data = new InfiniteScroll(this, options)));
-            if (typeof options == 'string') data[options]();
+                data = $this.data('infinite-search');
+            if (typeof option == 'string' && data && data[option]) data[option]();
+            else if (typeof option == "object"){
+                var options = $.extend({}, $.fn.infiniteScroll.defaults, option);
+                $this.data('infinite-search', (data = new InfiniteScroll(this, options)));
+            } else {
+                //$.error( 'Method ' +  option + ' does not exist on jQuery.infiniteScroll' );
+            }
+
         });
     };
 
