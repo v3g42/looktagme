@@ -127,6 +127,8 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 		$('.searchForm').submit (event)->
 			event.preventDefault()
 			self.searchProducts(tag)
+			search_elem = self.elem.find('.product_search')
+			search_elem.typeahead('val', '');
 
 
 	self.render()
