@@ -131,7 +131,7 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 			self.editor.endEditing()
 		$('.searchForm').submit (event)->
 			event.preventDefault()
-			self.searchProducts(tag)
+			self.searchProducts(tag, editMode)
 			search_elem = self.elem.find('.product_search')
 			search_elem.typeahead('val', '');
 
@@ -270,7 +270,7 @@ Sidebar.prototype.getSearchFilters = ()->
 	filters["price"] = "p"+gt+"_"+lt
 	filters["brands"] = $('.searchFilter').map((a,i)-> $(i).data('filter')).get().join("_")
 	filters
-Sidebar.prototype.searchProducts = (tag=null)->
+Sidebar.prototype.searchProducts = (tag, editMode)->
 	self = this
 	$('.details').html('')
 	$('.details').addClass('loading')
@@ -281,19 +281,20 @@ Sidebar.prototype.searchProducts = (tag=null)->
 		console.log(json)
 		self.results = json
 		results = []
-		if(tag)
-			results.push(tag)
-			results = results.concat(json.results)
+		results.push(tag)	if(editMode && tag)
+		results = results.concat(json.results)
+
 		$('.details').html(self.listTemplate({results: results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
 		$('.details').removeClass('loading')
-		self.initScroll (json,opts)->
-			if self.results.results
-				self.results.results = self.results.results.concat(json.results)
-			else
-				self.results = json
-			$('.details').append(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
-			$container = $('.searchProducts:last')
-			self.masonry $container
+		if results && results.length>0
+			self.initScroll (json,opts)->
+				if self.results.results
+					self.results.results = self.results.results.concat(json.results)
+				else
+					self.results = json
+				$('.details').append(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+				$container = $('.searchProducts:last')
+				self.masonry $container
 		jQuery('.saveProduct').click (event, el)->
 			id = $(event.currentTarget).data('product-id')
 			console.log self.results.results[id]
@@ -377,7 +378,7 @@ jQuery ()->
 
 		$('.price-slider').slider()
 		$('.price-slider').on "slideStop", (slideEvt) ->
-			sidebar.searchProducts() if sidebar.searched
+			sidebar.searchProducts(self.currentTag) if sidebar.searched
 			sidebar.updatePriceRange()
 
 		$('.price-slider').on "slide", (slideEvt) ->

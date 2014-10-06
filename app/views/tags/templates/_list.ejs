@@ -5,11 +5,11 @@
     {{else}}
         <div class="item searchProduct">
     {{/if}}
-		<div class="picture">
-			<a href="#" class="image">
-				<img src="{{image_url}}" alt=""> <br>
-			</a>
-			<div class="item-content">
+        <div class="picture">
+            <a href="#" class="image">
+                <img src="{{image_url}}" alt=""> <br>
+            </a>
+            <div class="item-content">
                     {{#unless editMode}}
                         <button type="button" class="btn btn-info btn-sm pull-right saveProduct" data-product-id="{{@index}}">Tag it!</button>
                     {{/unless}}
@@ -17,9 +17,14 @@
                         {{price}} {{currency}}
                     </div>
                     <div class="shopname">{{seller_name}}</div>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
+
 {{/each}}
 </div>
-<span class="next-page" data-next-page="{{next_page}}" data-total="{{total}}"></span>
+{{#unless results}}
+    <p class="no-results"> Sorry! Cannot find anything! </p>
+{{else}}
+    <span class="next-page" data-next-page="{{next_page}}" data-total="{{total}}"></span>
+{{/unless}}
