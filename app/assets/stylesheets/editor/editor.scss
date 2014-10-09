@@ -1,7 +1,7 @@
 @import "../default/pinterest";
 
 $col-width: 180px;
-$big-col-width: 180px;
+$big-col-width: 160px;
 body.editor {
   .no-results {
     text-align: center;
@@ -60,16 +60,18 @@ body.editor {
   .tag_editor.horizontal-image {
     .right_section {
       width: 50%;
-      margin-left: 47%;
+      margin-left: 49%;
     }
     .left_section {
       width: 49%;
     }
     .search_section {
-      width: 50%;
-      left: 50%;
-      .right_content .details .listProducts, .searchProducts  {
-        @include listProducts($big-col-width);
+      width: 49%;
+      left: 49%;
+    }
+    .right_content .details .listProducts, .searchProducts  {
+      .item {
+        width: $big-col-width !important;
       }
     }
 

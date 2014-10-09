@@ -252,8 +252,8 @@ Sidebar.prototype.masonry = ($container)->
 		$('.details').addClass('loaded')
 		$container.masonry
 			itemSelector : '.item'
-			#columnWidth : if $('.tag_editor').hasClass('horizontal-image') then 240 else 220
-			columnWidth : 200
+			columnWidth : if $('.tag_editor').hasClass('horizontal-image') then 180 else 200
+			#columnWidth : 200
 			isAnimated: false
 
 Sidebar.prototype.getSearchFilters = ()->
@@ -370,6 +370,9 @@ jQuery ()->
 
 	window.init = init = ()->
 		imgEl = jQuery('.left_section img')
+
+		aspectRatio = imgEl.width()/imgEl.height()
+		jQuery('.tag_editor').addClass('horizontal-image') if aspectRatio>0.8
 		console.log imgEl[0].width
 		if window.imageData
 			editor = new LookTagMe.Editor({}, imgEl, window.imageData.tags)
