@@ -253,7 +253,7 @@ Sidebar.prototype.masonry = ($container)->
 		$container.masonry
 			itemSelector : '.item'
 			#columnWidth : if $('.tag_editor').hasClass('horizontal-image') then 240 else 220
-			columnWidth : 240
+			columnWidth : 200
 			isAnimated: false
 
 Sidebar.prototype.getSearchFilters = ()->

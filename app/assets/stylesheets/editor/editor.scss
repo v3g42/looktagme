@@ -1,7 +1,7 @@
 @import "../default/pinterest";
 
 $col-width: 180px;
-$big-col-width: 200px;
+$big-col-width: 180px;
 body.editor {
   .no-results {
     text-align: center;
@@ -192,6 +192,18 @@ body.editor {
   }
   .clear {
     clear: both;
+  }
+
+  .add_button {
+    padding: 5px;
+    font-size: 15px;
+    display: block;
+    text-align: left;
+    .plus {
+      text-shadow:none;
+      font-size: 15px;
+    }
+
   }
 }
 

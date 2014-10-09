@@ -11,7 +11,8 @@
     -moz-border-top-colors: none;
     //background: linear-gradient(to bottom, #F6F6F6 0%, #EAEAEA 100%) repeat scroll 0 0 transparent;
     border-radius: 4px 4px 4px 4px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 2px 1px rgba(0, 0, 0, 0.1), 0 3px 1px rgba(0, 0, 0, 0.05);
+    #box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15), 0 2px 1px rgba(0, 0, 0, 0.1), 0 3px 1px rgba(0, 0, 0, 0.05);
+   box-shadow: 1px 1px 1px 1px rgba(23, 23, 23, 0.26);
     //text-shadow: 0 1px 0 #DDDDDD;
     text-align: center;
     width: $col-width;
@@ -96,29 +97,6 @@
     height: auto;
     max-width: 100%;
 }
-.add_button {
-  cursor: pointer;
-  text-align: center;
-  height: 200px;
-  background: brown;
-  border-radius: 70px;
-  .plus {
-    text-shadow:none;
-    padding-top: 0px;
-    font-size: 100px;
-    margin-right: 10px;
-    color: white;
-  }
-  .AddTag {
-    text-shadow:none;
-    font-size: 17px;
-    color: white;
-  }
 
-
-  &:hover {
-    border: 1px solid #D4D4D4;
-  }
-}
 
 }
