@@ -72,6 +72,12 @@ body.editor {
     .right_content .details .listProducts, .searchProducts  {
       .item {
         width: $big-col-width !important;
+        .price {
+          font-size: 10px !important;
+        }
+        .shopname {
+          font-size: 11px !important;
+        }
       }
     }
 

@@ -44,7 +44,7 @@ class Search::ShopSense
         end
     end
     if options[:price].present?
-      filters = filters.concat(options[:price].split("_"))
+      filters = filters.concat([options[:price]])
     end
     if options[:brands].present?
       filters = filters.concat(options[:brands].split("_"))

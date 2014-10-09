@@ -158,7 +158,8 @@ Sidebar.prototype.saveTag = (tag)->
 	page_url = $('#page_url').val()
 	domain = $('#domain').val()
 	tag_data = $.extend {}, currentTag
-	delete tag_data.id
+	delete tag_data.id unless tag_data.editMode
+	delete tag_data.editMode
 	data = {}
 	image_data = {}
 	data.image_url = self.img.attr('src')
@@ -271,7 +272,7 @@ Sidebar.prototype.getSearchFilters = ()->
 	price_range = $('.price-slider').val().split(',')
 	gt = window.prices[price_range[0]]["id"]
 	lt = window.prices[price_range[1]]["id"]
-	filters["price"] = "p"+gt+"_p"+lt
+	filters["price"] = "p"+gt+":"+lt
 	filters["brands"] = $('.searchFilter.brands, .searchFilter.retailers').map((a,i)-> $(i).data('filter')).get().join("_")
 	filters["categories"] = $('.searchFilter.categories').map((a,i)-> $(i).data('category')).get().join("_")
 	filters
@@ -372,9 +373,9 @@ jQuery ()->
 		imgEl = jQuery('.left_section img')
 
 		aspectRatio = imgEl.width()/imgEl.height()
-		jQuery('.tag_editor').addClass('horizontal-image') if aspectRatio>0.8
+		jQuery('.tag_editor').addClass('horizontal-image') if aspectRatio>1
 		console.log imgEl[0].width
-		if window.imageData
+		if window.imageData && window.imageData.tags
 			editor = new LookTagMe.Editor({}, imgEl, window.imageData.tags)
 		else
 			editor = new LookTagMe.Editor({}, imgEl, [])
