@@ -57,6 +57,8 @@ body.editor {
     }
   }
 
+
+
   .tag_editor.horizontal-image {
     .right_section {
       width: 50%;
@@ -77,6 +79,15 @@ body.editor {
         }
         .shopname {
           font-size: 11px !important;
+        }
+      }
+    }
+
+    .searching {
+      &.right_section .right_content  .details {
+        margin-top: 210px;
+        @media (max-width: 400px){
+          margin-top: 220px;
         }
       }
     }

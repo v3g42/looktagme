@@ -3,18 +3,18 @@
 </a>
 <div class="listProducts" data-image-id="{{image_id}}">
 {{#each results}}
-  <div class="item product">
-    <a href="#" data-tag-id="{{id}}" class="close deleteProduct">X</button>
-        <div class="picture">
-          <a href="#" class="image">
+  <div class="item product" data-tag-id="{{id}}">
+    <a href="#" target="_blank" data-tag-id="{{id}}" class="close deleteProduct">X</button>
+        <div class="picture ">
+          <a href="#" class="image editProduct" data-tag-id="{{id}}">
             <img src="{{image_url}}" alt=""> <br>
           </a>
           <div class="item-content">
             <div class="buy_cont pull-right">
-              <a class="buy" href="#">Buy Now</a>
+              <a class="buy" href="{{seller_url}}" target="_blank">Buy Now</a>
             </div>
             <div class="price">{{currency}} {{price}}</div>
-            <div class="shopname">{{seller_name}}</div>
+            <a href="{{seller_url}}" target="_blank"  class="shopname">{{seller_name}}</a>
           </div>
         </div>
     </a>

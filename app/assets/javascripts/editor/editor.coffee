@@ -154,7 +154,7 @@ Sidebar.prototype.saveTag = (tag)->
 	for prop in self.props
 		self.currentTag[prop] = tag[prop]
 
-	self.editor.endEditing(currentTag)
+	self.editor.endEditing(tag)
 	page_url = $('#page_url').val()
 	domain = $('#domain').val()
 	tag_data = $.extend {}, currentTag
@@ -339,7 +339,14 @@ Sidebar.prototype.renderRecent = ()->
 		$('.details').removeClass('loading')
 		search_elem = self.elem.find('.product_search')
 		search_elem.typeahead('val', '')
+		jQuery('.editProduct').click ->
+			event.stopPropagation()
+			event.preventDefault()
+			id = $(event.currentTarget).data('tag-id')
+			self.editor.startEditing(id, true)
 		jQuery('.deleteProduct').click (event, el)->
+			event.stopPropagation()
+			event.preventDefault()
 			id = $(event.currentTarget).data('tag-id')
 			self.deleteTag(id, image.id)
 
