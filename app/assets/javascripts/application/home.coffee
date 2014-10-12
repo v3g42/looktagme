@@ -41,7 +41,6 @@ class HomeListView
 
 			$container.masonry
 				itemSelector : '.item'
-				columnWidth : 200
 				isAnimated: false
 
 	render: ()->

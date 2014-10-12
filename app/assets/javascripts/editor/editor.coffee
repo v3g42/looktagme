@@ -259,7 +259,7 @@ Sidebar.prototype.masonry = ($container)->
 		$('.details').addClass('loaded')
 		$container.masonry
 			itemSelector : '.item'
-			columnWidth : if $('.tag_editor').hasClass('horizontal-image') then 180 else 200
+			#columnWidth : if $('.tag_editor').hasClass('horizontal-image') then 180 else 200
 			#columnWidth : 200
 			isAnimated: false
 
