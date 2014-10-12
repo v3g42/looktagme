@@ -161,14 +161,14 @@ Sidebar.prototype.saveTag = (tag)->
 		self.currentTag[prop] = tag[prop]
 
 	self.editor.endEditing(tag)
-	page_url = encodeURIComponent $('#page_url').val()
-	domain = encodeURIComponent $('#domain').val()
+	page_url = $('#page_url').val()
+	domain = $('#domain').val()
 	tag_data = $.extend {}, currentTag
 	delete tag_data.id unless tag_data.editMode
 	delete tag_data.editMode
 	data = {}
 	image_data = {}
-	data.image_url = encodeURIComponent self.img.attr('src')
+	data.image_url = self.img.attr('src')
 	data.page_url = page_url
 	data.tag = tag_data
 	delete data.id
@@ -192,7 +192,7 @@ Sidebar.prototype.deleteTag = (tag_id, image_id)->
 	self.editor.removeTag(tag_id)
 	page_url = $('#page_url').val()
 	domain = $('#domain').val()
-	data = {image_url: encodeURIComponent(self.img.attr('src')), id: tag_id, image_id: image_id, page_url: encodeURIComponent(page_url) }
+	data = {image_url: self.img.attr('src'), id: tag_id, image_id: image_id, page_url: page_url }
 	jQuery.ajax
 		url: '/tags'
 		data: data
@@ -343,7 +343,7 @@ Sidebar.prototype.renderRecent = ()->
 	$('.details').addClass('loading')
 	$('.right_section').removeClass('searching')
 	image_url = self.img.attr('src')
-	jQuery.get('/tags/recent?image_url='+encodeURIComponent(image_url))
+	jQuery.get('/tags/recent',{image_url:image_url})
 	.done((image)->
 		console.log(image)
 		$('.details').html(self.productsTemplate({results:image.tags, image_id:image.id}))
@@ -376,7 +376,8 @@ jQuery ()->
 	fetchTags = (img) ->
 		app_id = page_url = $('#page_url').val()
 		req = $.ajax(
-			url: "/tags?app_id=" + encodeURIComponent(app_id) + "&image_url=" + encodeURIComponent(img.src)
+			url: "/tags"
+			data: {app_id:app_id, image_url: img.src}
 			dataType: "json"
 
 			success: (data) ->
