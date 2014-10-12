@@ -192,7 +192,7 @@ Sidebar.prototype.deleteTag = (tag_id, image_id)->
 	self.editor.removeTag(tag_id)
 	page_url = $('#page_url').val()
 	domain = $('#domain').val()
-	data = {image_url: encodeURIComponent self.img.attr('src'), id: tag_id, image_id: image_id, page_url: encodeURIComponent page_url }
+	data = {image_url: encodeURIComponent(self.img.attr('src')), id: tag_id, image_id: image_id, page_url: encodeURIComponent(page_url) }
 	jQuery.ajax
 		url: '/tags'
 		data: data
