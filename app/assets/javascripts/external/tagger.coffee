@@ -80,7 +80,7 @@ class Container
 		@container.css
 			top: @elem.top() + 'px', 
 			left: @elem.left() + 'px',
-			width: '1px'
+			width: @elem.width() + 'px',
 			height: '1px'
 		body.append(@container)
 		@elem.on 'mouseenter', () => @container.trigger('mouseenter')
@@ -133,9 +133,8 @@ class Container
 
 	createMenu: () =>
 		@menu = $('<div class="menu"/>');
-		@menu.css
-			left: (@elem.width() - 60) + 'px'
-			height: (@elem.height() - 10) + 'px'	
+		if @elem.width() < 400 or @elem.height() < 400
+			@menu.addClass('small') 
 
 		@container.append(@menu);
 		@container.mouseover () =>

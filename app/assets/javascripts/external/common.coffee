@@ -31,6 +31,16 @@ class ImageUtils
 		img.onerror = () -> cb(false)
 		img.src = url;
 
+	@preload: (images, cb) ->
+		total = images.lenght
+		loaded = 0
+		for url in images
+			img = new Image()
+			img.onload = () ->
+				loaded++
+				if total == loaded
+					cb()
+
 
 window.LookTagMe.Logger = Logger
 window.LookTagMe.ImageUtils = ImageUtils
