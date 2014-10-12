@@ -96,7 +96,7 @@ class Container
 			@container.css
 				top: @elem.top() + 'px', 
 				left: @elem.left() + 'px',
-				width: '1px', height: '1px'
+				width: @elem.width() + 'px', height: '1px'
 
 			for tag in @tags
 				$(@tagmap[tag.id]).css
@@ -364,6 +364,7 @@ class Editor extends Container
 
 		)
 		@edit_cb(@editing, editMode)
+
 
 	updateTag: (existing, newdata) ->
 
