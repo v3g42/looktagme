@@ -28,17 +28,23 @@ Sidebar.prototype.toggleFilters = ()->
 			container.show()
 		else
 			container.hide()
-Sidebar.prototype.addFilter = (filter, name)->
+Sidebar.prototype.addFilter = (filter, name, force = true)->
 	self = this
 	console.log(filter + " : " + name)
 	container = $('.right_section .filters')
 	return if container.find('.searchFilter.'+filter["id"]).length>0
-	type = if name == "brands" then "info" else if name == "categories" then "warning" else "danger"
+	type = "danger"
+	if name == "brands"
+		type = "info"
+	else if name == "categories"
+	  type = "warning"
 	filterDiv = $(self.alertTemplate({class: type+" "+name, message: filter["name"],css:"searchFilter " + filter["id"] }))
 	if name =="categories"
 		filterDiv.data('category', filter["id"])
-	else
+	else if name in ["brands", "retailers"]
 		filterDiv.data('filter', name[0]+filter["id"])
+	else if name == "search"
+		filterDiv.data('search', filter["name"])
 
 	filterDiv.find('.close').click ->
 		filterDiv.remove()
@@ -46,7 +52,7 @@ Sidebar.prototype.addFilter = (filter, name)->
 		self.searchProducts()
 	container.append(filterDiv)
 	self.toggleFilters()
-	self.searchProducts() #if self.searched
+	self.searchProducts() unless force == false #if self.searched
 
 
 Sidebar.prototype.initScroll = (cbk)->
@@ -154,11 +160,12 @@ Sidebar.prototype.saveTag = (tag)->
 	for prop in self.props
 		self.currentTag[prop] = tag[prop]
 
-	self.editor.endEditing(currentTag)
+	self.editor.endEditing(tag)
 	page_url = $('#page_url').val()
 	domain = $('#domain').val()
 	tag_data = $.extend {}, currentTag
-	delete tag_data.id
+	delete tag_data.id unless tag_data.editMode
+	delete tag_data.editMode
 	data = {}
 	image_data = {}
 	data.image_url = self.img.attr('src')
@@ -252,14 +259,14 @@ Sidebar.prototype.masonry = ($container)->
 		$('.details').addClass('loaded')
 		$container.masonry
 			itemSelector : '.item'
-			#columnWidth : if $('.tag_editor').hasClass('horizontal-image') then 240 else 220
-			columnWidth : 200
+			#columnWidth : if $('.tag_editor').hasClass('horizontal-image') then 180 else 200
+			#columnWidth : 200
 			isAnimated: false
 
 Sidebar.prototype.getSearchFilters = ()->
-	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val() || ""
+	self = this
+
 	filters = {}
-	filters["q"] = search
 	# Color Filter
 	if $('.color.selected').length>0
 		colors = []
@@ -271,15 +278,20 @@ Sidebar.prototype.getSearchFilters = ()->
 	price_range = $('.price-slider').val().split(',')
 	gt = window.prices[price_range[0]]["id"]
 	lt = window.prices[price_range[1]]["id"]
-	filters["price"] = "p"+gt+"_p"+lt
+	filters["price"] = "p"+gt+":"+lt
 	filters["brands"] = $('.searchFilter.brands, .searchFilter.retailers').map((a,i)-> $(i).data('filter')).get().join("_")
 	filters["categories"] = $('.searchFilter.categories').map((a,i)-> $(i).data('category')).get().join("_")
+	filters["q"] = $('.searchFilter.search').data('search') || ""
 	filters
 Sidebar.prototype.searchProducts = (tag, editMode)->
 	self = this
 	$('.details').html('')
 	$('.details').infiniteScroll('destroy') if $('.details').data('infinite-search')
 	$('.details').addClass('loading')
+	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val()
+	if(search)
+		$('.searchFilter.search').remove()
+		self.addFilter({name:search}, "search", false)
 	self.results = {}
 	jQuery.get('/search',self.getSearchFilters())
 	.done((json)->
@@ -331,14 +343,21 @@ Sidebar.prototype.renderRecent = ()->
 	$('.details').addClass('loading')
 	$('.right_section').removeClass('searching')
 	image_url = self.img.attr('src')
-	jQuery.get('/tags/recent?image_url='+image_url)
+	jQuery.get('/tags/recent',{image_url:image_url})
 	.done((image)->
 		console.log(image)
 		$('.details').html(self.productsTemplate({results:image.tags, image_id:image.id}))
 		$('.details').removeClass('loading')
 		search_elem = self.elem.find('.product_search')
 		search_elem.typeahead('val', '')
+		jQuery('.editProduct').click ->
+			event.stopPropagation()
+			event.preventDefault()
+			id = $(event.currentTarget).data('tag-id')
+			self.editor.startEditing(id, true)
 		jQuery('.deleteProduct').click (event, el)->
+			event.stopPropagation()
+			event.preventDefault()
 			id = $(event.currentTarget).data('tag-id')
 			self.deleteTag(id, image.id)
 
@@ -357,7 +376,8 @@ jQuery ()->
 	fetchTags = (img) ->
 		app_id = page_url = $('#page_url').val()
 		req = $.ajax(
-			url: "/tags?app_id=" + encodeURIComponent(app_id) + "&image_url=" + encodeURIComponent(img.src)
+			url: "/tags"
+			data: {app_id:app_id, image_url: img.src}
 			dataType: "json"
 
 			success: (data) ->
@@ -370,8 +390,11 @@ jQuery ()->
 
 	window.init = init = ()->
 		imgEl = jQuery('.left_section img')
+
+		aspectRatio = imgEl.width()/imgEl.height()
+		jQuery('.tag_editor').addClass('horizontal-image') if aspectRatio>1
 		console.log imgEl[0].width
-		if window.imageData
+		if window.imageData && window.imageData.tags
 			editor = new LookTagMe.Editor({}, imgEl, window.imageData.tags)
 		else
 			editor = new LookTagMe.Editor({}, imgEl, [])

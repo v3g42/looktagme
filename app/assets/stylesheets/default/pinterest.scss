@@ -20,13 +20,15 @@
     margin-top: 0;
     float: left;
     min-height: 200px;
+   min-width: 150px;
     @include buttons;
     .buy_cont {
       text-align: center;
       .buy {
-        height: 20px;
-        line-height: 20px;
+        height: 25px;
+        line-height: 25px;
         font-size: 12px;
+        width: 55px;
       }
     }
     .price {
@@ -35,6 +37,9 @@
     .shopname {
       font-size: 12px;
       padding: 2px 0;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: block;
     }
 }
 .item {

@@ -28,12 +28,19 @@ class TagsController < ApplicationController
       image.user = current_user
       return render :json => {:message => image.errors.join(",")},:status => :unprocessable_entity  unless image.save
     end
-    t = Tag.new(params[:tag])
-    t.image = image
-    if(t.save)
+    if params[:tag][:id].present?
+      t = image.tags.find(params[:tag][:id])
+      t.update(params[:tag])
+    else
+      t = Tag.new(params[:tag])
+      t.image = image
+      t.save
+    end
+
+    unless(t.errors.present?)
       render :json => t
     else
-      render :json => {:message => t.errors.join(",")},:status => :unprocessable_entity
+      render :json => {:message => t.errors.full_messages.to_sentence},:status => :unprocessable_entity
     end
 
   end

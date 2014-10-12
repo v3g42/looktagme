@@ -41,8 +41,6 @@ class HomeListView
 
 			$container.masonry
 				itemSelector : '.item'
-			#columnWidth : if $('.tag_editor').hasClass('horizontal-image') then 240 else 220
-				columnWidth : 240
 				isAnimated: false
 
 	render: ()->

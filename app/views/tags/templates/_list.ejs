@@ -6,7 +6,7 @@
         <div class="item searchProduct">
     {{/if}}
         <div class="picture">
-            <a href="#" class="image">
+            <a href="{{seller_url}}" target="_blank" class="image">
                 <img src="{{image_url}}" alt=""> <br>
             </a>
             <div class="item-content">
@@ -16,7 +16,7 @@
                     <div class="price">
                         {{price}} {{currency}}
                     </div>
-                    <div class="shopname">{{seller_name}}</div>
+                    <a href="{{seller_url}}" target="_blank" class="shopname">{{seller_name}}</a>
             </div>
         </div>
     </div>
