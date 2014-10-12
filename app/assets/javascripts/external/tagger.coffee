@@ -80,7 +80,7 @@ class Container
 		@container.css
 			top: @elem.top() + 'px', 
 			left: @elem.left() + 'px',
-			width: '1px'
+			width: @elem.width() + 'px',
 			height: '1px'
 		body.append(@container)
 		@elem.on 'mouseenter', () => @container.trigger('mouseenter')
@@ -133,9 +133,8 @@ class Container
 
 	createMenu: () =>
 		@menu = $('<div class="menu"/>');
-		@menu.css
-			left: (@elem.width() - 60) + 'px'
-			height: (@elem.height() - 10) + 'px'	
+		if @elem.width() < 400 or @elem.height() < 400
+			@menu.addClass('small') 
 
 		@container.append(@menu);
 		@container.mouseover () =>
@@ -300,6 +299,7 @@ class Editor extends Container
    		x = Math.floor(@elem.width() / 2) - 10
    		y = Math.floor(@elem.height() / 2) - 10
    		tag = @newTag(x, y, false, true)
+   		@editingNewTag = true
    		@startEditing(tag.id)
 
 	ready: () =>
@@ -325,6 +325,7 @@ class Editor extends Container
 			@startEditing(tag.id)
 
 	onTagClick: (tag, ptr) =>
+		@editingNewTag = false
 		@startEditing(tag.id, true)
 
 	onEdit: (cb) =>
@@ -377,7 +378,12 @@ class Editor extends Container
 		ptr.off 'mousedown'
 		@container.off 'mousemove'
 		@container.off 'mouseup'
-		@copyTag(data, @editing) if data
+		if data
+			@copyTag(data, @editing)
+		else
+			if @editingNewTag
+				@removeTag(@editing.id)
+
 		@editing = undefined
 		@enablePopup()
 		for i in @tags

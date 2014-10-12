@@ -73,6 +73,12 @@ class LookTagMePage
 				viewer = @createViewer(img)
 				@fetchTags(viewer)
 
+	run: =>
+		LookTagMe.ImageUtils.preload(
+			[window.$TAGGER.base_url + '<%= image_url('tag.png') %>'],
+			@apply
+		)
+
 
 	LookTagMe.page = new LookTagMePage(
 		LookTagMe.Viewer

@@ -95,7 +95,7 @@
 
 .tagger-popup .callout.right {
 	right: -22px;
-	background: image_url("callout.png") center center no-repeat;
+	background: image_url("callout_left.png") center center no-repeat;
 }
 
 .tagger-popup .container {
@@ -154,10 +154,18 @@
 	}
 }
 .tagger-wrap .menu {
-	position: absolute;
-	width: 50px;
-	top: 10px;
-	border: 0px;
+	position: relative;
+	float: right;
+	margin-top: 10px;
+	margin-right: 10px;
+}
+
+.tagger-wrap .menu.small {
+	-ms-transform: scale(.6,.6); 
+    -webkit-transform: scale(.6,.6); 
+    transform: scale(.6,.6);
+    margin-top: -5px;
+	margin-right: -5px;
 }
 
 .tagger-wrap .ptrcontainer {
@@ -237,7 +245,6 @@
 	bottom: 0px;
 	right: 0px;
 	cursor: pointer;
-
 }
 
 .tagger-wrap .menu .trash {
