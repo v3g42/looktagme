@@ -299,6 +299,7 @@ class Editor extends Container
    		x = Math.floor(@elem.width() / 2) - 10
    		y = Math.floor(@elem.height() / 2) - 10
    		tag = @newTag(x, y, false, true)
+   		@editingNewTag = true
    		@startEditing(tag.id)
 
 	ready: () =>
@@ -324,6 +325,7 @@ class Editor extends Container
 			@startEditing(tag.id)
 
 	onTagClick: (tag, ptr) =>
+		@editingNewTag = false
 		@startEditing(tag.id, true)
 
 	onEdit: (cb) =>
@@ -376,7 +378,12 @@ class Editor extends Container
 		ptr.off 'mousedown'
 		@container.off 'mousemove'
 		@container.off 'mouseup'
-		@copyTag(data, @editing) if data
+		if data
+			@copyTag(data, @editing)
+		else
+			if @editingNewTag
+				@removeTag(@editing.id)
+
 		@editing = undefined
 		@enablePopup()
 		for i in @tags
