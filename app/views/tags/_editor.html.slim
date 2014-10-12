@@ -15,15 +15,15 @@
                 button type="submit" class="btn btn-search"
                   i.glyphicon.glyphicon-search
 
-
-          .form-group.filters
           .form-group
             .row
-              .col-sm-8
+              .col-xs-10
                 .colors
-              .col-sm-3
-                button.btn.btn-sm.col-sm-6.btn-info.btnSave disabled="true"=  t('editor.save')
-                button.btn.btn-sm.col-sm-6.btn-danger.btnCancel=  t('editor.cancel')
+                .filters
+              .col-xs-2
+                .btn-group-vertical
+                  button.btn.btn-sm.btn-danger.btnCancel=  t('editor.cancel')
+                  button.btn.btn-sm.btn-info.btnSave disabled="true"=  t('editor.save')
           .form-group.price_slider
             .row
               .col-xs-8

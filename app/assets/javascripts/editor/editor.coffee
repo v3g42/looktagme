@@ -146,6 +146,8 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 			event.preventDefault()
 			event.stopPropagation()
 			tag = $('.search_section .btnSave').data('tag')
+			$('.search_section .btnSave').data('tag', null)
+			$('.search_section .btnSave').prop('disabled', true)
 			self.saveProduct(tag) if tag
 
 
@@ -158,9 +160,9 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 
 
 Sidebar.prototype.selectProduct = (tag)->
+ $('.search_section').addClass('selected')
  $('.search_section .btnSave').removeAttr('disabled')
  $('.search_section .btnSave').data('tag', tag)
- $('.item').removeClass('selected')
 
 Sidebar.prototype.saveProduct = (tag)->
 	self = this
@@ -321,6 +323,7 @@ Sidebar.prototype.searchProducts = (tag, editMode)->
 				$container = $('.searchProducts:last')
 				self.masonry $container
 		jQuery('.searchProduct').click (event, el)->
+			$('.item').removeClass('selected')
 			id = $(event.currentTarget).data('product-id')
 			$(event.currentTarget).addClass('selected')
 			console.log self.results.results[id]

@@ -58,9 +58,18 @@ body.editor {
   }
 
   .search_section{
-    .btnSave:disabled {
-      background: grey;
+    .btnCancel {
+      margin-bottom: 5px;
     }
+
+//    &.selected {
+//      .btnSave {
+//        display: block;
+//      }
+//    }
+//    .btnSave {
+//      display: none;
+//    }
   }
 
   .tag_editor.horizontal-image {
