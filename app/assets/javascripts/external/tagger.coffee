@@ -367,7 +367,7 @@ class Editor extends Container
 		@edit_cb(@editing, editMode)
 
 	copyTag: (src, dst) ->
-		reserved = ['x','y','id']
+		reserved = ['x','y']
 		for i in src
 			if (reserved.indexOf(i) < 0) 
 				dst[i] = src[i]

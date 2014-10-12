@@ -11,7 +11,7 @@ Sidebar = (options)->
 	this.editor = options.editor
 
 
-	this.props = ['title', 'description', 'price', 'url', 'image_url', 'image_width', 'image_height', 'currency', 'raw_details', 'seller_name', 'seller_url' ]
+	this.props = ['title', 'description', 'price', 'image_url', 'image_width', 'image_height', 'currency', 'seller_name', 'seller_url' ]
 	this.currentTag = null
 	this.watchable = null
 	this.alertTemplate = Handlebars.compile $('#editor-alert').html()
@@ -131,6 +131,8 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 		if editMode
 			tag.editMode = true
 			$('.details').append(self.listTemplate({results:[tag], next_page: 1,total: 1}))
+			$('.search_section .btnSave').removeAttr('disabled')
+			self.selectProduct(tag)
 		$('.searchForm .btnCancel').click (event)->
 			event.preventDefault()
 			event.stopPropagation()
