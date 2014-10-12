@@ -57,7 +57,11 @@ body.editor {
     }
   }
 
-
+  .search_section{
+    .btnSave:disabled {
+      background: grey;
+    }
+  }
 
   .tag_editor.horizontal-image {
     .right_section {

@@ -1,18 +1,15 @@
 <div class="searchProducts">
 {{#each results}}
     {{#if editMode}}
-        <div class="item searchProduct selected">
+        <div class="item searchProduct selected"  data-product-id="{{@index}}">
     {{else}}
-        <div class="item searchProduct">
+        <div class="item searchProduct" data-product-id="{{@index}}">
     {{/if}}
         <div class="picture">
-            <a href="{{seller_url}}" target="_blank" class="image">
+            <a href="#" class="image">
                 <img src="{{image_url}}" alt=""> <br>
             </a>
             <div class="item-content">
-                    {{#unless editMode}}
-                        <button type="button" class="btn btn-info btn-sm pull-right saveProduct" data-product-id="{{@index}}">Tag it!</button>
-                    {{/unless}}
                     <div class="price">
                         {{price}} {{currency}}
                     </div>

@@ -131,9 +131,6 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 		if editMode
 			tag.editMode = true
 			$('.details').append(self.listTemplate({results:[tag], next_page: 1,total: 1}))
-			jQuery('.saveProduct').click (event, el)->
-				id = $(event.currentTarget).data('product-id')
-				self.saveTag(tag)
 		$('.searchForm .btnCancel').click (event)->
 			event.preventDefault()
 			event.stopPropagation()
@@ -145,6 +142,12 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 			search_elem = self.elem.find('.product_search')
 			search_elem.typeahead('val', '');
 
+		$('.search_section .btnSave').click (event)->
+			event.preventDefault()
+			event.stopPropagation()
+			tag = $('.search_section .btnSave').data('tag')
+			self.saveProduct(tag) if tag
+
 
 	self.render()
 
@@ -154,8 +157,12 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 
 
 
+Sidebar.prototype.selectProduct = (tag)->
+ $('.search_section .btnSave').removeAttr('disabled')
+ $('.search_section .btnSave').data('tag', tag)
+ $('.item').removeClass('selected')
 
-Sidebar.prototype.saveTag = (tag)->
+Sidebar.prototype.saveProduct = (tag)->
 	self = this
 	for prop in self.props
 		self.currentTag[prop] = tag[prop]
@@ -313,10 +320,12 @@ Sidebar.prototype.searchProducts = (tag, editMode)->
 				$('.details').append(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
 				$container = $('.searchProducts:last')
 				self.masonry $container
-		jQuery('.saveProduct').click (event, el)->
+		jQuery('.searchProduct').click (event, el)->
 			id = $(event.currentTarget).data('product-id')
+			$(event.currentTarget).addClass('selected')
 			console.log self.results.results[id]
-			self.saveTag(self.results.results[id])
+			self.selectProduct(self.results.results[id])
+
 
 		$container = $('.searchProducts')
 		self.masonry $container

@@ -32,5 +32,6 @@ en:
     initial_price_range: "Over 0$"
     search: "Search"
     cancel: "Cancel"
+    save: "Save"
     search_placeholder: "Type keyword for product or paste url"
     price_header: "Price:"
