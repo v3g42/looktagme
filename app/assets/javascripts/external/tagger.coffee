@@ -321,6 +321,7 @@ class Editor extends Container
 			@moveTag(@editing, relX, relY)
 		else
 			tag = @newTag(relX, relY, false, true)
+			@editingNewTag = true
 			@startEditing(tag.id)
 
 	onTagClick: (tag, ptr) =>
