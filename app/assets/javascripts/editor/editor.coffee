@@ -28,17 +28,23 @@ Sidebar.prototype.toggleFilters = ()->
 			container.show()
 		else
 			container.hide()
-Sidebar.prototype.addFilter = (filter, name)->
+Sidebar.prototype.addFilter = (filter, name, force = true)->
 	self = this
 	console.log(filter + " : " + name)
 	container = $('.right_section .filters')
 	return if container.find('.searchFilter.'+filter["id"]).length>0
-	type = if name == "brands" then "info" else if name == "categories" then "warning" else "danger"
+	type = "danger"
+	if name == "brands"
+		type = "info"
+	else if name == "categories"
+	  type = "warning"
 	filterDiv = $(self.alertTemplate({class: type+" "+name, message: filter["name"],css:"searchFilter " + filter["id"] }))
 	if name =="categories"
 		filterDiv.data('category', filter["id"])
-	else
+	else if name in ["brands", "retailers"]
 		filterDiv.data('filter', name[0]+filter["id"])
+	else if name == "search"
+		filterDiv.data('search', filter["name"])
 
 	filterDiv.find('.close').click ->
 		filterDiv.remove()
@@ -46,7 +52,7 @@ Sidebar.prototype.addFilter = (filter, name)->
 		self.searchProducts()
 	container.append(filterDiv)
 	self.toggleFilters()
-	self.searchProducts() #if self.searched
+	self.searchProducts() unless force == false #if self.searched
 
 
 Sidebar.prototype.initScroll = (cbk)->
@@ -258,9 +264,9 @@ Sidebar.prototype.masonry = ($container)->
 			isAnimated: false
 
 Sidebar.prototype.getSearchFilters = ()->
-	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val() || ""
+	self = this
+
 	filters = {}
-	filters["q"] = search
 	# Color Filter
 	if $('.color.selected').length>0
 		colors = []
@@ -275,12 +281,17 @@ Sidebar.prototype.getSearchFilters = ()->
 	filters["price"] = "p"+gt+":"+lt
 	filters["brands"] = $('.searchFilter.brands, .searchFilter.retailers').map((a,i)-> $(i).data('filter')).get().join("_")
 	filters["categories"] = $('.searchFilter.categories').map((a,i)-> $(i).data('category')).get().join("_")
+	filters["q"] = $('.searchFilter.search').data('search')
 	filters
 Sidebar.prototype.searchProducts = (tag, editMode)->
 	self = this
 	$('.details').html('')
 	$('.details').infiniteScroll('destroy') if $('.details').data('infinite-search')
 	$('.details').addClass('loading')
+	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val()
+	if(search)
+		$('.searchFilter.search').remove()
+		self.addFilter({name:search}, "search", false)
 	self.results = {}
 	jQuery.get('/search',self.getSearchFilters())
 	.done((json)->
