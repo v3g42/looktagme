@@ -311,6 +311,20 @@ Sidebar.prototype.getSearchFilters = ()->
 	filters["categories"] = $('.searchFilter.categories').map((a,i)-> $(i).data('category')).get().join("_")
 	filters["q"] = $('.searchFilter.search').data('search') || ""
 	filters
+
+Sidebar.prototype.initAppendedSearch = (items)->
+	self = this
+	items.click (event, el)->
+		event.preventDefault()
+		event.stopPropagation()
+		$('.searchProduct').removeClass('selected')
+		id = $(event.currentTarget).data('product-id')
+		$(event.currentTarget).addClass('selected')
+		console.log self.results.results[id]
+		self.selectProduct(self.results.results[id])
+
+
+
 Sidebar.prototype.searchProducts = (tag, editMode)->
 	self = this
 	$('.details').html('')
@@ -335,6 +349,8 @@ Sidebar.prototype.searchProducts = (tag, editMode)->
 		$('.details').removeClass('loading')
 		$container = $('.searchProducts')
 		self.masonry $container
+		self.initAppendedSearch($container.find('.searchProduct'))
+
 		if results && results.length>0
 			self.initScroll (json,opts)->
 				if self.results.results
@@ -344,12 +360,9 @@ Sidebar.prototype.searchProducts = (tag, editMode)->
 				$resultsHTML = $(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
 				$('.details .searchProducts').append($resultsHTML).imagesLoaded ->
 					self.msnry.masonry( 'appended', $resultsHTML, true )
-		jQuery('.searchProduct').click (event, el)->
-			$('.searchProduct').removeClass('selected')
-			id = $(event.currentTarget).data('product-id')
-			$(event.currentTarget).addClass('selected')
-			console.log self.results.results[id]
-			self.selectProduct(self.results.results[id])
+					self.initAppendedSearch($resultsHTML)
+
+
 
 
 
