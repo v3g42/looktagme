@@ -28,6 +28,13 @@ Sidebar.prototype.toggleFilters = ()->
 			container.show()
 		else
 			container.hide()
+
+Sidebar.prototype.resetFilters = ()->
+	$('.right_section .filters').html('')
+	$('.right_section .colors .selected').removeClass('selected')
+	$('.price-slider').slider('setValue',[0,window.prices.count-1])
+
+
 Sidebar.prototype.addFilter = (filter, name, force = true)->
 	self = this
 	console.log(filter + " : " + name)
@@ -138,6 +145,8 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 			event.stopPropagation()
 			self.renderRecent()
 			self.editor.endEditing()
+			self.resetFilters()
+
 		$('.searchForm').submit (event)->
 			event.preventDefault()
 			self.searchProducts(tag, editMode)
@@ -192,6 +201,7 @@ Sidebar.prototype.saveProduct = (tag)->
 	).done (tag)->
 		self.alert("success", "Tags saved!")
 		self.editor.endEditing(tag)
+		self.resetFilters()
 		self.renderRecent()
 		self.currentTag = null
 	.fail ->
@@ -420,7 +430,7 @@ jQuery ()->
 
 		sidebar.init()
 
-		$('.price-slider').slider()
+		self.slider = $('.price-slider').slider()
 		$('.price-slider').on "slideStop", (slideEvt) ->
 			sidebar.searchProducts(self.currentTag) if sidebar.searched
 			sidebar.updatePriceRange()
