@@ -1,4 +1,3 @@
-<div class="searchProducts">
 {{#each results}}
     {{#if editMode}}
         <div class="item searchProduct selected"  data-product-id="{{@index}}">
@@ -19,7 +18,6 @@
     </div>
 
 {{/each}}
-</div>
 {{#unless results}}
     <p class="no-results"> Sorry! Cannot find anything! </p>
 {{else}}

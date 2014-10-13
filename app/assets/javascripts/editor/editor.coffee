@@ -143,6 +143,7 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 		$('.searchForm .btnCancel').click (event)->
 			event.preventDefault()
 			event.stopPropagation()
+			$.xhrPool.abortAll()
 			self.renderRecent()
 			self.editor.endEditing()
 			self.resetFilters()
@@ -176,6 +177,7 @@ Sidebar.prototype.selectProduct = (tag)->
  $('.search_section .btnSave').data('tag', tag)
 
 Sidebar.prototype.saveProduct = (tag)->
+	$.xhrPool.abortAll()
 	self = this
 	for prop in self.props
 		self.currentTag[prop] = tag[prop]
@@ -274,15 +276,14 @@ Sidebar.prototype.alert = (type, msg, cssClass)->
 	details.prepend(self.alertTemplate({class: type, message: msg,css:cssClass }))
 
 
-Sidebar.prototype.masonry = ($container)->
-	$container.imagesLoaded ->
+Sidebar.prototype.masonry = (msnry)->
+	self = this
+	msnry.imagesLoaded ->
 		console.log("LOADED")
-		$('.details').addClass('loaded')
-		$container.masonry
-			itemSelector : '.item'
-			#columnWidth : if $('.tag_editor').hasClass('horizontal-image') then 180 else 200
-			#columnWidth : 200
-			isAnimated: false
+		$('.details').addClass('Images loaded')
+		msnry.masonry('reloadItems')
+		msnry.masonry()
+
 
 Sidebar.prototype.getSearchFilters = ()->
 	self = this
@@ -322,28 +323,33 @@ Sidebar.prototype.searchProducts = (tag, editMode)->
 		results = []
 		results.push(tag)	if(editMode && tag)
 		results = results.concat(json.results)
-
-		$('.details').html(self.listTemplate({results: results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+		searchResults = $('<div class="searchProducts"/>')
+		searchResults.html(self.listTemplate({results: results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+		$('.details').html(searchResults)
 		$('.details').removeClass('loading')
+		$container = $('.searchProducts')
+		msnry = $container.masonry
+			itemSelector : '.item'
+			isAnimated: false
+		self.masonry msnry
 		if results && results.length>0
 			self.initScroll (json,opts)->
 				if self.results.results
 					self.results.results = self.results.results.concat(json.results)
 				else
 					self.results = json
-				$('.details').append(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
-				$container = $('.searchProducts:last')
-				self.masonry $container
+				$('.details .searchProducts').append(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+				$container = $('.searchProducts')
+
+				self.masonry msnry
 		jQuery('.searchProduct').click (event, el)->
-			$('.item').removeClass('selected')
+			$('.searchProduct').removeClass('selected')
 			id = $(event.currentTarget).data('product-id')
 			$(event.currentTarget).addClass('selected')
 			console.log self.results.results[id]
 			self.selectProduct(self.results.results[id])
 
 
-		$container = $('.searchProducts')
-		self.masonry $container
 
 	).fail(()->
 		self.alert("danger", "Server Error!")
@@ -389,7 +395,10 @@ Sidebar.prototype.renderRecent = ()->
 			self.editor.initNewTag()
 
 		$container = $('.listProducts')
-		self.masonry $container
+		msnry = $container.masonry
+			itemSelector : '.item'
+			isAnimated: false
+		self.masonry msnry
 
 	).fail(()->
 		#self.alert("danger", "Server Error!")

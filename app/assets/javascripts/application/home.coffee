@@ -31,25 +31,29 @@ class HomeListView
 				self.onEdit self.viewers[image.id]
 
 
-	masonry: ->
+	masonry: (msnry)->
 		self = @
-		$container = $('.listProducts:last')
-		$container.imagesLoaded ->
+		msnry.imagesLoaded ->
 			console.log("LOADED")
 			self.createViewers(self.json)
 			self.elem.addClass('loaded')
+			msnry.masonry('reloadItems')
+			msnry.masonry()
 
-			$container.masonry
-				itemSelector : '.item'
-				isAnimated: false
 
 	render: ()->
 		self = @
-		@elem.html(@listTemplate({results:@json.results, next_page: @json.metadata.page+1,total: @json.metadata.total}))
-		@masonry()
+		listResults = $('<div class="listProducts"/>')
+		listResults.html(@listTemplate({results:@json.results, next_page: @json.metadata.page+1,total: @json.metadata.total}))
+		@elem.html(listResults)
+		$container = $('.listProducts:last')
+		msnry = $container.masonry
+			itemSelector : '.item'
+			isAnimated: false
+		@masonry msnry
 		@initScroll  (json,opts)->
-			self.elem.append(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
-			#self.masonry()
+			self.elem.find('.listProducts').append(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+			self.masonry msnry
 
 	initGlass: (@min_width=100, @min_height=100) ->
 		@editing = undefined
