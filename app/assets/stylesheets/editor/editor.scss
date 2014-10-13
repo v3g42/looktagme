@@ -1,7 +1,6 @@
 @import "../default/pinterest";
 
-$col-width: 180px;
-$big-col-width: 160px;
+$col-width: 30%;
 body.editor {
   .no-results {
     text-align: center;
@@ -89,7 +88,6 @@ body.editor {
     }
     .right_content .details .listProducts, .searchProducts  {
       .item {
-        width: $big-col-width !important;
         .price {
           font-size: 10px !important;
         }

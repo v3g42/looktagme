@@ -19,6 +19,7 @@ Sidebar = (options)->
 	this.productsTemplate = Handlebars.compile $('#editor-recent').html()
 	this.render = null
 	this.filters = []
+	this.msnry = null
 
 	this
 Sidebar.prototype.toggleFilters = ()->
@@ -276,14 +277,18 @@ Sidebar.prototype.alert = (type, msg, cssClass)->
 	details.prepend(self.alertTemplate({class: type, message: msg,css:cssClass }))
 
 
-Sidebar.prototype.masonry = (msnry)->
+Sidebar.prototype.masonry = ($container)->
 	self = this
-	msnry.masonry('bindResize')
+	self.msnry = msnry = $container.masonry
+		itemSelector : '.item'
+		isAnimated: false
+	#msnry.masonry('bindResize')
 	msnry.imagesLoaded ->
 		console.log("LOADED")
 		$('.details').addClass('Images loaded')
-		msnry.masonry('reloadItems')
 		msnry.masonry()
+	$(window).resize ->
+		self.msnry.masonry('reload')
 
 
 Sidebar.prototype.getSearchFilters = ()->
@@ -329,20 +334,16 @@ Sidebar.prototype.searchProducts = (tag, editMode)->
 		$('.details').html(searchResults)
 		$('.details').removeClass('loading')
 		$container = $('.searchProducts')
-		msnry = $container.masonry
-			itemSelector : '.item'
-			isAnimated: false
-		self.masonry msnry
+		self.masonry $container
 		if results && results.length>0
 			self.initScroll (json,opts)->
 				if self.results.results
 					self.results.results = self.results.results.concat(json.results)
 				else
 					self.results = json
-				$('.details .searchProducts').append(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
-				$container = $('.searchProducts')
-
-				self.masonry msnry
+				$resultsHTML = $(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+				$('.details .searchProducts').append($resultsHTML).imagesLoaded ->
+					self.msnry.masonry( 'appended', $resultsHTML, true )
 		jQuery('.searchProduct').click (event, el)->
 			$('.searchProduct').removeClass('selected')
 			id = $(event.currentTarget).data('product-id')
@@ -396,10 +397,7 @@ Sidebar.prototype.renderRecent = ()->
 			self.editor.initNewTag()
 
 		$container = $('.listProducts')
-		msnry = $container.masonry
-			itemSelector : '.item'
-			isAnimated: false
-		self.masonry msnry
+		self.masonry $container
 
 	).fail(()->
 		#self.alert("danger", "Server Error!")
