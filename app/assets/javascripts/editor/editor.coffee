@@ -171,7 +171,6 @@ Sidebar.prototype.saveProduct = (tag)->
 	for prop in self.props
 		self.currentTag[prop] = tag[prop]
 
-	self.editor.endEditing(tag)
 	page_url = $('#page_url').val()
 	domain = $('#domain').val()
 	tag_data = $.extend {}, currentTag
@@ -192,6 +191,7 @@ Sidebar.prototype.saveProduct = (tag)->
 		data: data
 	).done (tag)->
 		self.alert("success", "Tags saved!")
+		self.editor.endEditing(tag)
 		self.renderRecent()
 		self.currentTag = null
 	.fail ->
