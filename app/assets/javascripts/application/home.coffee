@@ -33,6 +33,7 @@ class HomeListView
 
 	masonry: (msnry)->
 		self = @
+		msnry.masonry('bindResize')
 		msnry.imagesLoaded ->
 			console.log("LOADED")
 			self.createViewers(self.json)

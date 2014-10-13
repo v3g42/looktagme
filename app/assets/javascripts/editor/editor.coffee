@@ -278,6 +278,7 @@ Sidebar.prototype.alert = (type, msg, cssClass)->
 
 Sidebar.prototype.masonry = (msnry)->
 	self = this
+	msnry.masonry('bindResize')
 	msnry.imagesLoaded ->
 		console.log("LOADED")
 		$('.details').addClass('Images loaded')
