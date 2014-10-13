@@ -96,7 +96,7 @@ class Container
 			@container.css
 				top: @elem.top() + 'px', 
 				left: @elem.left() + 'px',
-				width: '1px', height: '1px'
+				width: @elem.width() + 'px', height: '1px'
 
 			for tag in @tags
 				$(@tagmap[tag.id]).css
@@ -233,7 +233,6 @@ class Container
 		ptr = $('<div class="ptrcontainer"><div class="ptrbutton"/><div class="ptr"/></div>')
 		@tagmap[tag.id] = ptr
 		ptr.attr('id', tag.id)
-		ptr.data('tag',tag)
 		ptr.css({top: @elem.scale_top(tag.y) - 10, left: @elem.scale_left(tag.x) - 10})
 		ptr.click () => @onTagClick(tag, ptr)
 		@container.append(ptr)
@@ -322,6 +321,7 @@ class Editor extends Container
 			@moveTag(@editing, relX, relY)
 		else
 			tag = @newTag(relX, relY, false, true)
+			@editingNewTag = true
 			@startEditing(tag.id)
 
 	onTagClick: (tag, ptr) =>
@@ -366,20 +366,31 @@ class Editor extends Container
 		)
 		@edit_cb(@editing, editMode)
 
-	copyTag: (src, dst) ->
+
+	updateTag: (existing, newdata) ->
+
+		if existing.id != newdata.id
+			@tagmap[newdata.id] = @tagmap[existing.id]
+			@tagmap[newdata.id].attr('id', newdata.id)
+			@logger.debug("Tag id " + existing.id + " replaced with new id " + newdata.id)
+			delete @tagmap[existing.id]
+
 		reserved = ['x','y']
-		for i in src
+		for i in newdata
 			if (reserved.indexOf(i) < 0) 
-				dst[i] = src[i]
+				existing[i] = newdata[i]
+
+		@logger.debug("Tag " + newdata.id + " = " + @tagmap[newdata.id])
 
 	endEditing: (data) =>
+		@logger.debug("End Editing called. New data: " + JSON.stringify(data))
 		ptr = $(@tagmap[@editing.id])
 		ptr.css 'cursor', 'default'
 		ptr.off 'mousedown'
 		@container.off 'mousemove'
 		@container.off 'mouseup'
 		if data
-			@copyTag(data, @editing)
+			@updateTag(@editing, data)
 		else
 			if @editingNewTag
 				@removeTag(@editing.id)
