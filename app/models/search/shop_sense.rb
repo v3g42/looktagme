@@ -93,7 +93,7 @@ class Search::ShopSense
           :price => product["priceLabel"],
           :currency => product["currency"],
           :seller_name => product["retailer"]["name"],
-          :seller_url => product["pageUrl"],
+          :seller_url => product["clickUrl"],
           :image_url => image["url"],
           :image_width => image["width"],
           :image_height => image["height"]

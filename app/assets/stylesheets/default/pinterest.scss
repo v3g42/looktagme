@@ -2,6 +2,7 @@
 
 .loaded .item {
   min-height: inherit !important;
+  display: block !important;
 }
 @mixin listProducts($col-width) {
  .item {

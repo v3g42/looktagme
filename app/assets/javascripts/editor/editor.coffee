@@ -33,7 +33,7 @@ Sidebar.prototype.toggleFilters = ()->
 Sidebar.prototype.resetFilters = ()->
 	self = this
 	$('.right_section .colors .selected').removeClass('selected')
-	$('.price-slider').slider('setValue',[0,window.prices.count-1])
+	$('.price-slider').slider('setValue',[0,window.prices.length-1])
 	search_elem = self.elem.find('.product_search')
 	search_elem.tagsinput('destroy')
 
@@ -167,7 +167,9 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 
 		if editMode
 			tag.editMode = true
-			$('.details').append(self.listTemplate({results:[tag], next_page: 1,total: 1}))
+			searchResults = $('<div class="searchProducts"/>')
+			searchResults.append(self.listTemplate({offset: 0, results:[tag], next_page: 1,total: 1}))
+			$('.details').html(searchResults)
 			$('.search_section .btnSave').removeAttr('disabled')
 			self.selectProduct(tag)
 		$('.searchForm .btnCancel').click (event)->
@@ -343,12 +345,12 @@ Sidebar.prototype.getSearchFilters = ()->
 
 Sidebar.prototype.initAppendedSearch = (items)->
 	self = this
-	items.click (event, el)->
+	items.find('a.image').click (event, el)->
 		event.preventDefault()
 		event.stopPropagation()
 		$('.searchProduct').removeClass('selected')
 		id = $(event.currentTarget).data('product-id')
-		$(event.currentTarget).addClass('selected')
+		$(event.currentTarget).parents('.searchProduct').addClass('selected')
 		console.log self.results.results[id]
 		self.selectProduct(self.results.results[id])
 
@@ -359,10 +361,6 @@ Sidebar.prototype.searchProducts = (tag)->
 	$('.details').html('')
 	$('.details').infiniteScroll('destroy') if $('.details').data('infinite-search')
 	$('.details').addClass('loading')
-#	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val()
-#	if(search)
-#		$('.searchFilter.search').remove()
-#		self.addFilter({name:search}, "search", false)
 	self.results = {}
 	jQuery.get('/search',self.getSearchFilters())
 	.done((json)->
@@ -373,7 +371,7 @@ Sidebar.prototype.searchProducts = (tag)->
 		results.push(tag)	if(tag && tag.editMode)
 		results = results.concat(json.results)
 		searchResults = $('<div class="searchProducts"/>')
-		searchResults.html(self.listTemplate({results: results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+		searchResults.html(self.listTemplate({offset: json.metadata.offset, results: results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
 		$('.details').html(searchResults)
 		$('.details').removeClass('loading')
 		$container = $('.searchProducts')
@@ -386,7 +384,7 @@ Sidebar.prototype.searchProducts = (tag)->
 					self.results.results = self.results.results.concat(json.results)
 				else
 					self.results = json
-				$resultsHTML = $(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+				$resultsHTML = $(self.listTemplate({results:json.results, offset:json.metadata.offset, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
 				$('.details .searchProducts').append($resultsHTML).imagesLoaded ->
 					self.msnry.masonry( 'appended', $resultsHTML, true )
 					self.initAppendedSearch($resultsHTML)
@@ -422,6 +420,8 @@ Sidebar.prototype.renderRecent = ()->
 		console.log(image)
 		$('.details').html(self.productsTemplate({results:image.tags, image_id:image.id}))
 		$('.details').removeClass('loading')
+		$container = $('.listProducts')
+		self.masonry $container
 		search_elem = self.elem.find('.product_search')
 		search_elem.typeahead('val', '')
 		jQuery('.editProduct').click ->
@@ -438,8 +438,7 @@ Sidebar.prototype.renderRecent = ()->
 		$('.add_button').click ->
 			self.editor.initNewTag()
 
-		$container = $('.listProducts')
-		self.masonry $container
+
 
 	).fail(()->
 		#self.alert("danger", "Server Error!")
@@ -498,7 +497,6 @@ jQuery ()->
 				window.parent.postMessage(JSON.stringify(data), domain);
 			catch e
 				console.log e
-			#editor.hide();
 
 		editor.onEdit (item, editMode)->
 			sidebar.selectTag(item, editMode);
