@@ -33,5 +33,5 @@ en:
     search: "Search"
     cancel: "Cancel"
     save: "Save"
-    search_placeholder: "Type keyword for product or paste url"
+    search_placeholder: "Search.."
     price_header: "Price:"
