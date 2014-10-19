@@ -31,9 +31,11 @@ Sidebar.prototype.toggleFilters = ()->
 			container.hide()
 
 Sidebar.prototype.resetFilters = ()->
-	$('.right_section .filters').html('')
+	self = this
 	$('.right_section .colors .selected').removeClass('selected')
 	$('.price-slider').slider('setValue',[0,window.prices.count-1])
+	search_elem = self.elem.find('.product_search')
+	search_elem.tagsinput('destroy')
 
 
 Sidebar.prototype.addFilter = (filter, name, force = true)->
@@ -97,35 +99,62 @@ Sidebar.prototype.initSearch = (tag)->
 			self.searchProducts() if(self.searched)
 		colorsDiv.append(div)
 
-	search_elem.typeahead('destroy')
-	search_elem.typeahead
-			highlight: true
-			minLength: 2
-			hint: false
-		,
-			name: 'categories',
-			displayKey: 'name',
-			source: self.categoriesAdapt.ttAdapter()
-			templates:
-				header: '<p class="typeahead-header">Categories</p>'
-		,
-			name: 'brands',
-			displayKey: 'name',
-			source: self.brandsAdapt.ttAdapter()
-			templates:
-				header: '<p class="typeahead-header">Brands</p>'
-		,
-			name: 'retailers',
-			displayKey: 'name',
-			source: self.retailersAdapt.ttAdapter()
-			templates:
-				header: '<p class="typeahead-header">Retailers</p>'
+	#search_elem.typeahead('destroy')
+	search_elem.tagsinput
+		tagClass: (item)->
+			cssClass = "success"
+			label = if typeof item == "string" then "search" else item.label
+			if item.label == "brands"
+				cssClass = "info"
+			else if item.label == "categories"
+				cssClass = "warning"
+			else if item.label == "retailers"
+				cssClass = "danger"
+			"searchFilter label "+ label + "  label-" + cssClass
+		itemText: (item)->
+			if typeof item == "string"
+				item
+			else
+				item.name
+		itemValue: (item)->
+			if typeof item == "string"
+				item
+			else item
+		typeaheadjs:
+			arguments: [
+					{
+					highlight: true
+					minLength: 2
+					hint: false
+					},
+					{
+						name: 'categories',
+						displayKey: 'name',
+						source: self.categoriesAdapt.ttAdapter()
+						templates:
+							header: '<p class="typeahead-header">Categories</p>'
+					},
+					{
+						name: 'brands',
+						displayKey: 'name',
+						source: self.brandsAdapt.ttAdapter()
+						templates:
+							header: '<p class="typeahead-header">Brands</p>'
+					},
+					{
+						name: 'retailers',
+						displayKey: 'name',
+						source: self.retailersAdapt.ttAdapter()
+						templates:
+							header: '<p class="typeahead-header">Retailers</p>'
+					}
+
+				]
+	search_elem.on 'itemAdded', (event)->
+		self.searchProducts(window.currentTag)
+		search_elem.tagsinput('input').typeahead('val', '');
 
 
-	search_elem.on 'typeahead:selected', (evt, obj, name) ->
-			evt.preventDefault();
-			search_elem.typeahead('val', '');
-			self.addFilter obj, name
 
 
 Sidebar.prototype.selectTag = (tag, editMode)->
@@ -144,16 +173,10 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 		$('.searchForm .btnCancel').click (event)->
 			event.preventDefault()
 			event.stopPropagation()
-			$.xhrPool.abortAll()
+			$.xhrPool.abortAll() if $.xhrPool && $.xhrPool.abortAll
 			self.renderRecent()
 			self.editor.endEditing()
 			self.resetFilters()
-
-		$('.searchForm').submit (event)->
-			event.preventDefault()
-			self.searchProducts(tag, editMode)
-			search_elem = self.elem.find('.product_search')
-			search_elem.typeahead('val', '');
 
 		$('.search_section .btnSave').click (event)->
 			event.preventDefault()
@@ -178,7 +201,7 @@ Sidebar.prototype.selectProduct = (tag)->
  $('.search_section .btnSave').data('tag', tag)
 
 Sidebar.prototype.saveProduct = (tag)->
-	$.xhrPool.abortAll()
+	$.xhrPool.abortAll() if $.xhrPool && $.xhrPool.abortAll
 	self = this
 	for prop in self.props
 		self.currentTag[prop] = tag[prop]
@@ -307,9 +330,15 @@ Sidebar.prototype.getSearchFilters = ()->
 	gt = window.prices[price_range[0]]["id"]
 	lt = window.prices[price_range[1]]["id"]
 	filters["price"] = "p"+gt+":"+lt
-	filters["brands"] = $('.searchFilter.brands, .searchFilter.retailers').map((a,i)-> $(i).data('filter')).get().join("_")
-	filters["categories"] = $('.searchFilter.categories').map((a,i)-> $(i).data('category')).get().join("_")
-	filters["q"] = $('.searchFilter.search').data('search') || ""
+	filters["brands"] = $('.searchFilter.brands, .searchFilter.retailers').map((a,i)->
+		item = $(i).data('item')
+		item.label[0]+item["id"]
+	).get().join("_")
+	filters["categories"] = $('.searchFilter.categories').map((a,i)->
+		item = $(i).data('item')
+		item["id"]
+	).get().join("_")
+	filters["q"] = $('.searchFilter.search').data('item') || ""
 	filters
 
 Sidebar.prototype.initAppendedSearch = (items)->
@@ -325,15 +354,15 @@ Sidebar.prototype.initAppendedSearch = (items)->
 
 
 
-Sidebar.prototype.searchProducts = (tag, editMode)->
+Sidebar.prototype.searchProducts = (tag)->
 	self = this
 	$('.details').html('')
 	$('.details').infiniteScroll('destroy') if $('.details').data('infinite-search')
 	$('.details').addClass('loading')
-	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val()
-	if(search)
-		$('.searchFilter.search').remove()
-		self.addFilter({name:search}, "search", false)
+#	search = $('.product_search:eq(0)').val() || $('.product_search:eq(1)').val()
+#	if(search)
+#		$('.searchFilter.search').remove()
+#		self.addFilter({name:search}, "search", false)
 	self.results = {}
 	jQuery.get('/search',self.getSearchFilters())
 	.done((json)->
@@ -341,7 +370,7 @@ Sidebar.prototype.searchProducts = (tag, editMode)->
 		console.log(json)
 		self.results = json
 		results = []
-		results.push(tag)	if(editMode && tag)
+		results.push(tag)	if(tag && tag.editMode)
 		results = results.concat(json.results)
 		searchResults = $('<div class="searchProducts"/>')
 		searchResults.html(self.listTemplate({results: results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))

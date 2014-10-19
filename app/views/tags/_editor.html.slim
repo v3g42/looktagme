@@ -7,7 +7,7 @@
   .right_section
     .right_content
       .search_section data-brands-url="#{asset_path("shop_sense/brands.json")}"  data-retailers-url="#{asset_path("shop_sense/retailers.json")}"  data-categories-url="#{asset_path("shop_sense/categories.json")}"
-        form.searchForm novalidate="" role="form" class="form-horizontal"
+        div.searchForm novalidate="" class="form-horizontal"
           .form-group
             .input-group
               input.product_search.form-control data-key="title" placeholder=("#{t('editor.search_placeholder')}") type="text"
@@ -19,19 +19,18 @@
             .row
               .col-xs-10
                 .colors
-                .filters
+                .price_slider
+                  .row
+                    .col-xs-8
+                      input.form-control.price-slider data-slider-tooltip="hide" data-slider-max="#{@prices.count-1}" data-slider-min="0" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-step="1" data-slider-value="[0,9]" type="text" value="" style="width:100%"/
+                    .col-xs-4
+                      span= t('editor.price_header')
+                      = "&nbsp;".html_safe
+                      span.price-range=  t('editor.initial_price_range')
               .col-xs-2
                 .btn-group-vertical
                   button.btn.btn-sm.btn-danger.btnCancel=  t('editor.cancel')
                   button.btn.btn-sm.btn-info.btnSave disabled="true"=  t('editor.save')
-          .form-group.price_slider
-            .row
-              .col-xs-8
-                input.form-control.price-slider data-slider-tooltip="hide" data-slider-max="#{@prices.count-1}" data-slider-min="0" data-slider-orientation="horizontal" data-slider-selection="after" data-slider-step="1" data-slider-value="[0,9]" type="text" value="" style="width:100%"/
-              .col-xs-4
-                span= t('editor.price_header')
-                = "&nbsp;".html_safe
-                span.price-range=  t('editor.initial_price_range')
 
       .details
   = render "tags/image_data"

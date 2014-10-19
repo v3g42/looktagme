@@ -1,6 +1,6 @@
 @import "../default/pinterest";
 
-$col-width: 30%;
+$col-width: 28%;
 body.editor {
   .no-results {
     text-align: center;
@@ -130,17 +130,7 @@ body.editor {
     .price-range {
       padding-top:20px;
     }
-    .searchFilter {
-      font-size: 12px;
-      margin-bottom: 5px;
-      float: left;
-      margin-right: 5px;
-      padding: 5px 10px 0;
-      .close {
-        right: -7px;
-        top: -3px;
-      }
-    }
+
   }
 
   .close_edit {

@@ -15,6 +15,7 @@
 //= require_tree ../default
 //= require ../editor/typeahead.bundle
 //= require ../editor/bootstrap-slider.min
+//= require ../editor/bootstrap-tagsinput
 //= require ../external/common
 //= require ../external/tagger
 //= require ../editor/editor
