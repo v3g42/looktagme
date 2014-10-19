@@ -1,11 +1,11 @@
 {{#each results}}
     {{#if editMode}}
-        <div class="item searchProduct selected"  data-product-id="{{sum @index ../../offset}}">
+        <div class="item searchProduct selected">
     {{else}}
-        <div class="item searchProduct" data-product-id="{{sum @index ../../offset}}">
+        <div class="item searchProduct">
     {{/if}}
         <div class="picture">
-            <a href="#" class="image">
+            <a href="#" class="image" data-product-id="{{sum @index ../offset}}">
                 <img src="{{image_url}}" alt="">
             </a>
             <div class="item-content">

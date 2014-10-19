@@ -345,12 +345,12 @@ Sidebar.prototype.getSearchFilters = ()->
 
 Sidebar.prototype.initAppendedSearch = (items)->
 	self = this
-	items.click (event, el)->
+	items.find('a.image').click (event, el)->
 		event.preventDefault()
 		event.stopPropagation()
 		$('.searchProduct').removeClass('selected')
 		id = $(event.currentTarget).data('product-id')
-		$(event.currentTarget).addClass('selected')
+		$(event.currentTarget).parents('.searchProduct').addClass('selected')
 		console.log self.results.results[id]
 		self.selectProduct(self.results.results[id])
 
