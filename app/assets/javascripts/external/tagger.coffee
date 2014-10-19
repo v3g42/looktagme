@@ -210,6 +210,7 @@ class Container
 		ptr.css({top: y - 10, left: x - 10})
 
 	removeTag: (id) =>
+		@logger.debug('Removing tag ' + id)
 		for t in [0..@tags.length]
 			console.log(@tags[t])
 			if @tags[t].id == id
@@ -375,6 +376,7 @@ class Editor extends Container
 			@logger.debug("Tag id " + existing.id + " replaced with new id " + newdata.id)
 			delete @tagmap[existing.id]
 
+		existing.id = newdata.id
 		reserved = ['x','y']
 		for i in newdata
 			if (reserved.indexOf(i) < 0) 
@@ -383,6 +385,7 @@ class Editor extends Container
 		@logger.debug("Tag " + newdata.id + " = " + @tagmap[newdata.id])
 
 	endEditing: (data) =>
+		@logger.debug("End Editing called. Old data: " + JSON.stringify(@editing))
 		@logger.debug("End Editing called. New data: " + JSON.stringify(data))
 		ptr = $(@tagmap[@editing.id])
 		ptr.css 'cursor', 'default'
