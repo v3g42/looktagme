@@ -420,6 +420,8 @@ Sidebar.prototype.renderRecent = ()->
 		console.log(image)
 		$('.details').html(self.productsTemplate({results:image.tags, image_id:image.id}))
 		$('.details').removeClass('loading')
+		$container = $('.listProducts')
+		self.masonry $container
 		search_elem = self.elem.find('.product_search')
 		search_elem.typeahead('val', '')
 		jQuery('.editProduct').click ->
@@ -436,8 +438,7 @@ Sidebar.prototype.renderRecent = ()->
 		$('.add_button').click ->
 			self.editor.initNewTag()
 
-		$container = $('.listProducts')
-		self.masonry $container
+
 
 	).fail(()->
 		#self.alert("danger", "Server Error!")
