@@ -9,8 +9,8 @@ class Content
 	url: ->
 	width: () => @elem.width()
 	height: () => @elem.height()
-	top: () => @elem.offset().top + parseInt(@elem.css('padding-top').replace('px',''))
-	left: () => @elem.offset().left + parseInt(@elem.css('padding-left').replace('px',''))
+	top: () => @elem.offset().top + parseInt(@elem.css('padding-top').replace('px','')) - $(document.body).offset().top
+	left: () => @elem.offset().left + parseInt(@elem.css('padding-left').replace('px','')) - $(document.body).offset().left
 	bbox: () => {top: @top(), left: @left(), width: @width(), height: @height()}
 	original_width: () => @original_w
 	original_height: () => @original_h
@@ -132,9 +132,7 @@ class Container
 		if @tags.length == 0 then @menu.hide() else @menu.show()
 
 	createMenu: () =>
-		@menu = $('<div class="menu"/>');
-		if @elem.width() < 400 or @elem.height() < 400
-			@menu.addClass('small') 
+		@menu = $('<div class="menu small"/>');
 
 		@container.append(@menu);
 		@container.mouseover () =>
