@@ -358,10 +358,14 @@ Sidebar.prototype.initAppendedSearch = (items)->
 Sidebar.prototype.renderUrlResults = (tag, json)->
 	self = this
 	images = json.images.filter (img)->
+		valid = true
 		w = img.width.replace("px","") if img.width
 		h = img.height.replace("px","") if img.height
-		w>60 && h>60
-	json.images = images.splice(0,4)
+
+		valid = w>60 if w
+		valid &= h>60 if h
+		valid
+	json.images = images.splice(0,9)
 	return $('.details').html('Sorry cannot find any images') if images.length<1
 
 	enableSave = ()->
