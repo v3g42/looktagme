@@ -12,3 +12,4 @@ html
   body class=("editor #{controller_name} #{action_name}")
     = yield
     = javascript_include_tag "includes/editor"
+    = render 'layouts/analytics'

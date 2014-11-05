@@ -21,7 +21,7 @@
                     = button_tag(type: "submit",class: "button-clear") do
                       span= t("devise.registrations.sign_up_btn")
                   .col-sm-8
-                  = button_tag(type: "submit",class: "button-clear facebook") do
+                  = link_to(user_omniauth_authorize_path(:facebook), type: "submit",class: "button-clear facebook") do
                     span= t("devise.registrations.sign_up_facebook")
 
       = render "devise/shared/links"

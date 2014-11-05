@@ -17,6 +17,7 @@ Sidebar = (options)->
 	this.alertTemplate = Handlebars.compile $('#editor-alert').html()
 	this.listTemplate = Handlebars.compile $('#editor-list').html()
 	this.productsTemplate = Handlebars.compile $('#editor-recent').html()
+	this.pasteProductTemplate = Handlebars.compile $('#editor-paste').html()
 	this.render = null
 	this.filters = []
 	this.msnry = null
@@ -354,8 +355,72 @@ Sidebar.prototype.initAppendedSearch = (items)->
 		console.log self.results.results[id]
 		self.selectProduct(self.results.results[id])
 
+Sidebar.prototype.renderUrlResults = (tag, json)->
+	self = this
+	images = json.images.filter (img)->
+		w = img.width.replace("px","") if img.width
+		h = img.height.replace("px","") if img.height
+		w>60 && h>60
+	json.images = images.splice(0,4)
+	return $('.details').html('Sorry cannot find any images') if images.length<1
+
+	enableSave = ()->
+		enabled = $('.paste_images .paste_image.selected').length>0 &&  $('.details #paste_price').val()>0
+		if enabled
+			$('.search_section').addClass('selected')
+			$('.search_section .btnSave').removeAttr('disabled')
+			tag = $.extend {}, self.currentTag
+			image = images[$('.paste_images .paste_image.selected').data('index')]
+			tag.image_url = image.src
+			tag.image_width = image.width
+			tag.image_height = image.height
+			tag.seller_url = json.seller_url
+			tag.title = $('#paste_title').val()
+			tag.description = $('#paste_description').val()
+			tag.currency = $('#paste_currency').val()
+			tag.price = $('#paste_price').val()
 
 
+			$('.search_section .btnSave').data('tag', tag)
+
+		else
+			$('.search_section').removeClass('selected')
+			$('.search_section .btnSave').prop('disabled', true)
+
+	$('.details').html(self.pasteProductTemplate(json))
+	$('.details #paste_price').keydown enableSave
+	$('.paste_images .paste_image').click (event, el)->
+		event.preventDefault()
+		event.stopPropagation()
+		$('.paste_image').removeClass('selected')
+		$(event.currentTarget).addClass('selected')
+		enableSave()
+
+Sidebar.prototype.renderSearchResults = (tag, json)->
+	self = this
+	console.log(json)
+	self.results = json
+	results = []
+	results.push(tag)	if(tag && tag.editMode)
+	results = results.concat(json.results)
+	searchResults = $('<div class="searchProducts"/>')
+	searchResults.html(self.listTemplate({offset: json.metadata.offset, results: results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+	$('.details').html(searchResults)
+	$('.details').removeClass('loading')
+	$container = $('.searchProducts')
+	self.masonry $container
+	self.initAppendedSearch($container.find('.searchProduct'))
+
+	if results && results.length>0
+		self.initScroll (json,opts)->
+			if self.results.results
+				self.results.results = self.results.results.concat(json.results)
+			else
+				self.results = json
+			$resultsHTML = $(self.listTemplate({results:json.results, offset:json.metadata.offset, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+			$('.details .searchProducts').append($resultsHTML).imagesLoaded ->
+				self.msnry.masonry( 'appended', $resultsHTML, true )
+				self.initAppendedSearch($resultsHTML)
 Sidebar.prototype.searchProducts = (tag)->
 	self = this
 	$('.details').html('')
@@ -365,29 +430,12 @@ Sidebar.prototype.searchProducts = (tag)->
 	jQuery.get('/search',self.getSearchFilters())
 	.done((json)->
 		self.searched = true
-		console.log(json)
-		self.results = json
-		results = []
-		results.push(tag)	if(tag && tag.editMode)
-		results = results.concat(json.results)
-		searchResults = $('<div class="searchProducts"/>')
-		searchResults.html(self.listTemplate({offset: json.metadata.offset, results: results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
-		$('.details').html(searchResults)
 		$('.details').removeClass('loading')
-		$container = $('.searchProducts')
-		self.masonry $container
-		self.initAppendedSearch($container.find('.searchProduct'))
+		if json.type == "scraper"
+			self.renderUrlResults(tag, json)
+		else
+			self.renderSearchResults(tag, json)
 
-		if results && results.length>0
-			self.initScroll (json,opts)->
-				if self.results.results
-					self.results.results = self.results.results.concat(json.results)
-				else
-					self.results = json
-				$resultsHTML = $(self.listTemplate({results:json.results, offset:json.metadata.offset, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
-				$('.details .searchProducts').append($resultsHTML).imagesLoaded ->
-					self.msnry.masonry( 'appended', $resultsHTML, true )
-					self.initAppendedSearch($resultsHTML)
 
 
 

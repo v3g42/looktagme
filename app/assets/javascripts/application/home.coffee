@@ -76,6 +76,7 @@ class HomeListView
 		@editor.hide()
 		@editor.children('iframe').remove()
 		@editing = undefined
+		window.location.reload()
 
 	onEdit: (v) =>
 		target_url = "/tags/edit?" +

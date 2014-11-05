@@ -64,3 +64,5 @@ gem "bower-rails", "~> 0.8.3"
 
 
 gem 'newrelic_rpm'
+
+gem 'wombat'

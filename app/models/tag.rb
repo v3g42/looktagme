@@ -16,6 +16,7 @@ class Tag
   field :currency, type: String
   field :page_url, type: Float
 
-  validates_presence_of :x, :y, :title, :description, :image_url, :seller_url, :seller_name
+  #validates_presence_of :x, :y, :title, :description, :image_url, :seller_url, :seller_name
+  validates_presence_of :x, :y, :image_url, :seller_url
 
 end

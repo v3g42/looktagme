@@ -13,3 +13,4 @@ html
       | <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script
   body class="#{body_class(controller_name, action_name)}"
     = yield
+    = render 'layouts/analytics'
