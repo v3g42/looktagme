@@ -1,7 +1,14 @@
 @import "../default/pinterest";
-$col-width: 30%;
+$col-width: 47%;
 body.home {
   .items{
+    .item.product {
+      top:-9999px;
+      left:-9999px;
+      &.masonry-brick {
+        display: block;
+      }
+    }
     @include listProducts($col-width);
   }
 }

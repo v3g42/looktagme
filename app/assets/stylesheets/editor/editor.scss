@@ -1,6 +1,6 @@
 @import "../default/pinterest";
 
-$col-width: 28%;
+$col-width: 45%;
 body.editor {
   .no-results {
     text-align: center;
@@ -108,8 +108,8 @@ body.editor {
 
   }
   .right_section {
-    width: 65%;
-    margin-left: 32%;
+    width: 55%;
+    margin-left: 45%;
   }
   .search_section {
     position:fixed;
@@ -118,8 +118,8 @@ body.editor {
     padding-top:15px;
     z-index:1000;
     display:none;
-    width: 65%;
-    left: 32%;
+    width: 55%;
+    left: 45%;
     padding-left: 2%;
     .price_slider {
       padding-left: 20px;
@@ -155,9 +155,10 @@ body.editor {
     position:fixed;
     top:0;
     height: 100%;
-    width: 30%;
+    width: 45%;
     img {
-      width: 100%;
+      max-width: 100%;
+      max-height: 100%;
     }
   }
   .right_section {

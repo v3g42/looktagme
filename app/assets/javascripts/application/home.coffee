@@ -56,7 +56,7 @@ class HomeListView
 		@initScroll  (json,opts)->
 			$resultsHTML = $(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
 			self.elem.find('.listProducts').append($resultsHTML)
-			self.msnry.masonry( 'appended', $resultsHTML, true )
+			#self.msnry.masonry( 'appended', $resultsHTML, true )
 
 	initGlass: (@min_width=100, @min_height=100) ->
 		@editing = undefined

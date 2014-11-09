@@ -14,19 +14,16 @@
 .tagger-editor-container {
 	position: fixed;
 	background: white;
-	top: 25px;
-	left: 25px;
-	right: 25px;
-	bottom: 5px;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 	z-index: 100002;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	border: 1px solid rgb(218, 217, 217);
-	padding-top: 20px;
-	padding-bottom: 20px;
-	padding-left: 20px;
-	padding-right: 20px;
+	padding-top: 0;
 }
 
 

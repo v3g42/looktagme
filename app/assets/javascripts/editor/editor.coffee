@@ -519,8 +519,13 @@ jQuery ()->
 	window.init = init = ()->
 		imgEl = jQuery('.left_section img')
 
-		aspectRatio = imgEl.width()/imgEl.height()
-		jQuery('.tag_editor').addClass('horizontal-image') if aspectRatio>1
+		setWindowSizes = ->
+			$('.right_section, .search_section').css('width', $(window).width() - $('.left_section img').width()-10)
+			$('.right_section').css('margin-left', $('.left_section img').width())
+			$('.search_section').css('left', $('.left_section img').width())
+		setWindowSizes()
+
+		$(window).resize setWindowSizes
 		console.log imgEl[0].width
 		if window.imageData && window.imageData.tags
 			editor = new LookTagMe.Editor({}, imgEl, window.imageData.tags)

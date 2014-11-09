@@ -2,14 +2,11 @@
 
 .loaded .item {
   min-height: inherit !important;
-  display: block !important;
+
 }
 @mixin listProducts($col-width) {
  .item {
-    display: none;
-   &.masonry-brick {
-     display: block;
-   }
+
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;

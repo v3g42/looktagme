@@ -86,7 +86,7 @@ class Search::ShopSense
     puts results
     results=  results.map do |product|
       #TODO: This has to be based on the client
-      image = product["image"]["sizes"]["Medium"]
+      image = product["image"]["sizes"]["Large"]
       {
           :title => product["name"],
           :description => product["description"],
