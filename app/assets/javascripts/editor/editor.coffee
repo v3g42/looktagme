@@ -68,7 +68,7 @@ Sidebar.prototype.addFilter = (filter, name, force = true)->
 
 Sidebar.prototype.initScroll = (cbk)->
 	self = this
-	img = $('.details').data('loader')
+	$('.details').infiniteScroll('destroy') if $('.details').data('infinite-search')
 	$('.details').infiniteScroll
 		url: '/search'
 		,calculateBottom: ->
@@ -121,36 +121,37 @@ Sidebar.prototype.initSearch = (tag)->
 			if typeof item == "string"
 				item
 			else item
-		typeaheadjs:
-			arguments: [
-					{
+	search_elem.tagsinput('input').typeahead
 					highlight: true
 					minLength: 2
 					hint: false
-					},
-					{
+				,
 						name: 'categories',
 						displayKey: 'name',
 						source: self.categoriesAdapt.ttAdapter()
 						templates:
 							header: '<p class="typeahead-header">Categories</p>'
-					},
-					{
+				,
 						name: 'brands',
 						displayKey: 'name',
 						source: self.brandsAdapt.ttAdapter()
 						templates:
 							header: '<p class="typeahead-header">Brands</p>'
-					},
-					{
+				,
 						name: 'retailers',
 						displayKey: 'name',
 						source: self.retailersAdapt.ttAdapter()
 						templates:
 							header: '<p class="typeahead-header">Retailers</p>'
-					}
+	search_elem.tagsinput('input').on('typeahead:selected', $.proxy (obj, datum) ->
+		if (typeof datum=="string")
+			search_elem.tagsinput('add',datum);
+		else
+			search_elem.tagsinput 'add', datum.name
+		search_elem.tagsinput('input').typeahead('val', '');
 
-				]
+	, search_elem)
+
 	search_elem.on 'itemAdded', (event)->
 		self.searchProducts(window.currentTag)
 		search_elem.tagsinput('input').typeahead('val', '');
@@ -187,6 +188,7 @@ Sidebar.prototype.selectTag = (tag, editMode)->
 			tag = $('.search_section .btnSave').data('tag')
 			$('.search_section .btnSave').data('tag', null)
 			$('.search_section .btnSave').prop('disabled', true)
+			console.log(tag.price)
 			self.saveProduct(tag) if tag
 
 
@@ -202,6 +204,7 @@ Sidebar.prototype.selectProduct = (tag)->
  $('.search_section').addClass('selected')
  $('.search_section .btnSave').removeAttr('disabled')
  $('.search_section .btnSave').data('tag', tag)
+ console.log(tag.price)
 
 Sidebar.prototype.saveProduct = (tag)->
 	$.xhrPool.abortAll() if $.xhrPool && $.xhrPool.abortAll

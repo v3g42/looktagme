@@ -12,6 +12,7 @@
         this.executing = false;
         this.endOfResults = false;
         this.currentPage = 1;
+        this.initialized = true;
 
         var that = this;
         that.scrollListener =  function () {

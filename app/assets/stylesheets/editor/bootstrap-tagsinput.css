@@ -16,10 +16,8 @@
     border: none;
     box-shadow: none;
     outline: none;
-    background-color: transparent;
-    padding: 0;
-    margin: 0;
-    width: auto !important;
+    padding: 0px;
+    margin: 0px 2px;
     max-width: inherit;
 }
 .bootstrap-tagsinput input:focus {
@@ -28,8 +26,14 @@
 }
 .bootstrap-tagsinput .tag {
     /*float: left;*/
-    margin: 5px;
+    margin: 2px 2px 0;
     color: white;
+}
+
+.bootstrap-tagsinput .tag.label{
+    max-width: 200px;
+    text-overflow: ellipsis;
+    display: inline-block;
 }
 .bootstrap-tagsinput .tag [data-role="remove"] {
     margin-left: 8px;
