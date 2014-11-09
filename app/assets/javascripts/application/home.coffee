@@ -35,8 +35,14 @@ class HomeListView
 		self = @
 		self.msnry = msnry = $container.masonry
 			itemSelector : '.item'
-			isAnimated: false
+			isAnimated: true
+			animationOptions: {
+				duration: 150,
+				opacity: "toggle",
+				queue: true
+			}
 		#msnry.masonry('bindResize')
+		msnry.masonry()
 		msnry.imagesLoaded ->
 			console.log("LOADED")
 			self.createViewers(self.json)

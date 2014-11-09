@@ -310,7 +310,13 @@ Sidebar.prototype.masonry = ($container)->
 	self = this
 	self.msnry = msnry = $container.masonry
 		itemSelector : '.item'
-		isAnimated: false
+		isAnimated: true
+		animationOptions: {
+			duration: 150,
+			easing: 'linear',
+			opacity: "toggle",
+			queue: true
+		}
 	#msnry.masonry('bindResize')
 	msnry.imagesLoaded ->
 		console.log("LOADED")
