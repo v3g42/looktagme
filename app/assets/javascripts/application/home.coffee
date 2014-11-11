@@ -40,11 +40,12 @@ class HomeListView
 		$container.imagesLoaded( ->
 			msnry.masonry()
 		).progress (int, image)->
-			msnry.masonry()
-			parent = $(image.img).parents('.item')
-			parent.addClass('loaded')
-			self.createViewer(image.img, parent)
-
+			setTimeout ->
+				msnry.masonry()
+				parent = $(image.img).parents('.item')
+				parent.addClass('loaded')
+				self.createViewer(image.img, parent)
+			, 0
 
 
 		$(window).resize ->
