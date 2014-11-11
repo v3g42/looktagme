@@ -1,12 +1,11 @@
 @import 'external/buttons';
 
-.loaded .item {
-  min-height: inherit !important;
-
-}
 @mixin listProducts($col-width) {
  .item {
-
+    display: none;
+   &.loaded {
+     display: block;
+   }
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -21,8 +20,6 @@
     margin: 10px;
     margin-top: 0;
     float: left;
-    min-height: 200px;
-   min-width: 140px;
     @include buttons;
     .buy_cont {
       text-align: center;

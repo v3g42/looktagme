@@ -21,12 +21,12 @@ class HomeListView
 			,processResults: cbk
 
 
-	createViewers: (json)->
+	createViewer: (masonryImage, parent)->
 		self = @
 		json.results.map (image)->
-			imgCont = $('.item.product[data-image-id=' + image.id + ']')
-			self.viewers[image.id] = new LookTagMe.Viewer(self,imgCont.find('img'),image.tags) unless self.viewers[image.id]
-			imgCont.find('a').click (e)->
+			return if image.id != $(masonryImage).data('image-id')
+			self.viewers[image.id] = new LookTagMe.Viewer(self,masonryImage,image.tags) unless self.viewers[image.id]
+			parent.find('a').click (e)->
 				e.stopPropagation()
 				e.preventDefault()
 				self.onEdit self.viewers[image.id]
@@ -35,19 +35,17 @@ class HomeListView
 		self = @
 		self.msnry = msnry = $container.masonry
 			itemSelector : '.item'
-			isAnimated: true
-			animationOptions: {
-				duration: 150,
-				opacity: "toggle",
-				queue: true
-			}
-		#msnry.masonry('bindResize')
-		msnry.masonry()
-		msnry.imagesLoaded ->
-			console.log("LOADED")
-			self.createViewers(self.json)
-			self.elem.addClass('loaded')
+			transitionDuration: 0
+
+		$container.imagesLoaded( ->
+
+		).progress (int, image)->
+			parent = $(image.img).parents('.item')
+			parent.addClass('loaded')
+			self.createViewer(image.img, parent)
 			msnry.masonry()
+
+
 		$(window).resize ->
 			self.msnry.masonry('reload')
 
@@ -69,15 +67,17 @@ class HomeListView
 		$(window).on('scroll touchmove mousewheel', @editScrollListener)
 		@glass = $('<div class="tagger-editor-glass"/>')
 		@glass.hide()
-		@editor = $('<div class="tagger-editor-container"><div class="close"/></div>')
-		$(@editor).children('.close').on 'click', () => @onEditorClose()
+		@editor = $('<div class="tagger-editor-container"><div class="clearfix editor-header"><a class="pull-left" href="/">LookTagMe</a> <a href="#" class="editor-close pull-right">Close</</a></div></div>')
+		$(@editor).find('.editor-close').on 'click', (event) => @onEditorClose(event)
 		@editor.hide()
 		$('body').append(@editor)
 		$('body').append(@glass)
 		$(window).resize () =>
 			@editor.find('iframe').each (idx, itm) => itm.contentWindow.postMessage('resize', @base_url)
 
-	onEditorClose: () =>
+	onEditorClose: (event) =>
+		event.preventDefault()
+		event.stopPropagation()
 		@glass.hide()
 		@editor.hide()
 		@editor.children('iframe').remove()

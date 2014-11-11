@@ -5,8 +5,8 @@ html
     meta content="IE=edge" http-equiv="X-UA-Compatible" /
     title= content_for?(:title) ? yield(:title) : t('meta.title')
     meta content="width=device-width, initial-scale=1.0" name="viewport" /
-    = stylesheet_link_tag "includes/application", media: "all", "data-turbolinks-track" => true
-    = javascript_include_tag "includes/application", "data-turbolinks-track" => true
+    = stylesheet_link_tag "includes/application", media: "all", "data-turbolinks-track" => false
+    = javascript_include_tag "includes/application", "data-turbolinks-track" => false
     = csrf_meta_tags
     = yield(:head)
 

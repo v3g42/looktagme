@@ -12,6 +12,31 @@
 }
 
 .tagger-editor-container {
+    .editor-header {
+      background: #223741;
+      padding: 0 10px;
+      .pull-right {
+        float: right;
+      }
+      .pull-left {
+        float: left;
+      }
+
+      &.clearfix:before, &.clearfix:after {
+        content: " ";
+        display: table;
+      }
+      &.clearfix:before, &.clearfix:after {
+        clear: both;
+      }
+
+      a {
+        color: #d5d5d5;
+        font-weight: 500;
+        -webkit-transition: color 0.2s linear;
+        transition: color 0.2s linear;
+      }
+    }
 	position: fixed;
 	background: white;
 	top: 0;
@@ -21,9 +46,6 @@
 	z-index: 100002;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
-	border-radius: 5px;
-	border: 1px solid rgb(218, 217, 217);
-	padding-top: 30px;
 }
 
 

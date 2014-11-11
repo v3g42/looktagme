@@ -47,11 +47,9 @@ body.editor {
       display:block;
     }
     &.right_section .right_content  .details {
-      margin-top: 180px;
-
-      padding-top: 20px;
+      margin-top: 150px;
       @media (max-width: 400px){
-        margin-top: 200px;
+        margin-top: 170px;
       }
       .add_button {
         display: none;
@@ -115,7 +113,7 @@ body.editor {
     position:fixed;
     top:0;
     background:white;
-    padding-top:15px;
+    padding-top:5px;
     z-index:1000;
     display:none;
     width: 55%;
@@ -151,7 +149,7 @@ body.editor {
     }
   }
   .left_section {
-    padding: 15px 15px 15px 0;
+    padding: 5px 15px 15px 0;
     position:fixed;
     top:0;
     height: 100%;
