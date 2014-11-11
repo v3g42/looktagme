@@ -49,7 +49,7 @@ class HomeListView
 
 
 		$(window).resize ->
-			self.msnry.masonry('reload')
+			self.msnry.masonry()
 
 
 	render: ()->
