@@ -383,7 +383,7 @@ Sidebar.prototype.renderUrlResults = (tag, json)->
 			$('.search_section').addClass('selected')
 			$('.search_section .btnSave').removeAttr('disabled')
 			tag = $.extend {}, self.currentTag
-			image = images[$('.paste_images .paste_image.selected').data('index')]
+			image = json.images[$('.paste_images .paste_image.selected').data('index')]
 			tag.image_url = image.src
 			tag.image_width = image.width
 			tag.image_height = image.height
