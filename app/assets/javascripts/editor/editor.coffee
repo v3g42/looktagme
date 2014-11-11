@@ -375,7 +375,7 @@ Sidebar.prototype.renderUrlResults = (tag, json)->
 		valid &= h>60 if h
 		valid
 	json.images = images.splice(0,9)
-	return $('.details').html('Sorry cannot find any images') if images.length<1
+	return $('.details').html('Sorry cannot find any images') if json.images.length<1
 
 	enableSave = ()->
 		enabled = $('.paste_images .paste_image.selected').length>0 &&  $('.details #paste_price').val()>0
