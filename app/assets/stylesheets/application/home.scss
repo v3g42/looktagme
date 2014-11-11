@@ -1,5 +1,5 @@
 @import "../default/pinterest";
-$col-width: 47%;
+$col-width: 46%;
 body.home {
   .items{
     @include listProducts($col-width);

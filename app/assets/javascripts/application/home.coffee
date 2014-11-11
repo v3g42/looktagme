@@ -38,7 +38,7 @@ class HomeListView
 			transitionDuration: 0
 
 		$container.imagesLoaded( ->
-
+			msnry.masonry()
 		).progress (int, image)->
 			msnry.masonry()
 			parent = $(image.img).parents('.item')
