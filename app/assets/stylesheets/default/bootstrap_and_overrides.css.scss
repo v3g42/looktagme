@@ -11,3 +11,23 @@
 .btn:focus {
   outline: none;
 }
+
+$brand-notice:         #3498db  !default;
+
+.alert-notice {
+  background: $brand-notice;
+  border-color: $brand-notice;
+  color: white;
+  a {
+    color: white;
+    text-decoration: underline;
+    font-weight: 500;
+    -webkit-transition: color 0.2s linear;
+    transition: color 0.2s linear;
+    padding: 0;
+  }
+
+  a.close {
+    text-decoration: none;
+  }
+}

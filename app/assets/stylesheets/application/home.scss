@@ -4,4 +4,8 @@ body.home {
   .items{
     @include listProducts($col-width);
   }
+
+  #downloads {
+    padding: 0 25px; ;
+  }
 }

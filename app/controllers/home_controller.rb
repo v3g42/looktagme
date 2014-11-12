@@ -11,6 +11,6 @@ class HomeController < ApplicationController
      render layout: 'company'
   end
   def howitworks
-    render layout: 'company'
+
   end
 end

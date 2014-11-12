@@ -121,6 +121,14 @@ $ ->
 	homeView = new HomeListView('#home_container', window.json)
 	homeView.render()
 
+	#show bookmarklet link
+#	bool = $.cookie("show_bookmarklet_notification") || true
+#	if true || bool != "false"
+#		$.bootstrapGrowl $('#downloads').html(), {type: 'notice', delay: 0, offset: {from: 'top', amount: 300}}
+#		$.cookie("show_bookmarklet_notification", false)
+
+
+
 
 
 
