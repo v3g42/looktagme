@@ -316,7 +316,7 @@ Sidebar.prototype.masonry = ($container)->
 		$(image.img).parents('.item').addClass('loaded')
 		msnry.masonry()
 	$(window).resize ->
-		self.msnry.masonry('reload')
+		self.msnry.masonry()
 
 
 Sidebar.prototype.getSearchFilters = ()->
