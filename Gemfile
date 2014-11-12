@@ -66,3 +66,14 @@ gem "bower-rails", "~> 0.8.3"
 gem 'newrelic_rpm'
 
 gem 'wombat'
+
+# Static asset caching
+gem 'rack-cache'
+gem 'dalli'
+
+# Improved I/O
+gem 'kgio'
+
+
+gem "memcachier"
+
