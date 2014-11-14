@@ -2,6 +2,9 @@ class TagsController < ApplicationController
   before_action :authenticate_user!, :except => :index
   respond_to  :json,:html
   layout "editor"
+
+  caches_action :edit, :cache_path => Proc.new { |c| tags_edit_url(c.params[:image_url]) }
+  caches_action :index, :cache_path => Proc.new { |c| tags_index_url(c.params[:image_url]) }
   def edit
     return render status :bad_request unless params[:image_url]
 
@@ -35,8 +38,9 @@ class TagsController < ApplicationController
       t = Tag.new(params[:tag])
       t.image = image
       t.save
-    end
 
+    end
+    expire_image_cache
     unless(t.errors.present?)
       render :json => t
     else
@@ -75,8 +79,18 @@ class TagsController < ApplicationController
     t = Image.find(params[:image_id]).tags.find(params[:id])
     if(t.destroy)
       render :json => t
+      expire_image_cache
     else
       render :json => t, :status =>  :unprocessable_entity
     end
   end
+
+
+  private
+  def expire_image_cache
+    expire_action(:action => 'index', :controller => "home")
+    expire_action(:action => 'index', :controller => "tags")
+    expire_action(:action => 'edit', :controller => "tags")
+  end
+
 end

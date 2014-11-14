@@ -25,7 +25,6 @@ group :development do
   gem 'pry-rails'
   gem 'meta_request'
   gem "quiet_assets"
-  gem "thin"
 end
 
 group :development, :test do
@@ -76,3 +75,7 @@ gem 'kgio'
 
 gem "memcachier"
 
+gem 'actionpack-action_caching'
+
+
+gem 'passenger'

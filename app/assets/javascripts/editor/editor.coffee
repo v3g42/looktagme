@@ -22,6 +22,7 @@ Sidebar = (options)->
 	this.render = null
 	this.filters = []
 	this.msnry = null
+	this.urlRegex = /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
 
 	this
 Sidebar.prototype.toggleFilters = ()->
@@ -359,21 +360,14 @@ Sidebar.prototype.getSearchFilters = ()->
 	filters["q"] = $('.searchFilter.search').data('item') || ""
 	filters
 
-Sidebar.prototype.renderUrlResults = (tag, json)->
+Sidebar.prototype.renderUrlResults = (json)->
 	self = this
-	images = json.images.filter (img)->
-		valid = true
-		w = img.width.replace("px","") if img.width
-		h = img.height.replace("px","") if img.height
-
-		valid = w>60 if w
-		valid &= h>60 if h
-		valid
-	json.images = images.splice(0,9)
-	return $('.details').html('Sorry cannot find any images') if json.images.length<1
+	$('.details').removeClass('loading')
+	json.images = json.images.splice(0,9) if json.images
+	return $('.details').html('Sorry cannot find any images') if !json.images || json.images.length<1
 
 	enableSave = ()->
-		enabled = $('.paste_images .paste_image.selected').length>0 &&  $('.details #paste_price').val()>0
+		enabled = $('.paste_images .paste_image.selected').length>0 && $('.details #paste_price').val().trim()
 		if enabled
 			$('.search_section').addClass('selected')
 			$('.search_section .btnSave').removeAttr('disabled')
@@ -436,30 +430,59 @@ Sidebar.prototype.renderSearchResults = (tag, json)->
 			$content = $(self.listTemplate({results:json.results, offset:json.metadata.offset, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
 			self.masonry $container, $content,initAppendedSearch, false
 
+
+Sidebar.prototype.addClientParser = (url)->
+	self = this
+	iframe = $('<iframe src="/search/proxy?url='+escape(url)+'" />')
+	iframe.hide()
+	$('body').append(iframe)
+	iframe.on "load", ->
+		data = {}
+		data.images = []
+		data.seller_url = url
+		iframe.imagesLoaded ->
+			images =  iframe.contents().find('img')
+			images.each ->
+
+			  data.images.push({width: $(this).width(),height: $(this).height(),src: $(this).attr('src')}) if $(this).width()>50 && $(this).height()>50
+
+
+			attrs = ['price', 'currency']
+			metaAttrs = ['title', 'description']
+			attrs.map (attr)->
+				val = iframe.contents().find('.price').html() || iframe.contents().find('.price').val()
+				data[attr] = val if val
+
+			metaAttrs.map (attr)->
+				val = iframe.contents().find('meta[name="'+attr+'"]').attr('content')
+				data[attr] = val if val
+
+			self.renderUrlResults data
+
+
+
+
+
+
+
 Sidebar.prototype.searchProducts = (tag)->
 	self = this
 	$('.details').html('')
 	$('.details').infiniteScroll('destroy') if $('.details').data('infinite-search')
 	$('.details').addClass('loading')
 	self.results = {}
-	jQuery.get('/search',self.getSearchFilters())
-	.done((json)->
-		self.searched = true
-		$('.details').removeClass('loading')
-		if json.type == "scraper"
-			self.renderUrlResults(tag, json)
-		else
+	filters = self.getSearchFilters()
+	if self.urlRegex.test filters.q
+		self.addClientParser(filters.q)
+	else
+		jQuery.get('/search',filters)
+		.done((json)->
+			self.searched = true
 			self.renderSearchResults(tag, json)
-
-
-
-
-
-
-	).fail(()->
-		self.alert("danger", "Server Error!")
-		$('.details').removeClass('loading')
-	)
+		).fail(()->
+			self.alert("danger", "Server Error!")
+			$('.details').removeClass('loading')
+		)
 Sidebar.prototype.updatePriceRange = ()->
 	val = $('.price-slider').val().split(',')
 	lt = window.prices[val[0]]["range"][0]

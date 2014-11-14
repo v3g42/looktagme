@@ -14,8 +14,14 @@ class Scraper
    end
  end
 
- def initialize(url)
-   @base_url = URI.parse(url)
+ def initialize(url, agent)
+   #@base_url = URI.parse(url)
+   @base_url = url
+   @agent = agent
+ end
+
+ def proxy
+   HTTParty.get(@base_url, headers: {"User-Agent" => @agent})
  end
 
   def scrape
