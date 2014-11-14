@@ -90,8 +90,18 @@ class HomeListView
 		@glass.hide()
 		@editor.hide()
 		@editor.children('iframe').remove()
+		@fetchTags(@editing)
 		@editing = undefined
-		window.location.reload()
+
+
+	fetchTags: (viewer) =>
+		req = $.ajax
+			url: "/tags?image_url=" + encodeURIComponent(viewer.getUrl())
+			dataType: 'json'
+			success: (data) => viewer.updateTags(data.tags)
+			error: (xhr) =>
+			contentType: 'application/json'
+			crossDomain: true
 
 	onEdit: (v) =>
 		target_url = "/tags/edit?" +

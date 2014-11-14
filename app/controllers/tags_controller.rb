@@ -50,18 +50,17 @@ class TagsController < ApplicationController
 
   def index
     return render :json => {:message => "image_url or app_id not set"}, :status => :bad_request unless params[:image_url].present? || params[:app_id].present?
-    user = User.where(:app_id => params[:app_id]).first
-    if(user)
-      image = user.images.where(:image_url => params[:image_url]).first
+    if params[:app_id]
+      user = User.where(:app_id => params[:app_id]).first
+    elsif current_user
+      user = current_user
+    end
+      image = Image.where(:image_url => params[:image_url]).first
       if image
         render :json => image
       else
         render :json => {:message => "image_url not found"},:status => :not_found
       end
-
-    else
-      render :json => {:message => "app_id not found"},:status => :not_found
-    end
   end
   def recent
     return render :json => {:message => "image_url not set"}, :status => :bad_request unless params[:image_url]
