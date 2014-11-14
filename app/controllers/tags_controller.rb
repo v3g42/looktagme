@@ -4,7 +4,6 @@ class TagsController < ApplicationController
   layout "editor"
 
   caches_action :edit, :cache_path => Proc.new { |c| tags_edit_url(c.params[:image_url]) }
-  caches_action :index, :cache_path => Proc.new { |c| tags_index_url(c.params[:image_url]) }
   def edit
     return render status :bad_request unless params[:image_url]
 
@@ -89,7 +88,6 @@ class TagsController < ApplicationController
   private
   def expire_image_cache
     expire_action(:action => 'index', :controller => "home")
-    expire_action(:action => 'index', :controller => "tags")
     expire_action(:action => 'edit', :controller => "tags")
   end
 

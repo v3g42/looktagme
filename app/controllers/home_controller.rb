@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   respond_to :html, :json
-  caches_action :index, :about, :howitworks
+  caches_action :index, :about, :howitworks, :layout => false
   def index
     @page = params[:page] || 1
     @limit = params[:limit] || 30
