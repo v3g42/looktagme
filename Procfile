@@ -1,1 +1,1 @@
-web: bundle exec passenger start -p 
+web: bundle exec passenger start -p $PORT
