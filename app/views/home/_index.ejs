@@ -1,14 +1,18 @@
-<div class="listProducts">
+
+
     {{#each results}}
     <div class="item product">
-            <div class="picture">
-                <a href="#" class="image">
-                    <img src="{{image_url}}" alt="" data-image-id="{{id}}"> <br>
-                </a>
-            </div>
+        <div class="picture">
+            <a href="#" class="image">
+                <img src="{{image_url}}" alt="" data-image-id="{{id}}"> <br>
+            </a>
+        </div>
         </a>
     </div>
     {{/each}}
+</div>
+<div class="listProducts">
+
 </div>
 <span class="next-page" data-next-page="{{next_page}}" data-total="{{total}}"></span>
 

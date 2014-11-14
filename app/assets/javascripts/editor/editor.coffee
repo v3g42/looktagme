@@ -18,6 +18,7 @@ Sidebar = (options)->
 	this.listTemplate = Handlebars.compile $('#editor-list').html()
 	this.productsTemplate = Handlebars.compile $('#editor-recent').html()
 	this.pasteProductTemplate = Handlebars.compile $('#editor-paste').html()
+	this.addTagTemplate = Handlebars.compile $('#editor-add-tag').html()
 	this.render = null
 	this.filters = []
 	this.msnry = null
@@ -120,7 +121,7 @@ Sidebar.prototype.initSearch = (tag)->
 		itemValue: (item)->
 			if typeof item == "string"
 				item
-			else item
+			else item.name
 	search_elem.tagsinput('input').typeahead
 					highlight: true
 					minLength: 2
@@ -143,11 +144,12 @@ Sidebar.prototype.initSearch = (tag)->
 						source: self.retailersAdapt.ttAdapter()
 						templates:
 							header: '<p class="typeahead-header">Retailers</p>'
-	search_elem.tagsinput('input').on('typeahead:selected', $.proxy (obj, datum) ->
+	search_elem.tagsinput('input').on('typeahead:selected', $.proxy (obj, datum, name) ->
 		if (typeof datum=="string")
 			search_elem.tagsinput('add',datum);
 		else
-			search_elem.tagsinput 'add', datum.name
+			datum.label = name
+			search_elem.tagsinput 'add', datum
 		search_elem.tagsinput('input').typeahead('val', '');
 
 	, search_elem)
@@ -305,18 +307,29 @@ Sidebar.prototype.alert = (type, msg, cssClass)->
 	details.find('.alert').remove()
 	details.prepend(self.alertTemplate({class: type, message: msg,css:cssClass }))
 
-
-Sidebar.prototype.masonry = ($container)->
+Sidebar.prototype.masonry = ($container, $content, callback, first=false)->
 	self = this
-	self.msnry = msnry = $container.masonry
-		itemSelector : '.item'
-		transitionDuration: 0
-	#msnry.masonry('bindResize')
-	$container.imagesLoaded().progress (int, image)->
-		$(image.img).parents('.item').addClass('loaded')
-		msnry.masonry()
-	$(window).resize ->
-		self.msnry.masonry()
+	$cachedContainer = $('#cachedImages')
+
+	if first
+		$cachedContainer.html($content)
+		self.msnry = $container.masonry
+			itemSelector : '.item'
+			transitionDuration: 0
+		$(window).resize ->
+		  self.msnry.masonry()
+	else
+		$cachedContainer.append($content)
+
+	$cachedContainer.imagesLoaded().progress (int, image)->
+		parent = $(image.img).parents('.item')
+		parent.detach()
+		$container.append(parent)
+		$container.masonry( 'appended', parent )
+		$container.masonry()
+		callback(parent)
+
+
 
 
 Sidebar.prototype.getSearchFilters = ()->
@@ -345,17 +358,6 @@ Sidebar.prototype.getSearchFilters = ()->
 	).get().join("_")
 	filters["q"] = $('.searchFilter.search').data('item') || ""
 	filters
-
-Sidebar.prototype.initAppendedSearch = (items)->
-	self = this
-	items.find('a.image').click (event, el)->
-		event.preventDefault()
-		event.stopPropagation()
-		$('.searchProduct').removeClass('selected')
-		id = $(event.currentTarget).data('product-id')
-		$(event.currentTarget).parents('.searchProduct').addClass('selected')
-		console.log self.results.results[id]
-		self.selectProduct(self.results.results[id])
 
 Sidebar.prototype.renderUrlResults = (tag, json)->
 	self = this
@@ -409,13 +411,21 @@ Sidebar.prototype.renderSearchResults = (tag, json)->
 	results = []
 	results.push(tag)	if(tag && tag.editMode)
 	results = results.concat(json.results)
-	searchResults = $('<div class="searchProducts"/>')
-	searchResults.html(self.listTemplate({offset: json.metadata.offset, results: results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
-	$('.details').html(searchResults)
+	$container = $('<div class="searchProducts"/>')
+	$content = self.listTemplate({offset: json.metadata.offset, results: results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total})
+
+	$('.details').html($container)
 	$('.details').removeClass('loading')
-	$container = $('.searchProducts')
-	self.masonry $container
-	self.initAppendedSearch($container.find('.searchProduct'))
+	initAppendedSearch = (item)->
+		item.find('a.image').click (event, el)->
+			event.preventDefault()
+			event.stopPropagation()
+			$('.searchProduct').removeClass('selected')
+			id = $(event.currentTarget).data('product-id')
+			$(event.currentTarget).parents('.searchProduct').addClass('selected')
+			console.log self.results.results[id]
+			self.selectProduct(self.results.results[id])
+	self.masonry $container, $content,initAppendedSearch, true
 
 	if results && results.length>0
 		self.initScroll (json,opts)->
@@ -423,10 +433,9 @@ Sidebar.prototype.renderSearchResults = (tag, json)->
 				self.results.results = self.results.results.concat(json.results)
 			else
 				self.results = json
-			$resultsHTML = $(self.listTemplate({results:json.results, offset:json.metadata.offset, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
-			$('.details .searchProducts').append($resultsHTML).imagesLoaded ->
-				self.msnry.masonry( 'appended', $resultsHTML, true )
-				self.initAppendedSearch($resultsHTML)
+			$content = $(self.listTemplate({results:json.results, offset:json.metadata.offset, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
+			self.masonry $container, $content,initAppendedSearch, false
+
 Sidebar.prototype.searchProducts = (tag)->
 	self = this
 	$('.details').html('')
@@ -471,26 +480,31 @@ Sidebar.prototype.renderRecent = ()->
 	image_url = self.img.attr('src')
 	jQuery.get('/tags/recent',{image_url:image_url})
 	.done((image)->
-		console.log(image)
-		$('.details').html(self.productsTemplate({results:image.tags, image_id:image.id}))
-		$('.details').removeClass('loading')
-		$container = $('.listProducts')
-		self.masonry $container
-		search_elem = self.elem.find('.product_search')
-		search_elem.typeahead('val', '')
-		jQuery('.editProduct').click ->
-			event.stopPropagation()
-			event.preventDefault()
-			id = $(event.currentTarget).data('tag-id')
-			self.editor.startEditing(id, true)
-		jQuery('.deleteProduct').click (event, el)->
-			event.stopPropagation()
-			event.preventDefault()
-			id = $(event.currentTarget).data('tag-id')
-			self.deleteTag(id, image.id)
 
-		$('.add_button').click ->
-			self.editor.initNewTag()
+		$addTag = self.addTagTemplate()
+		$content = self.productsTemplate({results:image.tags, image_id:image.id})
+		$('.details').removeClass('loading')
+		$container = $('<div class="listProducts" />')
+		$('.details').html($addTag)
+		$('.details').append($container)
+		initAppendedItems = ->
+			search_elem = self.elem.find('.product_search')
+			search_elem.typeahead('val', '')
+			jQuery('.editProduct').click ->
+				event.stopPropagation()
+				event.preventDefault()
+				id = $(event.currentTarget).data('tag-id')
+				self.editor.startEditing(id, true)
+			jQuery('.deleteProduct').click (event, el)->
+				event.stopPropagation()
+				event.preventDefault()
+				id = $(event.currentTarget).data('tag-id')
+				self.deleteTag(id, image.id)
+
+			$('.add_button').click ->
+				self.editor.initNewTag()
+		self.masonry $container, $content,initAppendedItems, true
+
 
 
 

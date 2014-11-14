@@ -1,8 +1,12 @@
 @import "../default/pinterest";
 $col-width: 46%;
 body.home {
-  .items{
+  .listProducts{
     @include listProducts($col-width);
+  }
+
+  #cachedImages{
+    display: none;
   }
 
   #downloads {

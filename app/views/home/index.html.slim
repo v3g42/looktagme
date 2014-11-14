@@ -8,6 +8,8 @@
 
 
 
-div#home_container.container.items
+div#home_container.items
+
+
 javascript:
   json= {metadata: {total: #{@total}, page: 1, limit: #{@limit}}, results: #{@images.to_json.html_safe}};

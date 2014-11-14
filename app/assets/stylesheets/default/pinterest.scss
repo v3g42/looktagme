@@ -2,10 +2,6 @@
 
 @mixin listProducts($col-width) {
  .item {
-    display: none;
-   &.loaded {
-     display: block;
-   }
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;

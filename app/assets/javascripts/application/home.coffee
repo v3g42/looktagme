@@ -31,22 +31,28 @@ class HomeListView
 				e.preventDefault()
 				self.onEdit self.viewers[image.id]
 
-	masonry: ($container)->
+	masonry: ($container, $cachedContainer)->
 		self = @
 		self.msnry = msnry = $container.masonry
 			itemSelector : '.item'
 			transitionDuration: 0
 
-		$container.imagesLoaded( ->
-			msnry.masonry()
-		).progress (int, image)->
-			  parent = $(image.img).parents('.item')
-			  parent.addClass('loaded')
-			  setTimeout ->
-				 msnry.masonry()
-				 self.createViewer(image.img, parent)
-			 , 0
 
+		$cachedContainer.imagesLoaded( ->
+			#msnry.masonry()
+		).progress((int, image)->
+			parent = $(image.img).parents('.item')
+
+			#parent.appendTo($container)
+			parent.detach()
+			$container.append(parent)
+
+			$container.masonry( 'appended', parent )
+			$container.masonry()
+			self.createViewer(image.img, parent)
+
+
+		)
 
 		$(window).resize ->
 			self.msnry.masonry()
@@ -54,11 +60,12 @@ class HomeListView
 
 	render: ()->
 		self = @
-		listResults = $('<div class="listProducts"/>')
-		listResults.html(@listTemplate({results:@json.results, next_page: @json.metadata.page+1,total: @json.metadata.total}))
-		@elem.html(listResults)
-		$container = $('.listProducts:last')
-		@masonry $container
+		cachedImages = $('#cachedImages')
+		cachedImages.html(@listTemplate({results:@json.results, next_page: @json.metadata.page+1,total: @json.metadata.total}))
+		$container = $('<div class="listProducts" />')
+		@elem.html($container)
+
+		@masonry $container, cachedImages
 		@initScroll  (json,opts)->
 			$resultsHTML = $(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
 			self.elem.find('.listProducts').append($resultsHTML)
