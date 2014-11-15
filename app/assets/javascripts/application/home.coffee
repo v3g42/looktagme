@@ -71,27 +71,38 @@ class HomeListView
 			self.elem.find('.listProducts').append($resultsHTML)
 			#self.msnry.masonry( 'appended', $resultsHTML, true )
 
+		@initHistory()
+
 	initGlass: (@min_width=100, @min_height=100) ->
 		@editing = undefined
 		$(window).on('scroll touchmove mousewheel', @editScrollListener)
 		@glass = $('<div class="tagger-editor-glass"/>')
 		@glass.hide()
 		@editor = $('<div class="tagger-editor-container"><div class="clearfix editor-header"><a class="pull-left" href="/">LookTagMe</a> <a href="#" class="editor-close pull-right">Close</</a></div></div>')
-		$(@editor).find('.editor-close').on 'click', (event) => @onEditorClose(event)
+		$(@editor).find('.editor-close').on 'click', (event) ->
+			event.preventDefault()
+			event.stopPropagation()
+			history.back()
 		@editor.hide()
 		$('body').append(@editor)
 		$('body').append(@glass)
 		$(window).resize () =>
 			@editor.find('iframe').each (idx, itm) => itm.contentWindow.postMessage('resize', @base_url)
 
-	onEditorClose: (event) =>
-		event.preventDefault()
-		event.stopPropagation()
+
+	initHistory:() =>
+		location = window.history.location or window.location
+		@base_location = location.href
+		$(window).on "popstate", (e) =>
+			@onEditorClose() if @base_location==location.href
+
+	onEditorClose: () =>
 		@glass.hide()
 		@editor.hide()
 		@editor.children('iframe').remove()
 		@fetchTags(@editing)
 		@editing = undefined
+
 
 
 	fetchTags: (viewer) =>
@@ -114,6 +125,7 @@ class HomeListView
 		@editing = v
 		@glass.show()
 		@editor.show()
+		history.pushState null, null, target_url
 		iframe = $('<iframe/>')
 		@editor.append(iframe)
 		iframe.attr('src', target_url)
@@ -137,6 +149,7 @@ class HomeListView
 $ ->
 	homeView = new HomeListView('#home_container', window.json)
 	homeView.render()
+
 
 	#show bookmarklet link
 #	bool = $.cookie("show_bookmarklet_notification") || true
