@@ -3,7 +3,7 @@ class TagsController < ApplicationController
   respond_to  :json,:html
   layout "editor"
 
-  caches_action :edit, :cache_path => Proc.new { |c| tags_edit_url(c.params[:image_url]) }
+  caches_action :edit, :cache_path => Proc.new { |c| tags_edit_url(c.params[:image_url]) }, :layout => false
   def edit
     return render status :bad_request unless params[:image_url]
 
