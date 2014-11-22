@@ -183,6 +183,7 @@ body.editor {
       padding-top: 0;
 
       .details {
+        position:relative;
         margin-top:0;
         overflow-y: auto;
         .paste_section {
@@ -238,6 +239,8 @@ body.editor {
   }
 
   .add_button {
+    z-index: 10000;
+    position:relative;
     padding: 5px;
     font-size: 15px;
     display: block;
