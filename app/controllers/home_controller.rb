@@ -11,6 +11,11 @@ class HomeController < ApplicationController
   def about
      render layout: 'company'
   end
+
+  def embed
+     render layout: 'company'
+  end
+
   def howitworks
 
   end

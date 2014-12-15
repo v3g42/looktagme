@@ -2,6 +2,7 @@ TagConda::Application.routes.draw do
 
   get 'how-it-works' => 'home#howitworks', :as => :how_it_works
   get 'about' => 'home#about', :as => :about
+  get 'embed' => 'home#embed', :as => :embed
   get 'search' => 'search#search'
   get '/search/proxy' => 'search#proxy'
   get '/search/brands' => 'search#brands'
