@@ -13,7 +13,7 @@ class HomeController < ApplicationController
   end
 
   def embed
-     render layout: 'company'
+     
   end
 
   def howitworks
