@@ -1,5 +1,5 @@
 <div id="downloads" class="container">
-  <p>Drag this to Bookmarks Bar -
+  <p>Drag this to Bookmarks Bar - or <a href="/embed">embed this script in you blog</a>
   <% app_id = @current_user.present? ? @current_user.app_id : -1  %>
 <a href="javascript:(function(){window.$TAGGER={base_url: '<%= absolute_link %>', app_id: '<%= app_id %>'};s=document.createElement('script');s.type='text/javascript';s.src='<%= absolute_link(asset_path('external/inject.js')) %>?v='+parseInt(Math.random()*99999999);document.body.appendChild(s);})();">LookTagMe</a>
   </p>
