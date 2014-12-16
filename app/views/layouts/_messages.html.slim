@@ -1,6 +1,16 @@
-div.container
-  - flash.each do |name, msg|
-    - if msg.is_a?(String)
-      div class=("alert alert-#{name == "notice" ? "success" : name}")
-        a.close data-dismiss="alert"  ×
-        = content_tag :div, msg, :id => "flash_#{name}"
+javascript:
+  var msgs =  #{raw flash.to_json};
+  $(msgs).each(function(idx, arr){
+      var name = arr[0];
+    var msg = arr[1];
+      $.bootstrapGrowl(msg, {
+		  ele: 'body', // which element to append to
+		  type: name == "notice" ? "success" : name, // (null, 'info', 'danger', 'success')
+		  offset: {from: 'top', amount: 250}, // 'top', or 'bottom'
+		  align: 'right', // ('left', 'right', or 'center')
+		  width: 250, // (integer, or 'auto')
+		  delay: 4000, // Time while the message will be displayed. It's not equivalent to the *demo* timeOut!
+		  allow_dismiss: true, // If true then will display a cross to close the popup.
+		  stackup_spacing: 10 // spacing between consecutively stacked growls.
+		});
+	});

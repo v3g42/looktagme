@@ -23,3 +23,28 @@ a {
 .pagination>li>span {
 	@include transition(all 0.25s linear);
 }
+//
+//$brand-primary:         #2C3E50 !default;
+//$brand-success:         #18BC9C !default;
+//$brand-info:            #3498DB !default;
+//$brand-warning:         #F39C12 !default;
+//$brand-danger:          #E74C3C !default;
+//
+//$text-color:             #fff !default;
+//
+//
+//
+//.bootstrap-growl {
+//  .alert-success {
+//	background-color: $brand-success;
+//	border-color: $brand-success;
+//	color: $text-color;
+//
+//	hr {
+//	  border-top-color: darken($brand-success, 5%);
+//	}
+//	.alert-link {
+//	  color: darken($text-color, 10%);
+//	}
+//  }
+//}
