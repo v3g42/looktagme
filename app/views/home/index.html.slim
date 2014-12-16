@@ -12,4 +12,4 @@ div#home_container.items.container-fluid
 
 
 javascript:
-  json= {metadata: {total: #{@total}, page: 1, limit: #{@limit}}, results: #{@images.to_json.html_safe}};
+  json= {metadata: {total: #{@total}, page: 1,offset: #{@offset}, limit: #{@limit}}, results: #{@images.to_json.html_safe}};

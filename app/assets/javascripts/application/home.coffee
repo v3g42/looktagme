@@ -13,12 +13,11 @@ class HomeListView
 	initScroll: (cbk)->
 		self = this
 		@elem.infiniteScroll
-		  url: '/home'
-			,calculateBottom: ->
-					(self.elem.position().top + self.elem.height()) - $(window).height() + 50
-			,getData: ->
-				{page: $('.next-page:last').data('next-page')}
-			,processResults: cbk
+			url: '/'
+			calculateBottom: -> (self.elem.position().top + self.elem.height()) - $(window).height() + 50
+			getData: -> {page: $('.next-page:last').data('next-page')}
+			processResults: cbk
+
 
 
 	createViewer: (masonryImage, parent)->
@@ -31,45 +30,43 @@ class HomeListView
 				e.preventDefault()
 				self.onEdit self.viewers[image.id]
 
-	masonry: ($container, $cachedContainer)->
-		self = @
-		self.msnry = msnry = $container.masonry
-			itemSelector : '.item'
-			transitionDuration: 0
+	masonry: ($container, $content, callback, first=false)->
+		self = this
+		$cachedContainer = $('#cachedImages')
 
+		if first
+			$cachedContainer.html($content)
+			self.msnry = $container.masonry
+				itemSelector : '.item'
+				transitionDuration: 0
+			$(window).resize ->
+				self.msnry.masonry()
+		else
+			$cachedContainer.append($content)
 
-		$cachedContainer.imagesLoaded( ->
-			#msnry.masonry()
-		).progress((int, image)->
+		$cachedContainer.imagesLoaded().progress (int, image)->
 			parent = $(image.img).parents('.item')
-
-			#parent.appendTo($container)
 			parent.detach()
 			$container.append(parent)
-
 			$container.masonry( 'appended', parent )
 			$container.masonry()
-			self.createViewer(image.img, parent)
-
-
-		)
-
-		$(window).resize ->
-			self.msnry.masonry()
-
+			callback(parent)
 
 	render: ()->
 		self = @
-		cachedImages = $('#cachedImages')
-		cachedImages.html(@listTemplate({results:@json.results, next_page: @json.metadata.page+1,total: @json.metadata.total}))
+		initAppendedSearch = (parent) ->
+			self.createViewer(parent.find('img'), parent)
+
+
+		$content = @listTemplate({results:@json.results, next_page: @json.metadata.page+1,total: @json.metadata.total})
 		$container = $('<div class="listProducts" />')
 		@elem.html($container)
 
-		@masonry $container, cachedImages
+		self.masonry $container, $content,initAppendedSearch, true
 		@initScroll  (json,opts)->
-			$resultsHTML = $(self.listTemplate({results:json.results, next_page: json.metadata.offset+json.metadata.limit,total: json.metadata.total}))
-			self.elem.find('.listProducts').append($resultsHTML)
-			#self.msnry.masonry( 'appended', $resultsHTML, true )
+			json.results  = JSON.parse(json.results) unless json.results instanceof Array
+			$content = $(self.listTemplate({results:json.results, next_page: json.metadata.page+1,total: json.metadata.total}))
+			self.masonry $container, $content,initAppendedSearch, false
 
 		@initHistory()
 

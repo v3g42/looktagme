@@ -47,6 +47,7 @@
             $.ajax({
                 contentType: 'application/json; charset=UTF-8',
                 data: data,
+                dataType: "json",
                 url: $this.$options.url,
                 type: 'GET'
             }).done(function (retVal) {
