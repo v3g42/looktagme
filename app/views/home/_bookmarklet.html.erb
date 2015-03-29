@@ -1,6 +1,6 @@
 <div id="downloads" class="container">
 <% app_id = @current_user.present? ? @current_user.app_id : -1  %>
-  <p>Drag <a href="javascript:(function(){window.$TAGGER={base_url: '<%= absolute_link %>', app_id: '<%= app_id %>'};s=document.createElement('script');s.type='text/javascript';s.src='<%= absolute_link(asset_path('external/inject.js')) %>?v='+parseInt(Math.random()*99999999);document.body.appendChild(s);})();">LookTagMe</a> to Bookmarks Bar - or <a href="/embed">embed this script</a> in you blog.
+  <p>Drag <a href="javascript:(function(){window.$TAGGER={base_url: '<%= absolute_link %>', app_id: '<%= app_id %>'};s=document.createElement('script');s.type='text/javascript';s.src='<%= absolute_link(asset_path('external/inject.js')) %>?v='+parseInt(Math.random()*99999999);document.body.appendChild(s);})();"><%= I18n.t("looktagme") %></a> to Bookmarks Bar - or <a href="/embed">embed this script</a> in you blog.
   </p>
 </div>
 

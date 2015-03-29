@@ -20,13 +20,13 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  looktagme: "LookTagMe"
+  looktagme: "HeyTagMe"
   meta:
-    title: "LookTagMe"
+    title: "HeyTagMe"
     description: "Tag your shit!"
   navigation:
     logout: "Logout"
-    title: "LookTagMe"
+    title: "HeyTagMe"
 
   editor:
     initial_price_range: "Over 0$"

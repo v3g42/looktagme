@@ -75,7 +75,7 @@ class HomeListView
 		$(window).on('scroll touchmove mousewheel', @editScrollListener)
 		@glass = $('<div class="tagger-editor-glass"/>')
 		@glass.hide()
-		@editor = $('<div class="tagger-editor-container"><div class="clearfix editor-header"><a class="pull-left" href="/">LookTagMe</a> <a href="#" class="editor-close pull-right">Close</</a></div></div>')
+		@editor = $('<div class="tagger-editor-container"><div class="clearfix editor-header"><a class="pull-left" href="/">HeyTagMe</a> <a href="#" class="editor-close pull-right">Close</</a></div></div>')
 		$(@editor).find('.editor-close').on 'click', (event) ->
 			event.preventDefault()
 			event.stopPropagation()
