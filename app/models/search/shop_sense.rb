@@ -3,7 +3,7 @@ require 'shopsense'
 
 
 class Search::ShopSense
-  PARTNER_ID = "uid7025-25426545-48"
+  PARTNER_ID = "uid2564-29493758-16"
   COLORS = JSON.parse(File.read(File.join(__dir__,"shop_sense/colors.json")))
   PRICES = JSON.parse(File.read(File.join(__dir__,"shop_sense/price_histogram.json")))
 
