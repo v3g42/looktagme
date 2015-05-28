@@ -9,6 +9,8 @@ TagConda::Application.routes.draw do
   get '/search/retailers' => 'search#retailers'
   get '/tags' => 'tags#index'
 
+  get '/heartbeat' => 'home#heartbeat'
+
   post '/tags' => 'tags#create'
   delete '/tags' => 'tags#destroy'
 

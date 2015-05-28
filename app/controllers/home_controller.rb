@@ -26,4 +26,8 @@ class HomeController < ApplicationController
   def howitworks
 
   end
+
+  def heartbeat
+    render text: "Hello darling!"
+  end
 end
