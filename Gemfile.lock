@@ -223,6 +223,7 @@ GEM
       slop (~> 3.4)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
+    puma (3.8.2)
     quiet_assets (1.0.3)
       railties (>= 3.1, < 5.0)
     rack (1.5.2)
@@ -372,6 +373,7 @@ DEPENDENCIES
   passenger
   pry
   pry-rails
+  puma
   quiet_assets
   rack-cache
   rack-cors

@@ -16,6 +16,8 @@ gem 'kaminari-bootstrap'                  , '~> 3.0.1'
 
 gem 'httparty'
 
+gem 'puma'
+
 group :development do
 	gem "guard-rspec"
 	gem "pry"
